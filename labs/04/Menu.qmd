@@ -1,0 +1,167 @@
+---
+execute:               # Default settings for code blocks
+  warning: false       # Do not print warnings
+  message: false       # Do not print messages
+  size: "scriptsize"   # Set code size to script size
+
+format:
+  pdf:        # Specify .pdf formatting options 
+    documentclass: article     # Document Class
+    number-sections: true      # Number Sections
+    reference-section-title: "References" # Title for reference section
+    code-line-numbers: true    # Line numbers printed in code
+    cap-location: top          # Captions at the top of tables 
+    geometry:
+      - top=0.75in
+      - left=0.75in
+      - bottom=0.75in
+      - right=0.75in
+format-links: [pdf]
+---
+```{r}
+#| echo: false
+
+default_chunk_hook  <- knitr::knit_hooks$get("chunk")
+
+latex_font_size <- c("Huge", "huge", "LARGE", "Large", 
+                     "large", "normalsize", "small", 
+                     "footnotesize", "scriptsize", "tiny")
+
+knitr::knit_hooks$set(chunk = function(x, options) {
+  x <- default_chunk_hook(x, options)
+  if(options$size %in% latex_font_size) {
+    paste0("\n \\", options$size, "\n\n", 
+      x, 
+      "\n\n \\normalsize"
+    )
+  } else {
+    x
+  }
+})
+
+```
+
+```{r}
+#| label: load-packages
+#| include: false
+library(tidyverse)
+```
+
+<!-- Code For Building Menu Here -->
+```{r}
+#| include: false
+breakfasts <- c("website/BerryMelonSmoothie.html",
+                "website/BiscuitsAndGravy.html",
+                "website/BreakfastCheesecake.html",
+                "website/BreakfastMuffins.html",
+                "website/ChiaParfait.html",
+                "website/GardenTomatoQuiche.html",
+                "website/OvernightOats.html",
+                "website/PumpkinToast.html",
+                "website/TropicalSmoothie.html")
+dinner <- c("website/AfricanPeanutSoup.html",
+            "website/Alfredo.html",
+            "website/ArugulaPasta.html",
+            "website/AutumnGrainBowl.html",
+            "website/BakedZiti.html",
+            "website/BBQChili.html",
+            "website/Bibimbap.html",
+            "website/BLTSalad.html",
+            "website/Burgers.html",
+            "website/CapreseSandwiches.html",
+            "website/EggplantParmesan.html",
+            "website/Enchiladas.html",
+            "website/FloridaRolls.html",
+            "website/KimchiGrilledCheese.html",
+            "website/Lasagna.html",
+            "website/LatinBowl.html",
+            "website/Meatloaf.html",
+            "website/PadThai.html",
+            "website/PastaAndPeas.html",
+            "website/Pizza.html",
+            "website/RedWineRagu.html",
+            "website/SalmonChowder.html",
+            "website/Shakshuka.html")
+```
+
+```{r}
+#| echo: false
+library("rvest")
+library("english") #needed for arbitrary english numbering (looked this up)
+
+display.recipes = function(elements,meal) {
+  for (i in 1:length(elements)) {
+    #looked up how to use english and substr, specifically nchar for indexing to the end
+    index = as.character(english(i))
+    capitalized = paste(toupper(substr(index,1,1)),substr(index,2,nchar(index)),sep="")
+    if (length(elements) == 1) {
+      capitalized = "" #don't need to number a single element
+    }
+    cat(paste("#",meal, " Recipe ", capitalized,"\n\n"))
+    display.recipe(elements[i]) #display function could also be an argument, first class functions!
+  }
+}
+
+
+display.recipe = function(fpath) {
+  recipe = load.recipe(fpath)
+  
+  formatted_ingredients = paste("-", recipe$ingredients)
+  formatted_instructions = paste("-", recipe$instructions)
+  
+  
+  cat(paste("##",recipe$title," {.unnumbered}\n\n")) # I did not like the "figure:n" in the caption, hacky workaround
+  cat(paste('![](', recipe$image, "){width=50%}\n\n"))
+  cat("**Ingredients**\n\n")
+  cat(formatted_ingredients,sep="\n")
+  cat("\n\n**Instructions**\n\n")
+  cat(formatted_instructions,sep="\n")
+  cat("\\newpage\n\n")
+}
+
+
+load.recipe = function(fpath) {
+  html = read_html(fpath)
+  
+  title.html = html_element(html, "h1") |> html_text() 
+
+  ingredients = html_element(html,"#ingredients") |> html_elements("li") |> html_text()
+  instructions = html_element(html,"#instructions") |> html_elements("li") |> html_text()
+  
+  image.src = html_element(html,".img-fluid") |> html_attr("src")
+  image = paste("website/",image.src,sep="")
+  
+  recipe.html = list(ingredients=ingredients,instructions=instructions,image=image,title=title.html)  
+}
+
+#Particular Instance
+dnr.sample = sample(x=dinner,size=3,replace=TRUE)
+bfst.sample = sample(x=breakfasts,size=1,replace=TRUE)
+```
+
+
+# Ingredients
+```{r}
+#| echo: false
+#| results: asis
+ingredients = list()
+recipes = c(dnr.sample,bfst.sample)
+for (i in 1:length(recipes)) {
+  recipe = load.recipe(recipes[i])
+  formatted_ingredients = paste("-", recipe$ingredients)
+  cat(paste("\n\n##",recipe$title," {.unnumbered}\n"))
+  cat(formatted_ingredients,sep="\n")
+}
+
+```
+
+\newpage
+
+
+```{r}
+#| echo: false
+#| results: asis
+display.recipes(dnr.sample,"Dinner")
+display.recipes(bfst.sample,"Breakfast")
+```
+
