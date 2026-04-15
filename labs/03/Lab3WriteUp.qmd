@@ -299,6 +299,16 @@ $$\mathbf{M}_v = \begin{bmatrix} 1 & k=0.5 \\ 0 & 1 \end{bmatrix} ~~~~~ \textrm{
 
 $\textbf{Solution:}$
 ```{r}
+
+#Let's plot!
+#| label: fig-square-v4
+#| fig-cap: "Vertically Sheared Parallelogram"
+#| fig-width: 3
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: "scriptsize"
+
 #initializing my matrices
 Mk = matrix(c(1,0,.5,1),nrow=2,ncol=2)
 A = matrix(c(1,5,-7,9),nrow=2,ncol=2)
@@ -314,14 +324,7 @@ p1 = basis.vector.1
 p2 = basis.vector.1 + basis.vector.2
 p3 = basis.vector.2
 
-#Let's plot!
-#| label: fig-squarev3
-#| fig-cap: "My sad parallelogram."
-#| fig-width: 3
-#| fig-height: 3
-#| scale: "80%"
-#| fig-align: "center"
-#| size: "scriptsize"
+
 ggplot() +
   geom_segment(aes(x = p0[1], xend = p1[1],
                    y=p0[2], yend = p1[2]))+
@@ -357,6 +360,15 @@ $$ \mathbf{M}_h = \begin{bmatrix} 1 & 0 \\ k=0.5 & 1 \end{bmatrix}~~~~~ \textrm{
 
   $\textbf{Solution:}$
 ```{r}
+#Let's plot!
+#| label: fig-square-v5
+#| fig-cap: "Horizontally Sheered Parallelogram."
+#| fig-width: 3
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: "scriptsize"
+
 #initializing my matrices
 Mk = matrix(c(1,.5,0,1),nrow=2,ncol=2)
 A = matrix(c(1,5,-7,9),nrow=2,ncol=2)
@@ -372,14 +384,7 @@ p1 = basis.vector.1
 p2 = basis.vector.1 + basis.vector.2
 p3 = basis.vector.2
 
-#Let's plot!
-#| label: fig-squarev3
-#| fig-cap: "My sad parallelogram."
-#| fig-width: 3
-#| fig-height: 3
-#| scale: "80%"
-#| fig-align: "center"
-#| size: "scriptsize"
+
 ggplot() +
   geom_segment(aes(x = p0[1], xend = p1[1],
                    y=p0[2], yend = p1[2]))+
@@ -414,6 +419,16 @@ $$\mathbf{M}_{vh} = \begin{bmatrix} 1 & k=0.5 \\ k=0.5 & 1 \end{bmatrix} ~~~~~ \
 
   $\textbf{Solution:}$
 ```{r}
+#Let's plot!
+#| label: fig-square-v6
+#| fig-cap: "Doubly sheered Parallelogram"
+#| fig-width: 3
+#| fig-height: 3
+#| scale: "80%"
+#| fig-align: "center"
+#| size: "scriptsize"
+
+
 #initializing my matrices
 Mk = matrix(c(1,.5,.5,1),nrow=2,ncol=2)
 A = matrix(c(1,5,-7,9),nrow=2,ncol=2)
@@ -429,14 +444,7 @@ p1 = basis.vector.1
 p2 = basis.vector.1 + basis.vector.2
 p3 = basis.vector.2
 
-#Let's plot!
-#| label: fig-squarev3
-#| fig-cap: "My sad parallelogram."
-#| fig-width: 3
-#| fig-height: 3
-#| scale: "80%"
-#| fig-align: "center"
-#| size: "scriptsize"
+
 ggplot() +
   geom_segment(aes(x = p0[1], xend = p1[1],
                    y=p0[2], yend = p1[2]))+
