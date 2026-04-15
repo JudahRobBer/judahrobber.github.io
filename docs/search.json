@@ -1,0 +1,582 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Judah Robbins Bernal",
+    "section": "",
+    "text": "Thanks for stopping by! You stumbled onto my github pages website, which right now is acting as a small portfolio for some of the statistics coursework that I’ve completed at Colgate. In the near future this page will have more information about the rest of my academic and professional work. I hope to see you then!",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "labs/02/Lab2WriteUp.html#part-a",
+    "href": "labs/02/Lab2WriteUp.html#part-a",
+    "title": "Lab Two – Basic Tasks in R",
+    "section": "1.1 Part a",
+    "text": "1.1 Part a\nInstall the esquisse package for R. Report the code below, ensuring to set the eval option to false, using “#| eval: false”, so that we don’t install the package every time you compile your Quarto document.\n\n\n\nCode\ninstall.packages(\"esquisse\")",
+    "crumbs": [
+      "Lab Two -- Basic Tasks in R"
+    ]
+  },
+  {
+    "objectID": "labs/02/Lab2WriteUp.html#part-b",
+    "href": "labs/02/Lab2WriteUp.html#part-b",
+    "title": "Lab Two – Basic Tasks in R",
+    "section": "1.2 Part b",
+    "text": "1.2 Part b\nLoad the esquisse package for R. Report the code below. It does not matter whether you set “#| eval: false” because loading the package does not add a lot of time. Note you will not evaluate any code that uses the esquisse package, so there is no need to load it as you compile your Quarto document.\n\n\n\nCode\nlibrary(\"esquisse\")",
+    "crumbs": [
+      "Lab Two -- Basic Tasks in R"
+    ]
+  },
+  {
+    "objectID": "labs/02/Lab2WriteUp.html#part-c",
+    "href": "labs/02/Lab2WriteUp.html#part-c",
+    "title": "Lab Two – Basic Tasks in R",
+    "section": "1.3 Part c",
+    "text": "1.3 Part c\nHow can you ask for help about the esquisse package for R? Report the code below, ensuring to set the eval option to false, using “#| eval: false”, so that the help document isn’t loaded every time you compile your Quarto document.\n\n\n\nCode\nhelp(esquisse)",
+    "crumbs": [
+      "Lab Two -- Basic Tasks in R"
+    ]
+  },
+  {
+    "objectID": "labs/02/Lab2WriteUp.html#part-d",
+    "href": "labs/02/Lab2WriteUp.html#part-d",
+    "title": "Lab Two – Basic Tasks in R",
+    "section": "1.4 Part d",
+    "text": "1.4 Part d\nIs a demo or vignette available for the esquisse package for R? Report the code below, ensuring to set the eval option to false, using “#| eval: false”, so that the you don’t get errors when you compile your Quarto document.\n\n\n\nCode\ndemo(\"esquisse\")\nvignette(\"esquisse\")\n\n\n Unfortunately, neither exist.",
+    "crumbs": [
+      "Lab Two -- Basic Tasks in R"
+    ]
+  },
+  {
+    "objectID": "labs/02/Lab2WriteUp.html#part-e",
+    "href": "labs/02/Lab2WriteUp.html#part-e",
+    "title": "Lab Two – Basic Tasks in R",
+    "section": "1.5 Part e",
+    "text": "1.5 Part e\nAdd the BibTeX citation for esquisse package for R to your .bib file and cite it in a sentence describing what the package does below. Note you can reference a citation named esquisse using “[@esquisse]”.\nEsquisse (Meyer and Perrier 2025) is a useful tool for making ggplot2 (Wickham 2016) figures interactive!",
+    "crumbs": [
+      "Lab Two -- Basic Tasks in R"
+    ]
+  },
+  {
+    "objectID": "labs/02/Lab2WriteUp.html#part-f",
+    "href": "labs/02/Lab2WriteUp.html#part-f",
+    "title": "Lab Two – Basic Tasks in R",
+    "section": "1.6 Part f",
+    "text": "1.6 Part f\nRun esquisser() in your console – not in a chunk of R code in your Quarto document.\n\nSelect palmerpenguins from the “Select an environment in which to search:” dropdown. This should automatically select penguins in the “Select a data.frame:” dropdown. Click “Import Data”.\nDrag body_mass_g to the X box and species to the fill box.\nDescribe what you see in words. What can you conclude about Adelie, Chinstrap, and Gentoo penguins based on the resulting plot?\n\nFrom the generated histogram, it is clear that Genloo Penguins tend to have a larger body mass than both Chinstrap and Adele Penguins. Because the right tail of the Adele and Chisntrap distribution is cut off by the Gentoo, by looking at a box plot we further see that Chinstrap and Adele have the same median body mass with a highly similar range (including outliers). By excluding outliers or by considering quartiles, Adelle penguins seem to have a slightly greater variation than Chinstrap w.r.t body mass. Gentoo penguins display the greatest variation in body mass as measured by both range and quartiles as shown in the box plot.",
+    "crumbs": [
+      "Lab Two -- Basic Tasks in R"
+    ]
+  },
+  {
+    "objectID": "labs/02/Lab2WriteUp.html#part-a-1",
+    "href": "labs/02/Lab2WriteUp.html#part-a-1",
+    "title": "Lab Two – Basic Tasks in R",
+    "section": "2.1 Part a",
+    "text": "2.1 Part a\nThe Fibonacci Sequence is a recursive formula: \\[F_n = F_{n-1} + F_{n-2}\\] where \\(F_0=0\\) and \\(F_1=1\\).\nCreate a vector of the first 10 Fibonacci numbers.\n\n\n\nCode\n(fib_nums = c(0,1,1,2,3,5,8,13,21,34))\n\n\n [1]  0  1  1  2  3  5  8 13 21 34\n\n\n\nSince the fibonacci sequence has non-constant steps, it cannot be well generated with a seq() function call.",
+    "crumbs": [
+      "Lab Two -- Basic Tasks in R"
+    ]
+  },
+  {
+    "objectID": "labs/02/Lab2WriteUp.html#part-b-1",
+    "href": "labs/02/Lab2WriteUp.html#part-b-1",
+    "title": "Lab Two – Basic Tasks in R",
+    "section": "2.2 Part b",
+    "text": "2.2 Part b\nTriangular Numbers are the cumulative sums of natural numbers: \\[F_n = \\frac{n(n+1)}{2}.\\]\nCreate a vector of the first 10 Triangular Numbers.\n\n\n\nCode\n(trianguler_nums = c(1,3,6,10,15,21,28,36,45,55))\n\n\n [1]  1  3  6 10 15 21 28 36 45 55\n\n\n\nTrianguler numbers have the same problem as fibonacci numbers, the sequence is not an arithmetic progression.",
+    "crumbs": [
+      "Lab Two -- Basic Tasks in R"
+    ]
+  },
+  {
+    "objectID": "labs/02/Lab2WriteUp.html#part-c-1",
+    "href": "labs/02/Lab2WriteUp.html#part-c-1",
+    "title": "Lab Two – Basic Tasks in R",
+    "section": "2.3 Part c",
+    "text": "2.3 Part c\nSuppose I were designing a repeated measures experiment with three treatment conditions. Each of \\(n=10\\) participants (with ID 1 to 10) will receive all experimental conditions, call them “Control”, “Treatment A”, and “Treatment B”.\nConsider setting up data entry for this experiment.\n\nCreate a vector containing each ID repeated three times, once for each treatment.\nCreate a vector containing each Treatment repeated for each participant ID.\n\n\n\n\nCode\n(ids = rep(seq(from=1,to=10,by=1),each=3))\n\n\n [1]  1  1  1  2  2  2  3  3  3  4  4  4  5  5  5  6  6  6  7  7  7  8  8  8  9\n[26]  9  9 10 10 10\n\n\nCode\n(treatments = rep(c(\"Control\",\"Treatment A\", \"Treatment B\"), times = 10))\n\n\n [1] \"Control\"     \"Treatment A\" \"Treatment B\" \"Control\"     \"Treatment A\"\n [6] \"Treatment B\" \"Control\"     \"Treatment A\" \"Treatment B\" \"Control\"    \n[11] \"Treatment A\" \"Treatment B\" \"Control\"     \"Treatment A\" \"Treatment B\"\n[16] \"Control\"     \"Treatment A\" \"Treatment B\" \"Control\"     \"Treatment A\"\n[21] \"Treatment B\" \"Control\"     \"Treatment A\" \"Treatment B\" \"Control\"    \n[26] \"Treatment A\" \"Treatment B\" \"Control\"     \"Treatment A\" \"Treatment B\"\n\n\n\nUsing times rather than each as the selected parameter for the function call to rep() mirrors the structure of the ids vector since each index in the id vector corresponds to the same participant as that index in the treatments vector. If you instead wanted the index of treatments to separate the treatment conditions into index ranges, each would be preferred.",
+    "crumbs": [
+      "Lab Two -- Basic Tasks in R"
+    ]
+  },
+  {
+    "objectID": "labs/02/Lab2WriteUp.html#part-d-1",
+    "href": "labs/02/Lab2WriteUp.html#part-d-1",
+    "title": "Lab Two – Basic Tasks in R",
+    "section": "2.4 Part d",
+    "text": "2.4 Part d\nCreate a vector containing the character “MATH” and the numeric 240. What is the resulting class? Explain why in a sentence.\nThe resulting class is character. R forces class consistency within a vector, and thus interprets every object in the vector into the most flexible class. Any string of characters can be a character, but only some strings are meaningfully interpreted as rational numbers (numeric).",
+    "crumbs": [
+      "Lab Two -- Basic Tasks in R"
+    ]
+  },
+  {
+    "objectID": "labs/03/Lab3WriteUp.html",
+    "href": "labs/03/Lab3WriteUp.html",
+    "title": "Lab Three – Matrices and Data Frames in R",
+    "section": "",
+    "text": "Consider the unit square depicted in Figure 1.\nCode\nggplot() +\n  geom_segment(aes(x = 0, xend = 0,\n                   y=0, yend = 1))+\n  geom_segment(aes(x = 0, xend = 1,\n                   y=1, yend = 1))+\n  geom_segment(aes(x = 1, xend = 1,\n                   y=0, yend = 1))+\n  geom_segment(aes(x = 0, xend = 1,\n                   y=0, yend = 0)) +\n  theme_bw() + \n  xlim(-0.5, 1.5)+\n  ylim(-0.5, 1.5)+\n  labs(x = \"x\", \n       y = \"y\")\n\n\n\n\n\nFigure 1: The unit square.\nThe unit square can be defined by two basis vectors \\[\\mathbf{v}_1=\\begin{bmatrix} 1 \\\\ 0 \\end{bmatrix} ~~~ \\textrm{and} ~~~ \\mathbf{v}_2=\\begin{bmatrix} 1 \\\\ 0 \\end{bmatrix}.\\] From these vectors, we can compute the corner verticies. \\[\\begin{align*}\n  p_0 & = (0,0) = (x_0, y_0) \\tag{The origin}\\\\\n  p_1 & = v_1 = (x_1, y_1)   \\tag{The first basis vector}\\\\\n  p_2 & = v_1 + v_2 = (x_2, y_2) \\tag{The sum of basis vectors}\\\\\n  p_3 & = v_1 = (x_3, y_3)  \\tag{The second basis vector}\\\\\n\\end{align*}\\] Note that the segments that form the boundary go from \\(p_0\\) to \\(p_1\\) to \\(p_2\\) to \\(p_3\\).\nConsider the matrix \\(M\\) to be the matrix we get from binding the two basis vectors at the column, \\[\\mathbf{M} = \\begin{bmatrix} 1 & 0 \\\\ 0 & 1 \\end{bmatrix}.\\]",
+    "crumbs": [
+      "Lab Three -- Matrices and Data Frames in R"
+    ]
+  },
+  {
+    "objectID": "labs/03/Lab3WriteUp.html#part-a",
+    "href": "labs/03/Lab3WriteUp.html#part-a",
+    "title": "Lab Three – Matrices and Data Frames in R",
+    "section": "1.1 Part a",
+    "text": "1.1 Part a\nCreate the matrix A in R. \\[\\mathbf{A} = \\begin{bmatrix} 1 & -7 \\\\ 5 & 9 \\end{bmatrix}\\]\n\\(\\textbf{Solution:}\\)\n\n\n\nCode\n(A = matrix(c(1,5,-7,9),nrow=2,ncol=2))\n\n\n     [,1] [,2]\n[1,]    1   -7\n[2,]    5    9",
+    "crumbs": [
+      "Lab Three -- Matrices and Data Frames in R"
+    ]
+  },
+  {
+    "objectID": "labs/03/Lab3WriteUp.html#part-b",
+    "href": "labs/03/Lab3WriteUp.html#part-b",
+    "title": "Lab Three – Matrices and Data Frames in R",
+    "section": "1.2 Part b",
+    "text": "1.2 Part b\nCompute the product below in R and store it in an object T. \\[\\mathbf{T} = \\mathbf{A}\\mathbf{M}.\\]\n\\(\\textbf{Solution:}\\)\n\n\n\nCode\nM = matrix(c(1,0,0,1),nrow=2,ncol=2)\nT = A %*% M\n(T)\n\n\n     [,1] [,2]\n[1,]    1   -7\n[2,]    5    9",
+    "crumbs": [
+      "Lab Three -- Matrices and Data Frames in R"
+    ]
+  },
+  {
+    "objectID": "labs/03/Lab3WriteUp.html#part-c",
+    "href": "labs/03/Lab3WriteUp.html#part-c",
+    "title": "Lab Three – Matrices and Data Frames in R",
+    "section": "1.3 Part c",
+    "text": "1.3 Part c\nCreate basis.vector.1 (first column of T) and basis.vector.2 (second column of T) in R.\n\\(\\textbf{Solution:}\\)\n\n\n\nCode\n(basis.vector.1 = T[,1])\n\n\n[1] 1 5\n\n\nCode\n(basis.vector.2 = T[,2])\n\n\n[1] -7  9",
+    "crumbs": [
+      "Lab Three -- Matrices and Data Frames in R"
+    ]
+  },
+  {
+    "objectID": "labs/03/Lab3WriteUp.html#part-d",
+    "href": "labs/03/Lab3WriteUp.html#part-d",
+    "title": "Lab Three – Matrices and Data Frames in R",
+    "section": "1.4 Part d",
+    "text": "1.4 Part d\nCompute the points \\(p_0\\), \\(p_1\\), \\(p_2\\), and \\(p_3\\).\n\\(\\textbf{Solution:}\\)\n\n\n\nCode\n(p0 = c(0,0))\n\n\n[1] 0 0\n\n\nCode\n(p1 = basis.vector.1)\n\n\n[1] 1 5\n\n\nCode\n(p2 = basis.vector.1 + basis.vector.2)\n\n\n[1] -6 14\n\n\nCode\n(p3 = basis.vector.2) \n\n\n[1] -7  9",
+    "crumbs": [
+      "Lab Three -- Matrices and Data Frames in R"
+    ]
+  },
+  {
+    "objectID": "labs/03/Lab3WriteUp.html#part-e",
+    "href": "labs/03/Lab3WriteUp.html#part-e",
+    "title": "Lab Three – Matrices and Data Frames in R",
+    "section": "1.5 Part e",
+    "text": "1.5 Part e\nCopy and paste the code for the unit square. Edit the code to draw the segments that form the boundary based on the points in Part d.\n\\(\\textbf{Solution:}\\)\n\n\n\nCode\nggplot() +\n  geom_segment(aes(x = p0[1], xend = p1[1],\n                   y=p0[2], yend = p1[2]))+\n  geom_segment(aes(x = p1[1], xend = p2[1],\n                   y=p1[2], yend = p2[2]))+\n  geom_segment(aes(x = p2[1], xend = p3[1],\n                   y=p2[2], yend = p3[2]))+\n  geom_segment(aes(x = p3[1], xend = p0[1],\n                   y=p3[2], yend = p0[2])) +\n  theme_bw() + \n  xlim(-20, 20)+\n  ylim(-20, 20)+\n  labs(x = \"x\", \n       y = \"y\")\n\n\n\n\n\nFigure 2: My new parallelogram.",
+    "crumbs": [
+      "Lab Three -- Matrices and Data Frames in R"
+    ]
+  },
+  {
+    "objectID": "labs/03/Lab3WriteUp.html#part-f",
+    "href": "labs/03/Lab3WriteUp.html#part-f",
+    "title": "Lab Three – Matrices and Data Frames in R",
+    "section": "1.6 Part f",
+    "text": "1.6 Part f\nInterestingly, the determinant of \\(\\mathbf{A}\\) gives us the area of the shape plotted in Part e. Find the determinant of \\(\\mathbf{A}\\).\n\\(\\textbf{Solution:}\\)\n\n\n\nCode\n(det(A))\n\n\n[1] 44",
+    "crumbs": [
+      "Lab Three -- Matrices and Data Frames in R"
+    ]
+  },
+  {
+    "objectID": "labs/03/Lab3WriteUp.html#part-a-1",
+    "href": "labs/03/Lab3WriteUp.html#part-a-1",
+    "title": "Lab Three – Matrices and Data Frames in R",
+    "section": "2.1 Part a",
+    "text": "2.1 Part a\nCreate the matrix A in R. \\[\\mathbf{A} = \\begin{bmatrix} 1 & 2 \\\\ 2 & 4 \\end{bmatrix}\\]\n\\(\\textbf{Solution:}\\)\n\n\n\nCode\n(A = matrix(c(1,2,2,4),nrow=2,ncol=2))\n\n\n     [,1] [,2]\n[1,]    1    2\n[2,]    2    4",
+    "crumbs": [
+      "Lab Three -- Matrices and Data Frames in R"
+    ]
+  },
+  {
+    "objectID": "labs/03/Lab3WriteUp.html#part-b-1",
+    "href": "labs/03/Lab3WriteUp.html#part-b-1",
+    "title": "Lab Three – Matrices and Data Frames in R",
+    "section": "2.2 Part b",
+    "text": "2.2 Part b\nCompute the product below in R and store it in an object T. \\[\\mathbf{T} = \\mathbf{A}\\mathbf{M}.\\]\n\\(\\textbf{Solution:}\\)\n\n\n\nCode\nM = matrix(c(1,0,0,1),nrow=2,ncol=2)\n(T = A %*% M)\n\n\n     [,1] [,2]\n[1,]    1    2\n[2,]    2    4",
+    "crumbs": [
+      "Lab Three -- Matrices and Data Frames in R"
+    ]
+  },
+  {
+    "objectID": "labs/03/Lab3WriteUp.html#part-c-1",
+    "href": "labs/03/Lab3WriteUp.html#part-c-1",
+    "title": "Lab Three – Matrices and Data Frames in R",
+    "section": "2.3 Part c",
+    "text": "2.3 Part c\nCreate basis.vector.1 (first column of T) and basis.vector.2 (second column of T) in R.\n\\(\\textbf{Solution:}\\)\n\n\n\nCode\n(basis.vector.1 = T[,1])\n\n\n[1] 1 2\n\n\nCode\n(basis.vector.2 = 2 * basis.vector.1) #uh oh not full rank\n\n\n[1] 2 4\n\n\n\nMe when my matrix is not full rank \\(\\Sadey\\) (I’m never gonna get a true inverse)",
+    "crumbs": [
+      "Lab Three -- Matrices and Data Frames in R"
+    ]
+  },
+  {
+    "objectID": "labs/03/Lab3WriteUp.html#part-d-1",
+    "href": "labs/03/Lab3WriteUp.html#part-d-1",
+    "title": "Lab Three – Matrices and Data Frames in R",
+    "section": "2.4 Part d",
+    "text": "2.4 Part d\nCompute the points \\(p_0\\), \\(p_1\\), \\(p_2\\), and \\(p_3\\).\n\\(\\textbf{Solution:}\\)\n\n\n\nCode\n(p0 = c(0,0))\n\n\n[1] 0 0\n\n\nCode\n(p1 = basis.vector.1)\n\n\n[1] 1 2\n\n\nCode\n(p2 = basis.vector.1 + basis.vector.2)\n\n\n[1] 3 6\n\n\nCode\n(p3 = basis.vector.2) \n\n\n[1] 2 4",
+    "crumbs": [
+      "Lab Three -- Matrices and Data Frames in R"
+    ]
+  },
+  {
+    "objectID": "labs/03/Lab3WriteUp.html#part-e-1",
+    "href": "labs/03/Lab3WriteUp.html#part-e-1",
+    "title": "Lab Three – Matrices and Data Frames in R",
+    "section": "2.5 Part e",
+    "text": "2.5 Part e\nCopy and paste the code for plotting the unit square. Edit the code to draw the segments that form the boundary based on the points in Part d.\n\\(\\textbf{Solution:}\\)\n\n\n\nCode\nggplot() +\n  geom_segment(aes(x = p0[1], xend = p1[1],\n                   y=p0[2], yend = p1[2]))+\n  geom_point(aes(x = p0[1], y = p0[2]), size = 1) +\n  geom_segment(aes(x = p1[1], xend = p2[1],\n                   y=p1[2], yend = p2[2]))+\n  geom_point(aes(x = p1[1], y = p1[2]), size = 1) +\n  geom_segment(aes(x = p2[1], xend = p3[1],\n                   y=p2[2], yend = p3[2]))+\n  geom_point(aes(x = p2[1], y = p2[2]), size = 1) +\n  geom_segment(aes(x = p3[1], xend = p0[1],\n                   y=p3[2], yend = p0[2])) +\n  geom_point(aes(x = p3[1], y = p3[2]), size = 1) +\n  theme_bw() + \n  xlim(-10, 10)+\n  ylim(-10, 10)+\n  labs(x = \"x\", \n       y = \"y\")\n\n\n\n\n\nFigure 3: My sad parallelogram.",
+    "crumbs": [
+      "Lab Three -- Matrices and Data Frames in R"
+    ]
+  },
+  {
+    "objectID": "labs/03/Lab3WriteUp.html#part-f-1",
+    "href": "labs/03/Lab3WriteUp.html#part-f-1",
+    "title": "Lab Three – Matrices and Data Frames in R",
+    "section": "2.6 Part f",
+    "text": "2.6 Part f\nInterestingly, the determinant of \\(\\mathbf{A}\\) gives us the area of the shape plotted in Part e. Find the determinant of \\(\\mathbf{A}\\).\n\\(\\textbf{Solution:}\\)\n\n\n\nCode\n(det(A))\n\n\n[1] 0",
+    "crumbs": [
+      "Lab Three -- Matrices and Data Frames in R"
+    ]
+  },
+  {
+    "objectID": "labs/03/Lab3WriteUp.html#part-a-2",
+    "href": "labs/03/Lab3WriteUp.html#part-a-2",
+    "title": "Lab Three – Matrices and Data Frames in R",
+    "section": "3.1 Part a",
+    "text": "3.1 Part a\nUse the following to generate a new shape. Compare the shape and its area to your answer in Question 1. \\[\\mathbf{M}_v = \\begin{bmatrix} 1 & k=0.5 \\\\ 0 & 1 \\end{bmatrix} ~~~~~ \\textrm{and} ~~~~~\n  \\mathbf{A}   = \\begin{bmatrix} 1 & -7 \\\\ 5 & 9 \\end{bmatrix}\\]\n\\(\\textbf{Solution:}\\)\n\n\n\nCode\n#initializing my matrices\nMk = matrix(c(1,0,.5,1),nrow=2,ncol=2)\nA = matrix(c(1,5,-7,9),nrow=2,ncol=2)\nT = Mk %*% A\n\n#it's basis vector time\nbasis.vector.1 = T[,1]\nbasis.vector.2 = T[,2]\n\n#Grabbing my points\np0 = c(0,0)\np1 = basis.vector.1\np2 = basis.vector.1 + basis.vector.2\np3 = basis.vector.2\n\n#Let's plot!\n#| label: fig-squarev3\n#| fig-cap: \"My sad parallelogram.\"\n#| fig-width: 3\n#| fig-height: 3\n#| scale: \"80%\"\n#| fig-align: \"center\"\n#| size: \"scriptsize\"\nggplot() +\n  geom_segment(aes(x = p0[1], xend = p1[1],\n                   y=p0[2], yend = p1[2]))+\n  geom_point(aes(x = p0[1], y = p0[2]), size = 1) +\n  geom_segment(aes(x = p1[1], xend = p2[1],\n                   y=p1[2], yend = p2[2]))+\n  geom_point(aes(x = p1[1], y = p1[2]), size = 1) +\n  geom_segment(aes(x = p2[1], xend = p3[1],\n                   y=p2[2], yend = p3[2]))+\n  geom_point(aes(x = p2[1], y = p2[2]), size = 1) +\n  geom_segment(aes(x = p3[1], xend = p0[1],\n                   y=p3[2], yend = p0[2])) +\n  geom_point(aes(x = p3[1], y = p3[2]), size = 1) +\n  theme_bw() + \n  xlim(-20, 20)+\n  ylim(-20, 20)+\n  labs(x = \"x\", \n       y = \"y\")\n\n\n\n\n\n\n\n\n\n\nThe area of the shape (a parallelogram) is the magnitude of the determinant of the matrix\n\n\n\nCode\n(det(T))\n\n\n[1] 44\n\n\n\nAs expected, since the sheer transformation \\(M_k\\) has determinant \\(1\\) (just like \\(I_2\\)) and because our determinant function is a homomorphism, \\(\\text{det}(AB)=\\text{det}A*\\text{det}B\\). Thus the determinant is the same as in question \\(1\\).",
+    "crumbs": [
+      "Lab Three -- Matrices and Data Frames in R"
+    ]
+  },
+  {
+    "objectID": "labs/03/Lab3WriteUp.html#part-b-2",
+    "href": "labs/03/Lab3WriteUp.html#part-b-2",
+    "title": "Lab Three – Matrices and Data Frames in R",
+    "section": "3.2 Part b",
+    "text": "3.2 Part b\nUse the following to generate a new shape. Compare the shape and its area to your answer in Questions 1 and the vertical shear transform in part (a). \\[ \\mathbf{M}_h = \\begin{bmatrix} 1 & 0 \\\\ k=0.5 & 1 \\end{bmatrix}~~~~~ \\textrm{and} ~~~~~\n  \\mathbf{A}   = \\begin{bmatrix} 1 & -7 \\\\ 5 & 9 \\end{bmatrix}\\]\n\\(\\textbf{Solution:}\\)\n\n\n\nCode\n#initializing my matrices\nMk = matrix(c(1,.5,0,1),nrow=2,ncol=2)\nA = matrix(c(1,5,-7,9),nrow=2,ncol=2)\nT = Mk %*% A\n\n#it's basis vector time\nbasis.vector.1 = T[,1]\nbasis.vector.2 = T[,2]\n\n#Grabbing my points\np0 = c(0,0)\np1 = basis.vector.1\np2 = basis.vector.1 + basis.vector.2\np3 = basis.vector.2\n\n#Let's plot!\n#| label: fig-squarev3\n#| fig-cap: \"My sad parallelogram.\"\n#| fig-width: 3\n#| fig-height: 3\n#| scale: \"80%\"\n#| fig-align: \"center\"\n#| size: \"scriptsize\"\nggplot() +\n  geom_segment(aes(x = p0[1], xend = p1[1],\n                   y=p0[2], yend = p1[2]))+\n  geom_point(aes(x = p0[1], y = p0[2]), size = 1) +\n  geom_segment(aes(x = p1[1], xend = p2[1],\n                   y=p1[2], yend = p2[2]))+\n  geom_point(aes(x = p1[1], y = p1[2]), size = 1) +\n  geom_segment(aes(x = p2[1], xend = p3[1],\n                   y=p2[2], yend = p3[2]))+\n  geom_point(aes(x = p2[1], y = p2[2]), size = 1) +\n  geom_segment(aes(x = p3[1], xend = p0[1],\n                   y=p3[2], yend = p0[2])) +\n  geom_point(aes(x = p3[1], y = p3[2]), size = 1) +\n  theme_bw() + \n  xlim(-20, 20)+\n  ylim(-20, 20)+\n  labs(x = \"x\", \n       y = \"y\")\n\n\n\n\n\n\n\n\n\n\nOnce again, since the determinant of our matrix \\(M_k\\) is \\(1\\), we expect the determinant to be the same as in question 1. Let’s check!\n\n\n\nCode\ndet(T)\n\n\n[1] 44",
+    "crumbs": [
+      "Lab Three -- Matrices and Data Frames in R"
+    ]
+  },
+  {
+    "objectID": "labs/03/Lab3WriteUp.html#part-c-2",
+    "href": "labs/03/Lab3WriteUp.html#part-c-2",
+    "title": "Lab Three – Matrices and Data Frames in R",
+    "section": "3.3 Part c",
+    "text": "3.3 Part c\nCan we shear vertically and horizontally at the same time? Use the following to generate a new shape. Compare the shape and its area to your answers in parts (a) and (b). \\[\\mathbf{M}_{vh} = \\begin{bmatrix} 1 & k=0.5 \\\\ k=0.5 & 1 \\end{bmatrix} ~~~~~ \\textrm{and} ~~~~~\n  \\mathbf{A}   = \\begin{bmatrix} 1 & -7 \\\\ 5 & 9 \\end{bmatrix}\\]\n\\(\\textbf{Solution:}\\)\n\n\n\nCode\n#initializing my matrices\nMk = matrix(c(1,.5,.5,1),nrow=2,ncol=2)\nA = matrix(c(1,5,-7,9),nrow=2,ncol=2)\nT = Mk %*% A\n\n#it's basis vector time\nbasis.vector.1 = T[,1]\nbasis.vector.2 = T[,2]\n\n#Grabbing my points\np0 = c(0,0)\np1 = basis.vector.1\np2 = basis.vector.1 + basis.vector.2\np3 = basis.vector.2\n\n#Let's plot!\n#| label: fig-squarev3\n#| fig-cap: \"My sad parallelogram.\"\n#| fig-width: 3\n#| fig-height: 3\n#| scale: \"80%\"\n#| fig-align: \"center\"\n#| size: \"scriptsize\"\nggplot() +\n  geom_segment(aes(x = p0[1], xend = p1[1],\n                   y=p0[2], yend = p1[2]))+\n  geom_point(aes(x = p0[1], y = p0[2]), size = 1) +\n  geom_segment(aes(x = p1[1], xend = p2[1],\n                   y=p1[2], yend = p2[2]))+\n  geom_point(aes(x = p1[1], y = p1[2]), size = 1) +\n  geom_segment(aes(x = p2[1], xend = p3[1],\n                   y=p2[2], yend = p3[2]))+\n  geom_point(aes(x = p2[1], y = p2[2]), size = 1) +\n  geom_segment(aes(x = p3[1], xend = p0[1],\n                   y=p3[2], yend = p0[2])) +\n  geom_point(aes(x = p3[1], y = p3[2]), size = 1) +\n  theme_bw() + \n  xlim(-20, 20)+\n  ylim(-20, 20)+\n  labs(x = \"x\", \n       y = \"y\")\n\n\n\n\n\n\n\n\n\n\nThis matrix no longer has determinant one (because the product of the off-diagonal is no longer 0). So this parallelogram should have a different area from the sheer transformations and the original. Let’s check!\n\n\n\nCode\ndet(T)\n\n\n[1] 33",
+    "crumbs": [
+      "Lab Three -- Matrices and Data Frames in R"
+    ]
+  },
+  {
+    "objectID": "labs/03/Lab3WriteUp.html#part-a-3",
+    "href": "labs/03/Lab3WriteUp.html#part-a-3",
+    "title": "Lab Three – Matrices and Data Frames in R",
+    "section": "4.1 Part a",
+    "text": "4.1 Part a\nCreate a data frame ladder with the following data. Note your data frame should have three columns; I split it to save vertical space here.\n\n\n\nx\ny\ngroup\nx\ny\ngroup\n\n\n\n\n0\n0\n1\n1\n8\n1\n\n\n0\n20\n1\n0\n10\n1\n\n\n1\n0\n2\n1\n10\n2\n\n\n1\n20\n2\n0\n12\n2\n\n\n0\n2\n3\n1\n12\n3\n\n\n1\n2\n3\n0\n14\n3\n\n\n0\n4\n4\n1\n14\n4\n\n\n1\n4\n4\n0\n16\n4\n\n\n0\n6\n5\n1\n16\n5\n\n\n1\n6\n5\n0\n18\n5\n\n\n0\n8\n5\n1\n18\n5\n\n\n\n\\(\\textbf{Solution:}\\)\n\n\n\nCode\nx = c(0,0,1,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1)\ny = c(0,20,0,20,2,2,4,4,6,6,8,8,10,10,12,12,14,14,16,16,18,18)\ngroup = c(1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11)\nladder = data.frame(x=x,y=y,group=group)",
+    "crumbs": [
+      "Lab Three -- Matrices and Data Frames in R"
+    ]
+  },
+  {
+    "objectID": "labs/03/Lab3WriteUp.html#part-b-3",
+    "href": "labs/03/Lab3WriteUp.html#part-b-3",
+    "title": "Lab Three – Matrices and Data Frames in R",
+    "section": "4.2 Part b",
+    "text": "4.2 Part b\nRemove #|eval: false in the code below. The result should look like a ladder and a very rectangular house if part a is correct.\n\n\n\nCode\nggplot() +\n  geom_path(data = ladder, \n              aes(x = x, y = y, group = group)) +\n                  geom_segment(aes(x = 10, xend = 10,\n                   y=0, yend = 20))+\n  geom_segment(aes(x = 10, xend = 20,\n                   y=20, yend = 20))+\n  geom_segment(aes(x = 20, xend = 20,\n                   y=0, yend = 20))+\n  geom_segment(aes(x = 10, xend = 20,\n                   y=0, yend = 0)) +\n  theme_bw() +\n  xlim(-2,22) +\n  ylim(-2,22)\n\n\n\n\n\nFigure 4: A ladder.",
+    "crumbs": [
+      "Lab Three -- Matrices and Data Frames in R"
+    ]
+  },
+  {
+    "objectID": "labs/03/Lab3WriteUp.html#part-c-3",
+    "href": "labs/03/Lab3WriteUp.html#part-c-3",
+    "title": "Lab Three – Matrices and Data Frames in R",
+    "section": "4.3 Part c",
+    "text": "4.3 Part c\nUse as.matrix() to create a \\(22 \\times 2\\) matrix \\(\\mathbf{A}\\) containing the x and y observations from the ladder data frame. Use matrix multiplication to compute \\[\\mathbf{T} = \\mathbf{A} \\mathbf{M}_h.\\] Recall, \\[\\mathbf{M}_h = \\begin{bmatrix} 1 & 0 \\\\ k & 1 \\end{bmatrix}\\] and use \\(k=0.5.\\)\n\\(\\textbf{solution}\\)\n\n\n\nCode\nM = matrix(c(1,.5,0,1),nrow=2,ncol=2)\nladderNoGroups = ladder[,c(\"x\",\"y\")]\nA = as.matrix(ladderNoGroups,nrow=22,ncol=2)\n\nT = A %*% M\n(T)\n\n\n      [,1] [,2]\n [1,]    0    0\n [2,]   10   20\n [3,]    1    0\n [4,]   11   20\n [5,]    1    2\n [6,]    2    2\n [7,]    2    4\n [8,]    3    4\n [9,]    3    6\n[10,]    4    6\n[11,]    4    8\n[12,]    5    8\n[13,]    5   10\n[14,]    6   10\n[15,]    6   12\n[16,]    7   12\n[17,]    7   14\n[18,]    8   14\n[19,]    8   16\n[20,]    9   16\n[21,]    9   18\n[22,]   10   18",
+    "crumbs": [
+      "Lab Three -- Matrices and Data Frames in R"
+    ]
+  },
+  {
+    "objectID": "labs/03/Lab3WriteUp.html#part-d-2",
+    "href": "labs/03/Lab3WriteUp.html#part-d-2",
+    "title": "Lab Three – Matrices and Data Frames in R",
+    "section": "4.4 Part d",
+    "text": "4.4 Part d\nCreate a data frame leaning.ladder with the x and y equal to the first and second column of \\(\\mathbf{T}\\), respectively, and the same values of group from ladder.\n\\(\\textbf{Solution:}\\)\n\n\n\nCode\nleaning.ladder = data.frame(x=T[,1],y=T[,2],group=ladder[,c(\"group\")])",
+    "crumbs": [
+      "Lab Three -- Matrices and Data Frames in R"
+    ]
+  },
+  {
+    "objectID": "labs/03/Lab3WriteUp.html#part-e-2",
+    "href": "labs/03/Lab3WriteUp.html#part-e-2",
+    "title": "Lab Three – Matrices and Data Frames in R",
+    "section": "4.5 Part e",
+    "text": "4.5 Part e\nRemove eval: false in the code below. The result should look like a ladder and a very rectangular house if part a is correct. The new leaning ladder should look like it is leaning on the house.\n\n\n\nCode\nggplot() +\n  geom_path(data = ladder, \n              aes(x = x, y = y, group = group, color = \"Starting Ladder\")) +\n  geom_path(data = leaning.ladder, \n              aes(x = x, y = y, group = group, color = \"Leaning Ladder\")) +\n  geom_segment(aes(x = 10, xend = 10,\n                   y=0, yend = 20))+\n  geom_segment(aes(x = 10, xend = 20,\n                   y=20, yend = 20))+\n  geom_segment(aes(x = 20, xend = 20,\n                   y=0, yend = 20))+\n  geom_segment(aes(x = 10, xend = 20,\n                   y=0, yend = 0)) +\n  theme_bw() +\n  xlim(-2,22) +\n  ylim(-2,22) +\n  scale_color_manual(\"\", values=c(\"darkred\", \"grey\"))\n\n\n\n\n\nFigure 5: A ladder and a leaning ladder.",
+    "crumbs": [
+      "Lab Three -- Matrices and Data Frames in R"
+    ]
+  },
+  {
+    "objectID": "labs/04/Lab4WriteUp.html",
+    "href": "labs/04/Lab4WriteUp.html",
+    "title": "Lab Four – Programming in R",
+    "section": "",
+    "text": "In this lab, we will build a mealkit recipe generator. I created a small website of about 40 recipes. We will scrape recipes from that website, randomly select three meals, and print a grocery list with recipe cards.",
+    "crumbs": [
+      "Lab Four -- Programming in R"
+    ]
+  },
+  {
+    "objectID": "labs/04/Lab4WriteUp.html#part-a",
+    "href": "labs/04/Lab4WriteUp.html#part-a",
+    "title": "Lab Four – Programming in R",
+    "section": "1.1 Part a",
+    "text": "1.1 Part a\nBelow, I create a numeric vector filled with random observations. Ask for the 3rd item. Note: The set.seed(7272) portion ensures we all get the same answer.\n\n\n\nCode\nset.seed(7272) # sets the randomization seed for replication\nx &lt;- sample(x=1:10,          # sample from 1, 2, 3, ..., 10 \n            size=10,         # sample of 10\n            replace = TRUE)  # allowed to sample the same item multiple times\n\n\n\nSolution:\n\n\n\nCode\n(third.element = x[3])\n\n\n[1] 5",
+    "crumbs": [
+      "Lab Four -- Programming in R"
+    ]
+  },
+  {
+    "objectID": "labs/04/Lab4WriteUp.html#part-b",
+    "href": "labs/04/Lab4WriteUp.html#part-b",
+    "title": "Lab Four – Programming in R",
+    "section": "1.2 Part b",
+    "text": "1.2 Part b\nBelow, I create a data frame filled with random observations.\n\n\n\nCode\nset.seed(7272) # sets the randomization seed for replication\ndf &lt;- data.frame(x1 = sample(x=1:10,          # sample from 1, 2, 3, ..., 10 \n                             size=10,         # sample of 10\n                             replace = TRUE), # allowed to sample the same item multiple times\n                 x2 = sample(x=1:10,          # sample from 1, 2, 3, ..., 10 \n                             size=10,         # sample of 10\n                             replace = TRUE), # allowed to sample the same item multiple times\n                 x3 = sample(x=1:10,          # sample from 1, 2, 3, ..., 10 \n                             size=10,         # sample of 10\n                             replace = TRUE)  # allowed to sample the same item multiple times,\n)",
+    "crumbs": [
+      "Lab Four -- Programming in R"
+    ]
+  },
+  {
+    "objectID": "labs/04/Lab4WriteUp.html#part-b-1",
+    "href": "labs/04/Lab4WriteUp.html#part-b-1",
+    "title": "Lab Four – Programming in R",
+    "section": "1.3 Part b",
+    "text": "1.3 Part b\nUse the head(...) function to peek at the data frame.\nSolution:\n\n\n\nCode\n(head(df))\n\n\n  x1 x2 x3\n1  8  1  8\n2  3  7  2\n3  5  3  3\n4  3  6  2\n5  2  2  3\n6  3  8 10",
+    "crumbs": [
+      "Lab Four -- Programming in R"
+    ]
+  },
+  {
+    "objectID": "labs/04/Lab4WriteUp.html#part-c",
+    "href": "labs/04/Lab4WriteUp.html#part-c",
+    "title": "Lab Four – Programming in R",
+    "section": "1.4 Part c",
+    "text": "1.4 Part c\nAsk for the column x1.\nSolution:\n\n\n\nCode\n(column1 = df[,c(\"x1\")])\n\n\n [1] 8 3 5 3 2 3 1 2 6 2",
+    "crumbs": [
+      "Lab Four -- Programming in R"
+    ]
+  },
+  {
+    "objectID": "labs/04/Lab4WriteUp.html#part-d",
+    "href": "labs/04/Lab4WriteUp.html#part-d",
+    "title": "Lab Four – Programming in R",
+    "section": "1.5 Part d",
+    "text": "1.5 Part d\nAsk for the fifth row of the data frame.\nSolution:\n\n\n\nCode\n(row5 = df[5,])\n\n\n  x1 x2 x3\n5  2  2  3",
+    "crumbs": [
+      "Lab Four -- Programming in R"
+    ]
+  },
+  {
+    "objectID": "labs/04/Lab4WriteUp.html#part-e",
+    "href": "labs/04/Lab4WriteUp.html#part-e",
+    "title": "Lab Four – Programming in R",
+    "section": "1.6 Part e",
+    "text": "1.6 Part e\nAsk for the the value of x1 in the fifth row of the data frame.\nSolution:\n\n\n\nCode\n(row5.x1 = row5[c('x1')])\n\n\n  x1\n5  2",
+    "crumbs": [
+      "Lab Four -- Programming in R"
+    ]
+  },
+  {
+    "objectID": "labs/04/Lab4WriteUp.html#part-f",
+    "href": "labs/04/Lab4WriteUp.html#part-f",
+    "title": "Lab Four – Programming in R",
+    "section": "1.7 Part f",
+    "text": "1.7 Part f\nAsk for the the value of in the third column and the fifth row of the data frame.\nSolution:\n\n\n\nCode\n(value = df[5,3])\n\n\n[1] 3",
+    "crumbs": [
+      "Lab Four -- Programming in R"
+    ]
+  },
+  {
+    "objectID": "labs/04/Lab4WriteUp.html#part-g",
+    "href": "labs/04/Lab4WriteUp.html#part-g",
+    "title": "Lab Four – Programming in R",
+    "section": "1.8 Part g",
+    "text": "1.8 Part g\nCreate a sequence from 1 to 10 by 2 and use it to print the odd rows of the data frame.\nSolution:\n\n\n\nCode\nindices = seq(from=1,to=10,by=2)\n(rows.odds = df[indices,])\n\n\n  x1 x2 x3\n1  8  1  8\n3  5  3  3\n5  2  2  3\n7  1 10  1\n9  6  2 10",
+    "crumbs": [
+      "Lab Four -- Programming in R"
+    ]
+  },
+  {
+    "objectID": "labs/04/Lab4WriteUp.html#part-h",
+    "href": "labs/04/Lab4WriteUp.html#part-h",
+    "title": "Lab Four – Programming in R",
+    "section": "1.9 Part h",
+    "text": "1.9 Part h\nBelow, I create an empty column called x12. Fill in the details of the for(...) loop to ensure x12 is the product of x1 and x2.\n\n\n\nCode\nn &lt;- nrow(df)                # How many rows to we have to fill?\ndf$x12 &lt;- rep(NA, nrow(df))   # Create an empty column for x12\nfor(i in 1:nrow(df)){\n  df[i,\"x12\"] = df[i,\"x1\"] * df[i,\"x2\"]\n}\n(head(df))\n\n\n  x1 x2 x3 x12\n1  8  1  8   8\n2  3  7  2  21\n3  5  3  3  15\n4  3  6  2  18\n5  2  2  3   4\n6  3  8 10  24\n\n\n\nVectorized Solution\n\n\n\nCode\ndf$x12 = df$x1 * df$x2\n(head(df))\n\n\n  x1 x2 x3 x12\n1  8  1  8   8\n2  3  7  2  21\n3  5  3  3  15\n4  3  6  2  18\n5  2  2  3   4\n6  3  8 10  24",
+    "crumbs": [
+      "Lab Four -- Programming in R"
+    ]
+  },
+  {
+    "objectID": "labs/04/Lab4WriteUp.html#part-i",
+    "href": "labs/04/Lab4WriteUp.html#part-i",
+    "title": "Lab Four – Programming in R",
+    "section": "1.10 Part i",
+    "text": "1.10 Part i\nWrite a function called calculate.score(...) that takes three arguments representing x1, x2, and x3) and returns a single value based on the formula: \\[Score = (x_1 \\times 2) + x_2 - x_3\\] Use your function to create a new column total.score in our data frame df.\nSolution:\n\n\n\nCode\ncalculate.score = function(x1,x2,x3) {\n  (x1 * 2) + x2 - x3\n}\ndf$total.score = rep(NA,nrow(df))\nfor (i in 1:nrow(df)) {\n  df[i,\"total.score\"] = calculate.score(df[i,'x1'],df[i,'x2'],df[i,'x3'])\n}\n(head(df))\n\n\n  x1 x2 x3 x12 total.score\n1  8  1  8   8           9\n2  3  7  2  21          11\n3  5  3  3  15          10\n4  3  6  2  18          10\n5  2  2  3   4           3\n6  3  8 10  24           4\n\n\n\nVectorized Solution:\n\n\n\nCode\ndf$total.score = calculate.score(df$x1,df$x2,df$x3)\nhead(df)\n\n\n  x1 x2 x3 x12 total.score\n1  8  1  8   8           9\n2  3  7  2  21          11\n3  5  3  3  15          10\n4  3  6  2  18          10\n5  2  2  3   4           3\n6  3  8 10  24           4\n\n\n Vectorized Solution (No Function)\n\n\n\nCode\ndf$total.score = (df$x1 * 2) + df$x2 - df$x3\nhead(df)\n\n\n  x1 x2 x3 x12 total.score\n1  8  1  8   8           9\n2  3  7  2  21          11\n3  5  3  3  15          10\n4  3  6  2  18          10\n5  2  2  3   4           3\n6  3  8 10  24           4",
+    "crumbs": [
+      "Lab Four -- Programming in R"
+    ]
+  },
+  {
+    "objectID": "labs/04/Lab4WriteUp.html#part-j",
+    "href": "labs/04/Lab4WriteUp.html#part-j",
+    "title": "Lab Four – Programming in R",
+    "section": "1.11 Part j",
+    "text": "1.11 Part j\nCreate a function called evaluate.row(...) that takes one argument and returns “low” when the argument is less than 4, “mid” when the argument is between 4 and 7 (inclusive), and “high” when the arguement is 8 or larger. Then, use sapply(...) to apply it to column x1.\nSolution:\n\n\n\nCode\nevaluate.row = function(val) {\n  if (val &lt; 4) {\n    return(\"low\")\n  }\n  else if (val &lt;= 7) {\n    return(\"mid\")\n  }\n  else {\n    return(\"high\")\n  }\n}\n\n(result = sapply(df$x1,evaluate.row))\n\n\n [1] \"high\" \"low\"  \"mid\"  \"low\"  \"low\"  \"low\"  \"low\"  \"low\"  \"mid\"  \"low\" \n\n\n\nIn this instance, vectorization wouldn’t immediately simplify the logic of the condition, and abstracting this step within a function seems to be the most reasonable approach.",
+    "crumbs": [
+      "Lab Four -- Programming in R"
+    ]
+  },
+  {
+    "objectID": "labs/04/Lab4WriteUp.html#part-k",
+    "href": "labs/04/Lab4WriteUp.html#part-k",
+    "title": "Lab Four – Programming in R",
+    "section": "1.12 Part k",
+    "text": "1.12 Part k\nDid we need to use loops or functions in (h.)-(j.)? That is, can we use vectorization to attain the same results in 1 line each? Where it is possible, write the line of code. Where it is not, explain why.",
+    "crumbs": [
+      "Lab Four -- Programming in R"
+    ]
+  },
+  {
+    "objectID": "labs/04/Lab4WriteUp.html#part-a-1",
+    "href": "labs/04/Lab4WriteUp.html#part-a-1",
+    "title": "Lab Four – Programming in R",
+    "section": "2.1 Part a",
+    "text": "2.1 Part a\nInstall and load the rvest package (Wickham 2025).\nSolution\n\n\n\nCode\npackages.install(\"rvest\")\n\n\n\n\n\n\nCode\nlibrary(\"rvest\")",
+    "crumbs": [
+      "Lab Four -- Programming in R"
+    ]
+  },
+  {
+    "objectID": "labs/04/Lab4WriteUp.html#part-b-2",
+    "href": "labs/04/Lab4WriteUp.html#part-b-2",
+    "title": "Lab Four – Programming in R",
+    "section": "2.2 Part b",
+    "text": "2.2 Part b\nLoad the html of the website/KimchiGrilledCheese.html using the read_html() function. We will use the Kimchi Grilled Cheese recipe as our prototype and extend this workflow to all recipes, so try to be as general as possible. If you do look at it, you’ll notice it contains the html we saw in the developer tools in class. Hint: You can use read_html(...) like read.csv(...). Don’t forget you can use the documentation to help use it.\nSolution\n\n\n\nCode\nkimchi.grilled.cheese = read_html(\"website/KimchiGrilledCheese.html\")",
+    "crumbs": [
+      "Lab Four -- Programming in R"
+    ]
+  },
+  {
+    "objectID": "labs/04/Lab4WriteUp.html#part-c-1",
+    "href": "labs/04/Lab4WriteUp.html#part-c-1",
+    "title": "Lab Four – Programming in R",
+    "section": "2.3 Part c",
+    "text": "2.3 Part c\nOpen the html file in a web browser and open developer tools. In chrome-based browsers, you can do this by pressing the three verticle dots in the upper-right corner, clicking “more tools”, then “developer tools”.\nFind the name of the Ingredients section of the website and pull the HTML of the function using html_element(...) and save the results to an object called ingredients.section.  Hint: You can ask for elements by id using a preceeding “#”. See ?html_element(...) for a helpful example.\nSolution\n\n\n\nCode\n(ingredients.section = html_element(kimchi.grilled.cheese,\"#ingredients\"))\n\n\n{html_node}\n&lt;section id=\"ingredients\" class=\"level2\"&gt;\n[1] &lt;h2 class=\"anchored\" data-anchor-id=\"ingredients\"&gt;Ingredients&lt;/h2&gt;\n[2] &lt;ul&gt;\\n&lt;li&gt;1/8 tsp chili flakes&lt;/li&gt;\\n&lt;li&gt;4 garlic cloves&lt;/li&gt;\\n&lt;li&gt;5 oz s ...",
+    "crumbs": [
+      "Lab Four -- Programming in R"
+    ]
+  },
+  {
+    "objectID": "labs/04/Lab4WriteUp.html#part-d-1",
+    "href": "labs/04/Lab4WriteUp.html#part-d-1",
+    "title": "Lab Four – Programming in R",
+    "section": "2.4 Part d",
+    "text": "2.4 Part d\nNow, we want to obtain all of the itemized items. Find the element type the individual ingredients and pull all of them from ingredients.section using html_elements(...) (note the added s) and save the results to an object called ingredients. Hint: You can ask for elements by type by simply specifying the tag (e.g., “p” for paragraph). See `?html_element for a helpful example.\nSolution\n\n\n\nCode\n(ingredients = html_elements(ingredients.section,\"li\"))\n\n\n{xml_nodeset (9)}\n[1] &lt;li&gt;1/8 tsp chili flakes&lt;/li&gt;\n[2] &lt;li&gt;4 garlic cloves&lt;/li&gt;\n[3] &lt;li&gt;5 oz spinach&lt;/li&gt;\n[4] &lt;li&gt;1 tsp gochujang&lt;/li&gt;\n[5] &lt;li&gt;3 tsp mayonnaise&lt;/li&gt;\n[6] &lt;li&gt;2/3 cup kimchi&lt;/li&gt;\n[7] &lt;li&gt;4 slices of bread&lt;/li&gt;\n[8] &lt;li&gt;2/3 cup cheddar cheese&lt;/li&gt;\n[9] &lt;li&gt;4 tablespoons everything seasoning.&lt;/li&gt;",
+    "crumbs": [
+      "Lab Four -- Programming in R"
+    ]
+  },
+  {
+    "objectID": "labs/04/Lab4WriteUp.html#part-e-1",
+    "href": "labs/04/Lab4WriteUp.html#part-e-1",
+    "title": "Lab Four – Programming in R",
+    "section": "2.5 Part e",
+    "text": "2.5 Part e\nSimilar to Part c. Find the name of the Instructions section of the website and pull the HTML of the function using html_element(...) and save the results to an object called instructions.section.\nSolution\n\n\n\nCode\n(instructions.section = html_element(kimchi.grilled.cheese, \"#instructions\"))\n\n\n{html_node}\n&lt;section id=\"instructions\" class=\"level2\"&gt;\n[1] &lt;h2 class=\"anchored\" data-anchor-id=\"instructions\"&gt;Instructions&lt;/h2&gt;\n[2] &lt;ol type=\"1\"&gt;\\n&lt;li&gt;In a frying pan, heat 2 tablespoons olive oil with chi ...",
+    "crumbs": [
+      "Lab Four -- Programming in R"
+    ]
+  },
+  {
+    "objectID": "labs/04/Lab4WriteUp.html#part-f-1",
+    "href": "labs/04/Lab4WriteUp.html#part-f-1",
+    "title": "Lab Four – Programming in R",
+    "section": "2.6 Part f",
+    "text": "2.6 Part f\nNow, we want to obtain all of the enumerated items. Find the element type the individual instructions and pull all of them from instructions.section using html_elements(...) (note the added s) and save the results to an object called instructions.\nSolution\n\n\n\nCode\n(instructions = html_elements(instructions.section, \"li\"))\n\n\n{xml_nodeset (5)}\n[1] &lt;li&gt;In a frying pan, heat 2 tablespoons olive oil with chili flakes.&lt;/li&gt;\n[2] &lt;li&gt;Add spinach and cook until wilted.&lt;/li&gt;\n[3] &lt;li&gt;Mix gochujang and mayonnaise in a small bowl and spread on one side o ...\n[4] &lt;li&gt;Build sandwiches by layering spinach, kimchi, and cheese between two  ...\n[5] &lt;li&gt;Fry in butter until golden brown on both sides.&lt;/li&gt;",
+    "crumbs": [
+      "Lab Four -- Programming in R"
+    ]
+  },
+  {
+    "objectID": "labs/04/Lab4WriteUp.html#part-g-1",
+    "href": "labs/04/Lab4WriteUp.html#part-g-1",
+    "title": "Lab Four – Programming in R",
+    "section": "2.7 Part g",
+    "text": "2.7 Part g\nFind the class of the recipe image and pull the HTML using html_element(...) and save the results to an object called image.element.  Hint: You can ask for elements by class using a preceeding “.”. See ?html_element(...) for a helpful example. Further, note that HTML elements may have more than one class (separated by a space). When that is the case, you need to choose one.\nSolution\n\n\n\nCode\n(image = html_element(kimchi.grilled.cheese,\".img-fluid\"))\n\n\n{html_node}\n&lt;img src=\"images/KimchiGrilledCheese.jpg\" class=\"img-fluid figure-img\"&gt;",
+    "crumbs": [
+      "Lab Four -- Programming in R"
+    ]
+  },
+  {
+    "objectID": "labs/04/Lab4WriteUp.html#part-h-1",
+    "href": "labs/04/Lab4WriteUp.html#part-h-1",
+    "title": "Lab Four – Programming in R",
+    "section": "2.8 Part h",
+    "text": "2.8 Part h\nUse the html_attr(...) function to pull the source link (“src”). Then, use paste(...) to prepend the source link with “website/” so we have the full link. Note: This would be like adding “https://www.website.com” to get the absolute link.\nSolution\n\n\n\nCode\n(link = html_attr(image,\"src\"))\n\n\n[1] \"images/KimchiGrilledCheese.jpg\"\n\n\nCode\n(image.url = paste(\"website/\",link,sep=\"\"))\n\n\n[1] \"website/images/KimchiGrilledCheese.jpg\"",
+    "crumbs": [
+      "Lab Four -- Programming in R"
+    ]
+  },
+  {
+    "objectID": "labs/04/Lab4WriteUp.html#part-i-1",
+    "href": "labs/04/Lab4WriteUp.html#part-i-1",
+    "title": "Lab Four – Programming in R",
+    "section": "2.9 Part i",
+    "text": "2.9 Part i\nNow that we have all the things we need, let’s try to print the recipe. Below, I have written code to print from the objects. One by one, remove #| eval: false from the YAML header and add #| echo: false and #| results: 'asis', and test. Let me know if you’re stuck!\nImage\n\n[1] “website/images/KimchiGrilledCheese.jpg” \n\nIngredients\n\n\n1/8 tsp chili flakes\n4 garlic cloves\n5 oz spinach\n1 tsp gochujang\n3 tsp mayonnaise\n2/3 cup kimchi\n4 slices of bread\n2/3 cup cheddar cheese\n4 tablespoons everything seasoning.\n\n\nInstructions\n\n\nIn a frying pan, heat 2 tablespoons olive oil with chili flakes.\nAdd spinach and cook until wilted.\nMix gochujang and mayonnaise in a small bowl and spread on one side of each slice of bread. Sprinkle with everything seasoning and press it into the bread.\nBuild sandwiches by layering spinach, kimchi, and cheese between two slices of bread.\nFry in butter until golden brown on both sides.",
+    "crumbs": [
+      "Lab Four -- Programming in R"
+    ]
+  },
+  {
+    "objectID": "labs/04/Lab4WriteUp.html#why-a-fake-website",
+    "href": "labs/04/Lab4WriteUp.html#why-a-fake-website",
+    "title": "Lab Four – Programming in R",
+    "section": "4.1 Why a fake website?",
+    "text": "4.1 Why a fake website?\nRead https://www.scrapingbee.com/blog/is-web-scraping-legal/. Originally, I conceived doing this with recipes from Purple Carrot (my favorite subscription service). Being a large company, their terms of service are very long and precluded us from copying their recipes. We also checked a few smaller recipe websites we like and even they had terms of service that restricted automated collection of data.",
+    "crumbs": [
+      "Lab Four -- Programming in R"
+    ]
+  },
+  {
+    "objectID": "labs/04/Lab4WriteUp.html#conditionals",
+    "href": "labs/04/Lab4WriteUp.html#conditionals",
+    "title": "Lab Four – Programming in R",
+    "section": "4.2 Conditionals",
+    "text": "4.2 Conditionals\nDid you use conditional statements in your code? If yes, how. If not, are there places you could have used them but did something else?\nSolution\nI used one conditional statement. When I was working on generalizing the recipe numbering, I realized I was going to run into trouble if I had to expand on the english numbers by hand. So I decided to use the library english (no citation listed on CRAN, but credit to John Fox, Bill Venables, Anthony Damico, and Pier Salverdi). I also realized that I shouldn’t be numbering the items if there’s only a single one in the category (one breakfast item), so my conditional statement simply checked whether to omit the numbering.",
+    "crumbs": [
+      "Lab Four -- Programming in R"
+    ]
+  },
+  {
+    "objectID": "labs/04/Lab4WriteUp.html#loops",
+    "href": "labs/04/Lab4WriteUp.html#loops",
+    "title": "Lab Four – Programming in R",
+    "section": "4.3 Loops",
+    "text": "4.3 Loops\nDid you use loops in your code? If yes, how. If not, are there places you could have used them but did something else?\nSolution\nI used a for loop for my master display.recipes function and within my logic for printing the ingredient list. I think to avoid using any looping I would have had to store my recipes and ingredients a single, different data structure. My solutions were not reliant ony any vectorization, which suggests that there were significant opportunities to make it more “R native” that I didn’t see how to cleanly implement.",
+    "crumbs": [
+      "Lab Four -- Programming in R"
+    ]
+  },
+  {
+    "objectID": "labs/04/Lab4WriteUp.html#functions",
+    "href": "labs/04/Lab4WriteUp.html#functions",
+    "title": "Lab Four – Programming in R",
+    "section": "4.4 Functions",
+    "text": "4.4 Functions\nDid you use functions in your code? If yes, how. If not, are there places you could have used them but did something else?\nSolution\nMy final solution had 3 functions, display.recipes, display.recipe, and load.recipe. The printing logic for the ingredient list could have been placed within a function, but since there’s no repetition of the logic, it did not seem necessary. In earlier drafts I additionally separated out some of the html handling to tiny helper functions, but I decided that the benefits in readability from maximal functional decomposition were less than the cons of more code (largely due to whitespace).",
+    "crumbs": [
+      "Lab Four -- Programming in R"
+    ]
+  }
+]

@@ -1,13 +1,23 @@
 project:
   type: website
+  output-dir: docs
 
 website:
-  title: "dummy"
-  navbar:
-    left:
+  title: "Portfolio"
+  sidebar:
+    style: "docked"
+    search: false
+    contents:
       - href: index.qmd
         text: Home
-      - about.qmd
+      - labs/02/Lab2WriteUp.qmd
+      - labs/03/Lab3WriteUp.qmd
+      - labs/04/Lab4WriteUp.qmd
+      - labs/05/Lab5WriteUp.qmd
+      - labs/08/Lab8WriteUp.qmd
+      - labs/10/Lab10WriteUp.qmd
+      - labs/11/Lab11WriteUp.qmd
+      
 
 format:
   html:
@@ -17,5 +27,7 @@ format:
     css: styles.css
     toc: true
 
+execute:
+  freeze: auto
 
 

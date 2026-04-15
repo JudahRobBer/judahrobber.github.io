@@ -1,7 +1,15 @@
 ---
-title: "dummy"
+title: "Judah Robbins Bernal"
+about:
+  template: solana
+  image: profile.jpg
+  links:
+    - icon: linkedin
+      text: Linkedin
+      href: https://www.linkedin.com/in/judahrobbinsbernal/
+    - icon: github
+      text: Github
+      href: https://github.com/JudahRobBer
 ---
 
-This is a Quarto website.
-
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+Thanks for stopping by! You stumbled onto my github pages website, which right now is acting as a small portfolio for some of the statistics coursework that I've completed at Colgate. In the near future this page will have more information about the rest of my academic and professional work. I hope to see you then!
