@@ -85,28 +85,38 @@ install.packages("esquisse")
 
 ## Part b
 Load the `esquisse` package for `R`. Report the code below. It does not matter whether you set "\#| eval: false" because loading the package does not add a lot of time. Note you will not evaluate any code that uses the `esquisse` package, so there is no need to load it as you compile your Quarto document.
+
+**Solution**
 ```{r}
 library("esquisse")
 ```
 
 ## Part c
 How can you ask for help about the  `esquisse` package for `R`? Report the code below, ensuring to set the `eval` option to `false`, using "\#| eval: false", so that the help document isn't loaded every time you compile your Quarto document.
+
+**Solution**
 ```{r}
 help(esquisse)
 ```
 
 ## Part d
 Is a demo or vignette available for the  `esquisse` package for `R`? Report the code below, ensuring to set the `eval` option to `false`, using "\#| eval: false", so that the you don't get errors when you compile your Quarto document.
+
+**Solution**
 ```{r}
 #| eval: false
-demo("esquisse")
-vignette("esquisse")
+vignette(package="esquisse")
+demo(package="esquisse")
 ```
-Unfortunately, neither exist.
+
+There are two vignettes available, but no demos.
+
 
 ## Part e
 Add the BibTeX citation for `esquisse` package for `R` to your `.bib` file and cite it in a sentence describing what the package does below. Note you can reference a citation named `esquisse` using "[@\hspace{-0em}esquisse]".
 
+
+**Solution**
 Esquisse [@esquisse] is a useful tool for making ggplot2 [@ggplot2] figures interactive!
 
 ## Part f
@@ -115,6 +125,8 @@ Run `esquisser()` in your console -- not in a chunk of `R` code in your Quarto d
 i. Select `palmerpenguins` from the "Select an environment in which to search:" dropdown. This should automatically select `penguins` in the "Select a data.frame:" dropdown. Click "Import Data".
 ii. Drag `body_mass_g` to the X box and `species` to the fill box. 
 iii. Describe what you see in words. What can you conclude about Adelie, Chinstrap, and Gentoo penguins based on the resulting plot? 
+
+**Solution**
 
 From the generated histogram, it is clear that Genloo Penguins tend to have a larger body mass than both Chinstrap and Adele Penguins. Because the right tail of the Adele and Chisntrap distribution is cut off by the Gentoo, by looking at a box plot we further see that Chinstrap and Adele have the same median body mass with a highly similar range (including outliers). By excluding outliers or by considering quartiles, Adelle penguins seem to have a slightly greater variation than Chinstrap w.r.t body mass. Gentoo penguins display the greatest variation in body mass as measured by both range and quartiles as shown in the box plot.
 
@@ -172,6 +184,8 @@ where $F_0=0$ and $F_1=1$.
 
 Create a vector of the first 10 Fibonacci numbers.
 
+**Solution**
+
 ```{r}
 (fib_nums = c(0,1,1,2,3,5,8,13,21,34))
 ```
@@ -184,8 +198,9 @@ $$F_n = \frac{n(n+1)}{2}.$$
 
 Create a vector of the first 10 Triangular Numbers. 
 
+**Solution**
 ```{r}
-(trianguler_nums = c(1,3,6,10,15,21,28,36,45,55))
+(trianguler_nums = (1:10 * (1:10 + 1)) / 2)
 ```
 
 Trianguler numbers have the same problem as fibonacci numbers, the sequence is not an arithmetic progression.
@@ -198,6 +213,8 @@ Consider setting up data entry for this experiment.
 i. Create a vector containing each `ID` repeated three times, once for each treatment.
 ii. Create a vector containing each `Treatment` repeated for each participant ID.
 
+**Solution**
+
 ```{r}
 (ids = rep(seq(from=1,to=10,by=1),each=3))
 (treatments = rep(c("Control","Treatment A", "Treatment B"), times = 10))
@@ -207,6 +224,13 @@ Using `times` rather than `each` as the selected parameter for the function call
 
 ## Part d
 Create a vector containing the `character` "MATH" and the `numeric` 240. What is the resulting class? Explain why in a sentence.
+
+**Solution**
+
+```{r}
+vec  = c("MATH",240)
+(class(vec))
+```
 
 The resulting class is `character`. R forces class consistency within a vector, and thus interprets every object in the vector into the most flexible class. Any string of characters can be a `character`, but only some strings are meaningfully interpreted as rational numbers (`numeric`).
 
