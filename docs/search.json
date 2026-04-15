@@ -10,6 +10,136 @@
     ]
   },
   {
+    "objectID": "labs/10/Lab10WriteUp.html",
+    "href": "labs/10/Lab10WriteUp.html",
+    "title": "Lab Ten – Point Estimation",
+    "section": "",
+    "text": "Tips",
+    "crumbs": [
+      "Lab Ten -- Point Estimation"
+    ]
+  },
+  {
+    "objectID": "labs/10/Lab10WriteUp.html#althams-multiplicative-binomial-distribution",
+    "href": "labs/10/Lab10WriteUp.html#althams-multiplicative-binomial-distribution",
+    "title": "Lab Ten – Point Estimation",
+    "section": "1.1 Altham’s Multiplicative Binomial Distribution",
+    "text": "1.1 Altham’s Multiplicative Binomial Distribution\nThe PMF for Altham’s Multiplicative Binomial Distribution is \\[f_X(x) = \\frac{1}{c} {n \\choose x} p^x (1-p)^{n-x} \\theta^{x(n-x)}I(x \\in \\{0, 1, ..., n\\})\\] where \\[c = \\sum_{i=0}^n {n \\choose i} p^i (1-p)^{n-i} \\theta^{i(n-i)}.\\] Just so we start on the same page, I have included my R function for computing probability using this distribution.\n\n\n\nCode\ndaltbinom &lt;- function(x, size, prob, theta){\n  normalizing.constant &lt;- 0\n  for(j in 0:size){\n    normalizing.constant &lt;- normalizing.constant + \n      choose(size, j) * prob^j * (1-prob)^(size-j) * theta^(j*(size-j))\n  }\n  # Probability Mass at x=x\n  (1/normalizing.constant) *\n    choose(size, x) * prob^x * (1-prob)^(size-x) * theta^(x*(size-x)) *\n      (x&gt;=0)*(x&lt;=size)\n}",
+    "crumbs": [
+      "Lab Ten -- Point Estimation"
+    ]
+  },
+  {
+    "objectID": "labs/10/Lab10WriteUp.html#part-a",
+    "href": "labs/10/Lab10WriteUp.html#part-a",
+    "title": "Lab Ten – Point Estimation",
+    "section": "3.1 Part a",
+    "text": "3.1 Part a\nSuppose a player has a 50% chance of winning a specific leg, that is let \\(p=0.50\\). Let’s look at the probability they win (\\(x=6\\)) legs in the match. Compute this probability over a sequence from \\(\\theta=0.5\\) to \\(\\theta=1.5\\) and plot it using a line where the \\(x\\)-axis is \\(\\theta\\) and the \\(y\\)-axis is \\(P(X=6)\\).\nSolution\n\n\n\n# A tibble: 16 × 2\n   theta     prob\n   &lt;dbl&gt;    &lt;dbl&gt;\n 1   0   0       \n 2   0.1 2.31e-28\n 3   0.2 2.48e-19\n 4   0.3 4.76e-14\n 5   0.4 2.66e-10\n 6   0.5 2.13e- 7\n 7   0.6 4.76e- 5\n 8   0.7 3.57e- 3\n 9   0.8 5.54e- 2\n10   0.9 1.55e- 1\n11   1   2.26e- 1\n12   1.1 2.73e- 1\n13   1.2 3.07e- 1\n14   1.3 3.33e- 1\n15   1.4 3.54e- 1\n16   1.5 3.70e- 1\n\n\n\n\n\nFigure 1: Win Probability by Theta",
+    "crumbs": [
+      "Lab Ten -- Point Estimation"
+    ]
+  },
+  {
+    "objectID": "labs/10/Lab10WriteUp.html#part-b",
+    "href": "labs/10/Lab10WriteUp.html#part-b",
+    "title": "Lab Ten – Point Estimation",
+    "section": "3.2 Part b",
+    "text": "3.2 Part b\nNow, plot Altham’s Multiplicative Binomial Distribution under the same parameters with \\(\\theta=0.50\\), \\(\\theta=1\\), and \\(\\theta=1.5\\). Use ncol=1 in facet_wrap() to plot the PMFs in a single column for comparing.\nSolution\n\n\n\n\n\n\nFigure 2: Altham’s Multiplicative Binomial PMF with n = 11",
+    "crumbs": [
+      "Lab Ten -- Point Estimation"
+    ]
+  },
+  {
+    "objectID": "labs/10/Lab10WriteUp.html#part-c",
+    "href": "labs/10/Lab10WriteUp.html#part-c",
+    "title": "Lab Ten – Point Estimation",
+    "section": "3.3 Part c",
+    "text": "3.3 Part c\nWhat is your best assessment of what \\(\\theta\\) is doing in this setting. Consider when a 6-0 blowout is most likely, and when a 5-6 nail-biter is most likely. Note here we should treat the match as a fixed \\(n=11\\) as we did for \\(n=3\\) in Lab 8.\nNote: In lab 8, we saw that small \\(\\theta\\) meant wins came in bunches (clumped together), so there were more 2-0 wins in a best of three series.\nSolution\nTheta seems to affect the weight of the tails of the distribution. As theta increases, the tail weight decreases as probability mass shift towards the mean. As the mass shift towards the mean, it’s more likely for both teams to win at least some games. Taking the note as a suggestion, we’d expect the \\(6-0\\) blowout to be an example of the “bunches” of wins that were observed with a small theta in lab \\(8\\).",
+    "crumbs": [
+      "Lab Ten -- Point Estimation"
+    ]
+  },
+  {
+    "objectID": "labs/10/Lab10WriteUp.html#part-a-1",
+    "href": "labs/10/Lab10WriteUp.html#part-a-1",
+    "title": "Lab Ten – Point Estimation",
+    "section": "4.1 Part a",
+    "text": "4.1 Part a\nAltham’s Multiplicative Binomial Distribution does not typically simplify to the clean \\(E(X)=np\\) seen in the Binomial distribution, unless \\(\\theta = 1\\). Write out the expression that would need to be solved to find \\(E(X^k)\\), and then write a function that computes it given the proposed parameter values \\(p\\) (prob) and \\(\\theta\\) (theta).\nSolution\n\\(E(X^k) =\\sum_{x=0}^{n}x^k*f_X(x) =\\sum_{x=0}^{n}x^k*\\frac{1}{c} {n \\choose x} p^x (1-p)^{n-x} \\theta^{x(n-x)}\\)\n\n\n\nCode\nmoment = function(k,n,p,theta) {\n  sum = 0\n  for (x in 0:n) {\n    sum = sum + ((x^k) * daltbinom(x,n,p,theta)) \n  }\n  sum\n}",
+    "crumbs": [
+      "Lab Ten -- Point Estimation"
+    ]
+  },
+  {
+    "objectID": "labs/10/Lab10WriteUp.html#part-b-1",
+    "href": "labs/10/Lab10WriteUp.html#part-b-1",
+    "title": "Lab Ten – Point Estimation",
+    "section": "4.2 Part b",
+    "text": "4.2 Part b\nDescribe how you can use your answer to part a to find Method of Moments estimates for the parameters \\(p\\) and \\(\\theta\\) for Altham’s Multiplicative Binomial Distribution based on data.\nSolution\nSince the distribution has two paramaters, our MOM solution would require us to equate \\(E(X)=\\overline{x}\\) and \\(E(X^2) = \\overline{x^2}\\). We can already compute \\(E(X)\\) and \\(E(X^2)\\) with our previously defined function, and we can calculate \\(\\overline{x^k} = \\frac{1}{n}\\sum_{i=1}^{n}x_i^k\\)",
+    "crumbs": [
+      "Lab Ten -- Point Estimation"
+    ]
+  },
+  {
+    "objectID": "labs/10/Lab10WriteUp.html#part-c-1",
+    "href": "labs/10/Lab10WriteUp.html#part-c-1",
+    "title": "Lab Ten – Point Estimation",
+    "section": "4.3 Part c",
+    "text": "4.3 Part c\nWrite a function that computes the log-likelihood for Altham’s Multiplicative Binomial Distribution, given data (x) and proposed parameter values \\(p\\) (prob) and \\(\\theta\\) (theta).\nSolution\n\n\n\nCode\nll.altbiom = function(par,data,neg=F) {\n  p = 1 / (1 + exp(-1*par[1]))\n  theta = exp(par[2])\n  ll = sum(log(daltbinom(x=data,size=11,prob=p,theta=theta)))\n  ifelse(neg,-ll,ll)\n}",
+    "crumbs": [
+      "Lab Ten -- Point Estimation"
+    ]
+  },
+  {
+    "objectID": "labs/10/Lab10WriteUp.html#part-d",
+    "href": "labs/10/Lab10WriteUp.html#part-d",
+    "title": "Lab Ten – Point Estimation",
+    "section": "4.4 Part d",
+    "text": "4.4 Part d\nDescribe how you can use your answer to part c to find Maximum Likelihood estimates for the parameters \\(p\\) and \\(\\theta\\) for Altham’s Multiplicative Binomial Distribution based on data.\nSolution\nGiven a dataset, we can use built in optimizer functionality in R using the optim function to minimize a given function over a provided dataset. Because the optimizer function optim minimizes a function, we take the negative of the provided function. minimizing the negated function is equivalent to maximizing the likelihood function.",
+    "crumbs": [
+      "Lab Ten -- Point Estimation"
+    ]
+  },
+  {
+    "objectID": "labs/10/Lab10WriteUp.html#summarize-the-2024-data",
+    "href": "labs/10/Lab10WriteUp.html#summarize-the-2024-data",
+    "title": "Lab Ten – Point Estimation",
+    "section": "5.1 Summarize the 2024 Data",
+    "text": "5.1 Summarize the 2024 Data\nIn pdc2024.csv, I have provided the data for the 2024 Premier League season. There are a few data cleaning steps to consider.\n\nRemove any matches with no Score (e.g., a bye or walkover)\nNights 1 through 16 are best of 11 (first to 6), but the playoffs are extended. For consistency, keep nights 1 through 16 only.\nMake two columns WinnerLegs and LoserLegs that keep track of the number of legs each player has won\n\nSummarize the data. What do the data tell us about the breakdown of the results?\nSolution\n\n\n\n\n\n\n\n\nFigure 3: Distribution of game length\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 4: Count of Games Won by Player\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTable 1: Leg Spread By Player\n\n\n\n\n\n\nplayer\nTotal Won\nTotal Lost\nLeg Spread\n\n\n\n\nPeter Wright\n61\n104\n-43\n\n\nGerwyn Price\n95\n116\n-21\n\n\nRob Cross\n115\n130\n-15\n\n\nMichael Smith\n150\n150\n0\n\n\nMichael van Gerwen\n135\n135\n0\n\n\nNathan Aspinall\n143\n139\n4\n\n\nLuke Humphries\n169\n132\n37\n\n\nLuke Littler\n193\n155\n38\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 5: Leg Spread By Player",
+    "crumbs": [
+      "Lab Ten -- Point Estimation"
+    ]
+  },
+  {
+    "objectID": "labs/10/Lab10WriteUp.html#althams-multiplicative-binomial-distribution-1",
+    "href": "labs/10/Lab10WriteUp.html#althams-multiplicative-binomial-distribution-1",
+    "title": "Lab Ten – Point Estimation",
+    "section": "5.2 Altham’s Multiplicative Binomial Distribution",
+    "text": "5.2 Altham’s Multiplicative Binomial Distribution\nFor each player in the 2024 season, use the number of legs won in each match to compute maximium likelihood estimates for \\(p\\) and \\(\\theta\\).\nNote: The “for each” here can be done more efficiently with a function or a loop!\n\nCreate a vector containing the number of legs won by the player. Note sometimes you will need to pull from winner’s legs and sometimes from the loser’s legs.\nFind the MLE for the player using this data. Ensure to report \\(p\\) and \\(\\theta\\) for each player in a nicely formatted table.\nNote: In Lecture on Monday, we used transformations to restrict how optim() searches the parameter space. For example, here, you might consider p &lt;- 1/(1+exp(-par[1])) and theta &lt;- exp(par[2]).\nMake comments about the MLEs in the context of the standings.\n\nSolution\n\n\n\n\n\n\n\nTable 2: MLE Estimation for Altham’s Multi Binomial by Player\n\n\n\n\n\n\nplayer\ntheta\np\nrank\n\n\n\n\nLuke Littler\n1.32\n0.47\n1\n\n\nLuke Humphries\n1.20\n0.46\n2\n\n\nMichael van Gerwen\n1.02\n0.43\n3\n\n\nMichael Smith\n1.05\n0.43\n4\n\n\nNathan Aspinall\n1.19\n0.40\n5\n\n\nRob Cross\n1.01\n0.40\n6\n\n\nGerwyn Price\n1.02\n0.38\n7\n\n\nPeter Wright\n0.99\n0.32\n8\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTable 3: Correlation of p and theta estimates with rank for Altham’s Multi. Binomial\n\n\n\n\n\n\nrank_theta_cor\nrank_p_cor\n\n\n\n\n-0.76\n-0.95\n\n\n\n\n\n\n\n\n\nAs seen in Table 2, the estimated single game win probability is monotonically decreasing with rank, consistent with the idea that a player who is more likely to win a random game can be broadly expected to perform better overall, this is supported by the correlation of \\(-.95\\) shown in Table 3. The relationshop betweeen rank and theta isn’t as clear, but there is a also large negative correlation between rank and theta. Given the limited number of datapoints, correlation analysis has only limited utility.",
+    "crumbs": [
+      "Lab Ten -- Point Estimation"
+    ]
+  },
+  {
+    "objectID": "labs/10/Lab10WriteUp.html#althams-multiplicative-beta-binomial-distribution-1",
+    "href": "labs/10/Lab10WriteUp.html#althams-multiplicative-beta-binomial-distribution-1",
+    "title": "Lab Ten – Point Estimation",
+    "section": "5.3 Altham’s Multiplicative Beta Binomial Distribution",
+    "text": "5.3 Altham’s Multiplicative Beta Binomial Distribution\nFor each player in the 2024 season, use the number of legs won in each match to compute maxmium likelihood estimates for \\(p\\) and \\(\\theta\\).\nNote: The “for each” here can be done more efficiently with a function or a loop!\n\nCreate a vector containing the number of legs won by the player. Note sometimes you will need to pull from winner’s legs and sometimes from the loser’s legs.\nFind the MLEs for the player using this data. Ensure to report \\(\\alpha\\), \\(\\beta\\), and \\(\\theta\\) for each player in a nicely formatted table.\nNote 1: Due to the computational complexity of integrate(), you should compute the logged probability for 0:6 once and add them according to the data in each player’s vector. Note 2: In Lecture on Monday, we used transformations to restrict how optim() searches the parameter space.\nPlot the underlying Beta(\\(\\alpha\\), \\(\\beta\\)) distribution for each player.\nNote: Add the mean and variance of the Beta to the table of MLEs. Recall \\[\\begin{align*}\nE(X)   &= \\frac{\\alpha}{\\alpha+\\beta}\\\\\nsd(X) &= \\sqrt{\\frac{\\alpha\\beta}{(\\alpha+\\beta)^2(\\alpha+\\beta+1)}}\n\\end{align*}\\]\nMake comments about the MLEs in the context of the standings.\nNote: The players alternate who throws first in a leg has the mathematical “head start” to reach a finish before their opponent can take another turn. Players alternate who throws first with each leg.\n\nSolution\n\n\n\n\n\n\n\nTable 4: MLE Estimation for Altham’s Multiplicative Beta Binomial by Player\n\n\n\n\n\n\nplayer\ntheta\nalpha\nbeta\nrank\nbeta_mean\nbeta_var\n\n\n\n\nLuke Littler\n3.37\n0.62\n0.82\n1\n0.43\n0.10\n\n\nLuke Humphries\n6.39\n0.33\n0.49\n2\n0.40\n0.13\n\n\nMichael van Gerwen\n5.01\n0.22\n0.45\n3\n0.33\n0.13\n\n\nMichael Smith\n3.46\n0.31\n0.65\n4\n0.32\n0.11\n\n\nNathan Aspinall\n1.48\n2.55\n4.47\n5\n0.36\n0.03\n\n\nRob Cross\n3.26\n0.26\n0.79\n6\n0.25\n0.09\n\n\nGerwyn Price\n1.76\n0.61\n1.83\n7\n0.25\n0.05\n\n\nPeter Wright\n1.22\n1.75\n7.20\n8\n0.20\n0.02\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTable 5: Correlation of alpha, beta, and theta estimates with rank for Altham’s Multi. Beta Binomial\n\n\n\n\n\n\nrank_theta_cor\nrank_alpha_cor\nrank_beta_cor\n\n\n\n\n-0.74\n0.4\n0.67\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 6: MLE Beta Distribution by Player\n\n\n\n\n\n\n\n\n\nOur MLE estimates for Altham’s Multiplicative Beta Binomial show two distinct categories for the underlying beta distribution. As seen in Figure 6, when beta and alpha were both greater than \\(1\\), the PDF had a right skewed unimodal distribution. However when beta and alpha were less than one, the PDF took on a U-shape, with density concentrated near 0 and 1. in Table 5 we see a weak positive correlation between both alpha and rank and beta and rank, and a negative correlation between rank and theta, consistent with the results from Table 3.",
+    "crumbs": [
+      "Lab Ten -- Point Estimation"
+    ]
+  },
+  {
+    "objectID": "labs/10/Lab10WriteUp.html#executive-summary",
+    "href": "labs/10/Lab10WriteUp.html#executive-summary",
+    "title": "Lab Ten – Point Estimation",
+    "section": "5.4 Executive Summary",
+    "text": "5.4 Executive Summary\nSummarize the work you’ve done here to provide a brief (200-300 word) data-driven summary of the 2024 Premier League season using your work in Lab 10. Your summary should be professional, clear, and all claims should be corroborated with statistical support.\nSolution\nIn the following statistical summary of the Professional Dart’s Premier League 2024 season we analyze player performance through both preliminary summary statistics and by fitting both Altham’s Multiplicative Binomial Distribution and Altham’s Multiplicative Beta Binomial Distribution by player to analyze how player performance correlates with model parameters. We performed this MLE estimation using the number of legs won in each match by player, since each leg maps onto a ‘success’ in our chosen modifications of the standard binomial distribution. Our analysis aims to shed light on both the utility and nuances of parametric modeling through a small case study.\nFirstly, the original dataset includes all matches from the 2024 season tournament, to fix match lengthes, we excluded the finals and any walkovers from our data. Our preliminary analysis in Figure 3 showed that game length was left skewed, thus matches tended to be more even, as we would expected in a competition between similarly elite players. On the player level, we show in Figure 5 that the total leg spread is associated with ranking, but that a more positive spread doesn’t guarantee a higher rank. For instance, although Nathan Aspinall had a positive spread of \\(4\\), he was lower ranked than both Michaels.\nIn our parametric analysis, we first analyzed Altham’s multiplicative binomial distribution, parametrized by \\(\\theta\\) and \\(p\\), where \\(p\\) corresponds to the probability of a single success, and theta is akin to a bunching parameter, where a smaller \\(\\theta\\) roughly equates more successsive successes. Our analysis in Table 3 found a negative correlation between both rank and \\(\\theta\\) and rank and \\(p\\). With respect to \\(p\\), this finding is clearly intuitive, as the rank increases (worse performance), the our estimated probability of winning a single match decreases. In other words, worse players tend to be lower ranked. We also observed a weaker negative correlation between theta and rank, which can be interpreted to show that worse players tend to have relatively more hotstreaks, but since they win less in the first place, this results in worse overall performance.\nFinally, our analysis of Altham’s multiplicative beta binomial distribution replaces a fixed \\(p\\) parameter with an underlying beta distribution parametrized by \\(\\alpha\\) and \\(\\beta\\). In fitting this model, in Table 5 we again observed a negative correlation between rank and theta, consistent with the previous distribution. We also observed a weakly positive correlation between rank and both \\(\\alpha\\) and \\(\\beta\\). One important limitation for all of our correlation analysis is our very small sample size of players. Because of the nature of the beta distribution, since all but two players had both \\(\\alpha\\) and \\(\\beta\\) less than 1, in Figure 6, we show that the majority of players had a heavily weighted tail distribution, resulting in a U shaped PDF. This shape complicates our interpretation of the underlying beta distribution as the distribution of individual success probability, since we would not expect the underlying win probability of any player to be very close to 0 or 1.",
+    "crumbs": [
+      "Lab Ten -- Point Estimation"
+    ]
+  },
+  {
     "objectID": "labs/02/Lab2WriteUp.html#part-a",
     "href": "labs/02/Lab2WriteUp.html#part-a",
     "title": "Lab Two – Basic Tasks in R",
@@ -577,6 +707,246 @@
     "text": "4.4 Functions\nDid you use functions in your code? If yes, how. If not, are there places you could have used them but did something else?\nSolution\nMy final solution had 3 functions, display.recipes, display.recipe, and load.recipe. The printing logic for the ingredient list could have been placed within a function, but since there’s no repetition of the logic, it did not seem necessary. In earlier drafts I additionally separated out some of the html handling to tiny helper functions, but I decided that the benefits in readability from maximal functional decomposition were less than the cons of more code (largely due to whitespace).",
     "crumbs": [
       "Lab Four -- Programming in R"
+    ]
+  },
+  {
+    "objectID": "labs/05/Lab5WriteUp.html",
+    "href": "labs/05/Lab5WriteUp.html",
+    "title": "Lab Five-Six – Data Wrangling in R",
+    "section": "",
+    "text": "Tips\nTimeline",
+    "crumbs": [
+      "Lab Five-Six -- Data Wrangling in R"
+    ]
+  },
+  {
+    "objectID": "labs/05/Lab5WriteUp.html#data-wrangling",
+    "href": "labs/05/Lab5WriteUp.html#data-wrangling",
+    "title": "Lab Five-Six – Data Wrangling in R",
+    "section": "1.1 Data Wrangling",
+    "text": "1.1 Data Wrangling\n\n1.1.1 Part A\nGo to the website and download the source data https://www.nature.com/articles/s41467-025-68063-y#Sec30.\nDescribe the process – do not leave out any steps – for how you can load the data for Figures 3b and 3d from the manuscript into R.\nSolution\nFirst, locate the source data within the nature article linked at Source Data. From the provided excel document, save the excel sheet Fig. 3B to a separate excel document. Within this document, first delete the empty top row, and the Primary and THP1 cells. Next, cut and paste the entire data contents of the two right columns below the last entry on the left columns. After this, the data should be loaded into a csv file with two columns, I renamed the column headers to be sample and count respectively.\nHint: You can use packages like readxl (Wickham and Bryan 2025) but you will find it substantially easier to open the .xls file using your computer’s spreadsheet software and create a new .csv file with the data you need.\n\n\n1.1.2 Part B\nThe data need to be cleaned. Note that the sample type (Healthy Donor or THP-1), cell type (Monocytes or Macrophages), and treatment (12 Hours Post-Infection or Uninfected) are all recorded in one column sample, separated with underscores. Use separate(...) from the tidyverse package to separate the sample column into the SampleType, CellType, Treatment columns. Save the object as dat.kitsberg.cleaned.\nSolution\n\n\n\nCode\ndat.kitsberg = read_csv(\"fig3b.csv\")\ndat.kitsberg.cleaned = dat.kitsberg |&gt; \n  separate_wider_delim(\"sample\",\"_\",names=c(\"SampleType\",\"CellType\",\"Treatment\"))\nhead(dat.kitsberg.cleaned)\n\n\n# A tibble: 6 × 4\n  SampleType CellType Treatment  count\n  &lt;chr&gt;      &lt;chr&gt;    &lt;chr&gt;      &lt;dbl&gt;\n1 primary    mono     uninfected     0\n2 primary    mono     uninfected     0\n3 primary    mono     uninfected     0\n4 primary    mono     uninfected     0\n5 primary    mono     uninfected     0\n6 primary    mono     uninfected     0\n\n\n\nHint: Use ?separate(...) to see how it works.\n\n\n1.1.3 Part C\nThe researchers are only interested in observations in the treatment group (12hpi). Remove uninfected samples from the data. Update dat.kitsberg.cleaned with the result.\nSolution\n\n\n\nCode\ndat.kitsberg.cleaned = dat.kitsberg.cleaned |&gt;\n  filter(Treatment != \"uninfected\")\n\nhead(dat.kitsberg.cleaned)\n\n\n# A tibble: 6 × 4\n  SampleType CellType Treatment count\n  &lt;chr&gt;      &lt;chr&gt;    &lt;chr&gt;     &lt;dbl&gt;\n1 primary    mono     12hpi         0\n2 primary    mono     12hpi         0\n3 primary    mono     12hpi         0\n4 primary    mono     12hpi         0\n5 primary    mono     12hpi         0\n6 primary    mono     12hpi         0\n\n\n\nHint: I would use the filter(...) function.\n\n\n1.1.4 Part D\nWhen CellType is “MDM”, it is a Monocyte-Derived Macrophages. That is, the cell type should be macrophages which is coded as “mac”. Update dat.kitsberg.cleaned with the result.\nSolution\n\n\n\nCode\ndat.kitsberg.cleaned = dat.kitsberg.cleaned |&gt;\n  mutate(CellType = case_when((CellType == 'MDM' | CellType == 'mac') ~ 'mac', CellType == 'mono' ~ 'mono', CellType == 'PDGFR' ~ 'PDGFR'))\n\nunique(dat.kitsberg.cleaned$CellType)\n\n\n[1] \"mono\"  \"mac\"   \"PDGFR\"\n\n\n\nHint: I would use the mutate(...) function. You will likely find if_else(...) or case_when(...) helpful.",
+    "crumbs": [
+      "Lab Five-Six -- Data Wrangling in R"
+    ]
+  },
+  {
+    "objectID": "labs/05/Lab5WriteUp.html#part-e",
+    "href": "labs/05/Lab5WriteUp.html#part-e",
+    "title": "Lab Five-Six – Data Wrangling in R",
+    "section": "1.2 Part E",
+    "text": "1.2 Part E\nThe researchers are only interested in monocytes and macrophages. Remove any other cell types. Update dat.kitsberg.cleaned with the result.\nSolution\n\n\n\nCode\ndat.kitsberg.cleaned = dat.kitsberg.cleaned |&gt;\n  filter(CellType %in% c(\"mono\",\"mac\"))\n\nunique(dat.kitsberg.cleaned$CellType)\n\n\n[1] \"mono\" \"mac\" \n\n\n\nHint: I would use the filter(...) function.",
+    "crumbs": [
+      "Lab Five-Six -- Data Wrangling in R"
+    ]
+  },
+  {
+    "objectID": "labs/05/Lab5WriteUp.html#part-f",
+    "href": "labs/05/Lab5WriteUp.html#part-f",
+    "title": "Lab Five-Six – Data Wrangling in R",
+    "section": "1.3 Part F",
+    "text": "1.3 Part F\nClean up the data entry. Replace the shorthand the researchers used with the neat sample type (Healthy Donor or THP-1), cell type (Monocytes or Macrophages), and treatment (12 Hours Post-Infection or Uninfected). Update dat.kitsberg.cleaned with the result.\nSolution\n\n\n\nCode\ndat.kitsberg.cleaned = dat.kitsberg.cleaned |&gt;\n  mutate(SampleType = case_when(SampleType == \"primary\" ~ \"Healthy Donor\", SampleType == \"THP1\" ~ \"THP-1\")) |&gt;\n  mutate(CellType = case_when(CellType == \"mono\" ~ \"Monocytes\", CellType == \"mac\" ~ \"Macrophages\")) |&gt;\n  mutate(Treatment = \"12 Hours Post-Infection\") #all uninfected already removed\n\nhead(dat.kitsberg.cleaned)\n\n\n# A tibble: 6 × 4\n  SampleType    CellType  Treatment               count\n  &lt;chr&gt;         &lt;chr&gt;     &lt;chr&gt;                   &lt;dbl&gt;\n1 Healthy Donor Monocytes 12 Hours Post-Infection     0\n2 Healthy Donor Monocytes 12 Hours Post-Infection     0\n3 Healthy Donor Monocytes 12 Hours Post-Infection     0\n4 Healthy Donor Monocytes 12 Hours Post-Infection     0\n5 Healthy Donor Monocytes 12 Hours Post-Infection     0\n6 Healthy Donor Monocytes 12 Hours Post-Infection     0\n\n\n\nHint: I would use the mutate(...) function. You will likely find if_else(...) or case_when(...) helpful.",
+    "crumbs": [
+      "Lab Five-Six -- Data Wrangling in R"
+    ]
+  },
+  {
+    "objectID": "labs/05/Lab5WriteUp.html#part-g",
+    "href": "labs/05/Lab5WriteUp.html#part-g",
+    "title": "Lab Five-Six – Data Wrangling in R",
+    "section": "1.4 Part G",
+    "text": "1.4 Part G\nIn an R code block, combine your answers into one code block that completes the full cleaning process. Save the object as dat.kitsberg.cleaned.\nSolution\n\n\n\nCode\ndat.kitsberg.cleaned = dat.kitsberg |&gt;\n  separate_wider_delim(\"sample\",\"_\",names=c(\"SampleType\",\"CellType\",\"Treatment\")) |&gt;\n  filter(Treatment != \"uninfected\") |&gt; #remove uninfected\n  mutate(CellType = case_when((CellType == 'MDM' | CellType == 'mac') ~ 'mac', CellType == 'mono' ~ 'mono')) |&gt; #rename MDM to mac\n  filter(CellType %in% c(\"mono\",\"mac\")) |&gt; #only keep mono and mac\n  #prettier data entry -------------\n  mutate(SampleType = case_when(SampleType == \"primary\" ~ \"Healthy Donor\", SampleType == \"THP1\" ~ \"THP-1\")) |&gt;\n  mutate(CellType = case_when(CellType == \"mono\" ~ \"Monocytes\", CellType == \"mac\" ~ \"Macrophages\")) |&gt;\n  mutate(Treatment = \"12 Hours Post-Infection\") #all uninfected already removed\nhead(dat.kitsberg.cleaned)\n\n\n# A tibble: 6 × 4\n  SampleType    CellType  Treatment               count\n  &lt;chr&gt;         &lt;chr&gt;     &lt;chr&gt;                   &lt;dbl&gt;\n1 Healthy Donor Monocytes 12 Hours Post-Infection     0\n2 Healthy Donor Monocytes 12 Hours Post-Infection     0\n3 Healthy Donor Monocytes 12 Hours Post-Infection     0\n4 Healthy Donor Monocytes 12 Hours Post-Infection     0\n5 Healthy Donor Monocytes 12 Hours Post-Infection     0\n6 Healthy Donor Monocytes 12 Hours Post-Infection     0\n\n\n\nNote: You will use this in the next section",
+    "crumbs": [
+      "Lab Five-Six -- Data Wrangling in R"
+    ]
+  },
+  {
+    "objectID": "labs/05/Lab5WriteUp.html#data-summaries",
+    "href": "labs/05/Lab5WriteUp.html#data-summaries",
+    "title": "Lab Five-Six – Data Wrangling in R",
+    "section": "1.5 Data Summaries",
+    "text": "1.5 Data Summaries\n\n1.5.1 Part A\nRecreate Figure 3b as depicted in the paper (see https://www.nature.com/articles/s41467-025-68063-y#Fig3). You can ignore the significance comparison because we haven’t done that yet.\nSolution\n\n\n\n\n\n\nFigure 1: HCMV Genomes in Nucleus vs Sample Type\n\n\n\n\n\n\n\n\n\nHint: I would use geom_violin(...) for Figure 3b I also expect your plots to look nicer – better labels, better scaling, etc. Don’t forget to use the proper formatting using the syntax in the Quarto cheatsheet.\n\n\n1.5.2 Part B\nCompute a table containing relevant numerical summaries for Figure 3b.\nSolution\n\n\n\n\n\nTable 1\n\n\n\n\n\n\nSampleType\nCellType\nn\nMean\nSD\nMedian\nIQR\n\n\n\n\nHealthy Donor\nMacrophages\n93\n0.37\n0.60\n0\n1\n\n\nHealthy Donor\nMonocytes\n87\n0.01\n0.11\n0\n0\n\n\nTHP-1\nMacrophages\n170\n0.33\n0.57\n0\n1\n\n\nTHP-1\nMonocytes\n112\n0.04\n0.25\n0\n0\n\n\n\n\n\n\n\n\n\nHint: I would use group_by(...) and summarize(...) to complete this. Don’t forget to use the proper formatting using knitr::kable(...) as described in the Quarto Cheatsheet.",
+    "crumbs": [
+      "Lab Five-Six -- Data Wrangling in R"
+    ]
+  },
+  {
+    "objectID": "labs/05/Lab5WriteUp.html#data-wrangling-1",
+    "href": "labs/05/Lab5WriteUp.html#data-wrangling-1",
+    "title": "Lab Five-Six – Data Wrangling in R",
+    "section": "2.1 Data Wrangling",
+    "text": "2.1 Data Wrangling\n\n2.1.1 Part A\nI downloaded the data from linked in the article (https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0319073). I have included the data in this lab folder as ShipValuation-Bal25.csv. Load the data into R.\n\n\n2.1.2 Part B\nThe price of each Supramax and Ultramax ship is reported on the \\(\\log_{10}\\) scale. Create a new column called price that contains the price in millions of dollars. \\[\\text{Price} = \\frac{10^{\\text{SPLog}}}{1000000}\\] Save the object as dat.bal.cleaned.\nSolution\n\n\n\nCode\ndat.bal = read_csv(\"ShipValuation-Bal25.csv\")[1:1819, ]\ndat.bal.cleaned = dat.bal |&gt; \n  mutate(price = (10^SPLog) / 1000000)\n\nhead(dat.bal.cleaned$price)\n\n\n[1]  8.20000  5.50000 15.00000  7.20512  5.00000  7.00000\n\n\n\nHint: I would use the mutate(...) function.\n\n\n2.1.3 Part C\nThe authors recorded the country that each Supramax or Ultramax ship was built in in the columns Japan, China, People's Republic Of, Philippines, Korea, South, Others Country Build. These columns are marked 1 to indicate that is the country of origin and 0 otherwise. Create a new column called OriginCountry that contains a clean labels for the country in which the ship was built. Update dat.bal.cleaned with the result.\nSolution\n\n\n\nCode\ndat.bal.cleaned = dat.bal.cleaned |&gt;\n  mutate(OriginCountry = case_when(Japan == 1 ~ \"Japan\", `China, People's Republic Of` == 1 ~ \"China, People's Republic Of\", Philippines == 1 ~ \"Philippines\", `Korea, South` == 1 ~ \"Korea, South\", TRUE ~ \"Others Country Build\"))\nunique(dat.bal.cleaned$OriginCountry)\n\n\n[1] \"Others Country Build\"        \"Japan\"                      \n[3] \"Korea, South\"                \"China, People's Republic Of\"\n[5] \"Philippines\"                \n\n\n\nHint: I would use the mutate(...) function. You will likely find if_else(...) or case_when(...) helpful.\n\n\n2.1.4 Part D\nThe authors recorded each Supramax and Ultramax ship’s main engine manufacturer in the columns Caterpillar, MAN-B&W, Wartsila, Mitsubishi. These columns are marked 1 to indicate that is the manufacturer and 0 otherwise. Create a new column called Manufacturer that contains a clean labels for the manufacturer. Update dat.bal.cleaned with the result.\nSolution\n\n\n\nCode\ndat.bal.cleaned = dat.bal.cleaned |&gt;\n  mutate(Manufacturer = case_when(Caterpillar == 1 ~ \"Caterpillar\", `MAN-B&W` == 1 ~ \"Man-B&W\", Wartsila == 1 ~ 'Wartsila', Mitsubishi == 1 ~ 'Mitsubishi'))\nunique(dat.bal.cleaned$Manufacturer)\n\n\n[1] \"Man-B&W\"     \"Wartsila\"    \"Mitsubishi\"  \"Caterpillar\"\n\n\n\nHint: Follow the logic of the previous question.\n\n\n2.1.5 Part E\nThe researchers recorded whether each Supramax and Ultramax ship is currently covered by a Protection and Indemnity (P&I) Club. This can be an indicator that a ship meets the minimum seaworthiness and safety requirements of the insurer.\nThe authors recorded P&I clubs in the columns Japan P&I Club, Gard, West of England, North of England, UK P&I, Britannia P&I, London P&I Club, Skuld, Steamship Mutual, Others, Unknown. These columns are marked 1 to indicate that the ship is insured by that P&I club and 0 otherwise. Create a new column called PI.club that contains a clean labels for the P&I club. Update dat.bal.cleaned with the result.\nSolution\n\n\n\nCode\ndat.bal.cleaned = dat.bal.cleaned |&gt;\n  mutate(PI.club = case_when(`Japan P&I Club` == 1 ~ \"Japan P&I Club\", Gard == 1 ~ \"Gard\", `North of England` == 1 ~ 'North of England',`West of England` == 1 ~ \"West of England\", `UK P&I` == 1 ~ \"UK P&I\", `Britannia P&I` == 1 ~ \"Britannia P&I\", `London P&I Club` == 1 ~ \"London P&I Club\", Skuld == 1 ~ \"Skuld\", `Steamship Mutual` == 1 ~ \"Steamship Mutual\", Others == 1 ~ \"Others\", Unknown == 1 ~ \"Unknown\"))\nunique(dat.bal.cleaned$PI.club)\n\n\n [1] \"Steamship Mutual\" \"West of England\"  \"UK P&I\"           \"Others\"          \n [5] \"Gard\"             \"North of England\" \"Britannia P&I\"    \"London P&I Club\" \n [9] \"Unknown\"          \"Japan P&I Club\"   \"Skuld\"           \n\n\n\nHint: Follow the logic of the previous questions.\n\n\n2.1.6 Part F\nThe researchers recorded whether each Supramax and Ultramax ship is classed by a society that requires a ship to be safe, structurally sound, and built/maintained to specific engineering standards.\nThe authors recorded class society in the columns Nippon Kaiji Kyokai (IACS), Lloyd's Register, Bureau Veritas (IACS), Det Norske Veritas (IACS), American Bureau of Shipping (IACS), Others Class, With Two Classes, Disclassed. These columns are marked 1 to indicate that the ship is classed by that soceity and 0 otherwise. Create a new column called Class that contains a clean labels for the class. Update dat.bal.cleaned with the result.\nSolution\n\n\n\nCode\ndat.bal.cleaned = dat.bal.cleaned |&gt;\n  mutate(Class = case_when(`Nippon Kaiji Kyokai (IACS)` == 1 ~ \"Nippon Kaiji Kyokai (IACS)\", `Lloyd's Register` == 1 ~ \"Lloyd's Register\", `Bureau Veritas (IACS)` == 1 ~ \"Bureau Vertias (IACS)\",`Det Norske Veritas (IACS)` == 1 ~ \"Det Norske Veritas (IACS)\", `American Bureau of Shipping (IACS)` == 1 ~ \"American Bureau of Shipping (IACS)\", `Others Class` == 1 ~ \"Others Class\", `With Two Classes` == 1 ~ \"With Two Classes\", Disclassed == 1 ~ \"Disclassed\"))\n\nunique(dat.bal.cleaned$Class)\n\n\n[1] \"Others Class\"                       \"Disclassed\"                        \n[3] \"American Bureau of Shipping (IACS)\" \"Bureau Vertias (IACS)\"             \n[5] \"Det Norske Veritas (IACS)\"          \"Lloyd's Register\"                  \n[7] \"Nippon Kaiji Kyokai (IACS)\"         \"With Two Classes\"                  \n\n\n\nHint: Follow the logic of the previous questions.\n\n\n2.1.7 Part G\nThe researchers recorded the flag state of each Supramax and Ultramax ship. Each flag state enforces its own set of safety, environmental, and crew welfare rules and regulations. Ships under certain flag states may be more or less valuable depending on how much the flag affects the buyer’s trust in the condition of the boat.\nThe authors recorded flag states in the columns Panama, Marshall Islands, Liberia, Malta, Hong Kong, China, Singapore, Others Flag, With two flags. These columns are marked 1 to indicate that the ship has that flag state and 0 otherwise. Create a new column called FlagState that contains a clean labels for the flag state. Update dat.bal.cleaned with the result.\nNote: There is a minor issue in the above text, the corect flag state is Hong Kong, China\nSolution\n\n\n\nCode\ndat.bal.cleaned = dat.bal.cleaned |&gt;\n  mutate(FlagState = case_when(Panama == 1 ~ \"Panama\", `Marshall Islands` == 1 ~ \"Marshall Islands\", Liberia == 1 ~ \"Liberia\", Malta == 1 ~ \"Malta\", `Hong Kong, China` == 1 ~ \"Hong Kong, China\", Singapore == 1 ~ \"Singapore\", `Others Flag` == 1 ~ \"Others Flag\", `With two flags` == 1 ~ \"With two flags\"))\n\nunique(dat.bal.cleaned$FlagState)\n\n\n[1] \"Panama\"           \"Others Flag\"      \"Malta\"            \"Liberia\"         \n[5] \"Hong Kong, China\" \"Marshall Islands\" \"Singapore\"        \"With two flags\"  \n\n\n\nHint: Follow the logic of the previous questions.",
+    "crumbs": [
+      "Lab Five-Six -- Data Wrangling in R"
+    ]
+  },
+  {
+    "objectID": "labs/05/Lab5WriteUp.html#part-h",
+    "href": "labs/05/Lab5WriteUp.html#part-h",
+    "title": "Lab Five-Six – Data Wrangling in R",
+    "section": "2.2 Part H",
+    "text": "2.2 Part H\nIn an R code block, combine your answers into one code block that completes the full cleaning process. Save the object as dat.bal.cleaned.\nSolution\n\n\n\nCode\ndat.bal.cleaned = dat.bal |&gt; \n  mutate(price = (10^SPLog) / 1000000) |&gt;\n  \n  mutate(OriginCountry = case_when(Japan == 1 ~ \"Japan\", `China, People's Republic Of` == 1 ~ \"China, People's Republic Of\", Philippines == 1 ~ \"Philippines\", `Korea, South` == 1 ~ \"Korea, South\", TRUE ~ \"Others Country Build\")) |&gt;\n  \n  mutate(Manufacturer = case_when(Caterpillar == 1 ~ \"Caterpillar\", `MAN-B&W` == 1 ~ \"Man-B&W\", Wartsila == 1 ~ 'Wartsila', Mitsubishi == 1 ~ 'Mitsubishi')) |&gt;\n  \n  mutate(PI.club = case_when(`Japan P&I Club` == 1 ~ \"Japan P&I Club\", Gard == 1 ~ \"Gard\", `North of England` == 1 ~ 'North of England',`West of England` == 1 ~ \"West of England\", `UK P&I` == 1 ~ \"UK P&I\", `Britannia P&I` == 1 ~ \"Britannia P&I\", `London P&I Club` == 1 ~ \"London P&I Club\", Skuld == 1 ~ \"Skuld\", `Steamship Mutual` == 1 ~ \"Steamship Mutual\", Others == 1 ~ \"Others\", Unknown == 1 ~ \"Unknown\")) |&gt;\n  \n  mutate(Class = case_when(`Nippon Kaiji Kyokai (IACS)` == 1 ~ \"Nippon Kaiji Kyokai (IACS)\", `Lloyd's Register` == 1 ~ \"Lloyd's Register\", `Bureau Veritas (IACS)` == 1 ~ \"Bureau Vertias (IACS)\",`Det Norske Veritas (IACS)` == 1 ~ \"Det Norske Veritas (IACS)\", `American Bureau of Shipping (IACS)` == 1 ~ \"American Bureau of Shipping (IACS)\", `Others Class` == 1 ~ \"Others Class\", `With Two Classes` == 1 ~ \"With Two Classes\", Disclassed == 1 ~ \"Disclassed\")) |&gt;\n  \n  mutate(FlagState = case_when(Panama == 1 ~ \"Panama\", `Marshall Islands` == 1 ~ \"Marshall Islands\", Liberia == 1 ~ \"Liberia\", Malta == 1 ~ \"Malta\", `Hong Kong, China` == 1 ~ \"Hong Kong, China\", Singapore == 1 ~ \"Singapore\", `Others Flag` == 1 ~ \"Others Flag\", `With two flags` == 1 ~ \"With two flags\"))\n\n\n\nNote: You will use this in the next section",
+    "crumbs": [
+      "Lab Five-Six -- Data Wrangling in R"
+    ]
+  },
+  {
+    "objectID": "labs/05/Lab5WriteUp.html#data-summaries-1",
+    "href": "labs/05/Lab5WriteUp.html#data-summaries-1",
+    "title": "Lab Five-Six – Data Wrangling in R",
+    "section": "2.3 Data Summaries",
+    "text": "2.3 Data Summaries\nFirst, I provide a short description of the other variables in their data. Note that the size ordering of types of ships discussed below is:\n\\[\\text{Handysize} &lt; \\text{Supramax} &lt; \\text{Ultramax} &lt; \\text{Panamax} &lt; \\text{Capesize}\\]\n\nDWT: The deadweight tonnage, which is the maximum weight each Supramax and Ultramax ship can safely carry in metric tons. This gives a measure of how much cargo, fuel, fresh water, ballast water, provisions, and crew a ship can handle.\nYas: The age in years. New Supramax and Ultramax ships were recorded as having age 1.\nEnginges RPM: Revolutions per minute of each Supramax and Ultramax ship’s main propulsion engine. Generally speaking, lower-RPM engines are more expensive because they are more fuel efficient.\nBACI: The Baltic Capesize Index. This describes freight rates for Capesize dry bulk ships, which reflects supply and demand. When BACI is high, Capesize ships are more profitable in shipping, which could positively affect Supramax and Ultramax ship values as demand for dry bulk commodities might be high and large shipments could be split into several Supramax and Ultramax shipments.\nNote: This reports the current BACI. The data also contain the BACI form 1, 2, and 3 months before the sale (BACI-1, BACI-2, BACI-3).\nBPNI: The Baltic Panamax Index. This describes the cost to ship dry bulk commodities (e.g., coal or grain) on Panamax class ships. When BPNI is high, we expect Panamax ship prices to go up. Supramax and Ultramax ship values tend to follow this trend as charterers switch to these smaller vessels when Panamax rates become too expensive.\nNote: This reports the current BPNI. The data also contain the BPNI form 1, 2, and 3 months before the sale (BPNI-1, BPNI-2, BPNI-3).\nBSIS: The Baltic Supramax Index. This describes freight rates for Supramax vessels, which reflects supply and demand. When BSIS is high, Supramax and Ultramax prices are usually higher because they are more profitable in shipping.\nNote: This reports the current BSIS. The data also contain the BSIS form 1, 2, and 3 months before the sale (BSIS-1, BSIS-2, BSIS-3).\nBHSI: The Baltic Handysize Index. This describes freight rates for handysize vessels. When BHSI is high, Supramax and Ultramax ship prices are usually higher because the prices move together.\nNote: This reports the current BHSI. The data also contain the BHSI form 1, 2, and 3 months before the sale (BHSI-1, BHSI-2, BHSI-3).\nLIBOR: The London InterBank Offered Rate. This describes the average reported interest rate at which banks would lend US dollars for 3 months.\n\n\n2.3.1 Part A\nChoose a categorical variable. Create a plot and corresponding numerical summary to assess whether or how ship prices vary across the levels of the selected categorical variable.\nSolution\n\n\n\n\n\n\nFigure 2: Ship Price vs P&I Club Membership\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTable 2: Ship Price (Millions USD) by P&I Club\n\n\n\n\n\n\nP&I Club\nMean\nSD\nMedian\nIQR\n\n\n\n\nBritannia P&I\n15.51\n9.45\n14.00\n10.30\n\n\nGard\n16.68\n11.84\n13.95\n10.88\n\n\nJapan P&I Club\n17.17\n9.99\n14.85\n10.50\n\n\nLondon P&I Club\n14.31\n11.37\n11.50\n10.67\n\n\nNorth of England\n17.23\n10.40\n13.97\n15.08\n\n\nOthers\n15.73\n11.01\n13.30\n11.13\n\n\nSkuld\n19.22\n12.41\n16.00\n17.40\n\n\nSteamship Mutual\n14.86\n7.07\n14.50\n10.07\n\n\nUK P&I\n16.95\n12.70\n13.00\n10.80\n\n\nUnknown\n22.99\n15.05\n23.00\n23.10\n\n\nWest of England\n14.18\n8.79\n12.40\n10.02\n\n\n\n\n\n\n\n\n\nAs seen in both Figure 2 and Table 2, P&I clubs insure ships of a similar distribution of prices, suggesting that insurers tend to not only diversify their portfolios, but also have essentially reached a consensus on the appropriate basket of ships.\n\n\n2.3.2 Part B\nChoose a quantitative variable. Create a plot and corresponding numerical summary to assess whether or how ship prices vary with the selected quantitative variable.\nSolution\n\n\n\n\n\n\nFigure 3: Ship Price vs LIBOR\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTable 3: Correlation of Ship Price and LIBOR\n\n\n\n\n\n\npearson\nspearman\nkendall\n\n\n\n\n0.32\n0.12\n0.09\n\n\n\n\n\n\n\n\n\nFigure 3 and Table 3 show a weak positive linear correlation between price and average interest rates over the last 3 months. As with any good, we expect its price to increase with the interest rate, which represents the price to borrow capital. It’s clear from Figure 3 that ship prices also vary independently of the LIBOR, which is plausible given variations in ship sizes, age, and capacity.",
+    "crumbs": [
+      "Lab Five-Six -- Data Wrangling in R"
+    ]
+  },
+  {
+    "objectID": "labs/11/Lab11WriteUp.html",
+    "href": "labs/11/Lab11WriteUp.html",
+    "title": "Lab Eleven – Point Estimation and Resampling",
+    "section": "",
+    "text": "Tips",
+    "crumbs": [
+      "Lab Eleven -- Point Estimation and Resampling"
+    ]
+  },
+  {
+    "objectID": "labs/11/Lab11WriteUp.html#initial-simulation",
+    "href": "labs/11/Lab11WriteUp.html#initial-simulation",
+    "title": "Lab Eleven – Point Estimation and Resampling",
+    "section": "2.1 Initial Simulation",
+    "text": "2.1 Initial Simulation\nIn this lab, we will explore why we use \\(S_{n-1}^2\\) and not \\(S_n^2\\). To do this, we will generate data from four known distributions:\n\nPoisson\\((\\lambda=2)\\)\nBinomial\\(\\left(n=50, p=\\frac{5-\\sqrt{21}}{10}\\right)\\)\nNormal\\((\\mu=0, \\sigma=\\sqrt{2})\\)\nExponential\\(\\left(\\lambda = \\frac{1}{\\sqrt{2}}\\right).\\)\n\nRemark: Note that I have selected the parameters so that the true variance for all four models is 2.\nFor each distribution, write a loop that completes the following 1000 times. Put set.seed(7272) at the top of your code chunk.\n\nGenerate a sample of size \\(n\\) from the distribution.\nCalculate and save \\(S_{n-1}^2\\) and \\(S_n^2.\\)\n\nStart with \\(n=20\\). Is there evidence that \\(S_{n-1}^2\\) is a better estimator than \\(S_n^2\\)?\nCreate a plot or combination of plots (using patchwork) to show the results across all four distributions. Make sure to create a corresponding table that numerically summarizes the results of the simulation. You should include \\[\\begin{align*}\n\\textrm{Bias} &= \\textrm{Average of Estimates} - \\textrm{True Value}\\\\\n\\textrm{Precision} &= \\frac{1}{\\textrm{Variance of Estimates}}\\\\\n\\textrm{Mean Square Error} &= \\textrm{Bias}^2 + \\textrm{Variance of Estimates}.\n\\end{align*}\\]\n\n\n\n\n\n\n\nTable 1: Table of Variance Estimators by Distribution with n = 20\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\ndistribution\nsn1_bias\nsn1_precision\nsn1_mse\nsn_bias\nsn_precision\nsn_mse\n\n\n\n\nPoisson\n0.09\n2.00\n0.51\n-0.01\n2.21\n0.45\n\n\nBinomial\n0.07\n1.98\n0.51\n-0.03\n2.19\n0.46\n\n\nNormal\n0.10\n1.93\n0.53\n0.00\n2.14\n0.47\n\n\nExponential\n0.08\n0.65\n1.55\n-0.02\n0.72\n1.40\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 1: Simulation Results by Distribution\n\n\n\n\n\n\n\n\n\nWith a sample size of \\(20\\), there is not convincing evidence that the \\(S_{n-1}^2\\) is a better estimator than \\(S_n^2\\).",
+    "crumbs": [
+      "Lab Eleven -- Point Estimation and Resampling"
+    ]
+  },
+  {
+    "objectID": "labs/11/Lab11WriteUp.html#simulation-over-various-sample-sizes",
+    "href": "labs/11/Lab11WriteUp.html#simulation-over-various-sample-sizes",
+    "title": "Lab Eleven – Point Estimation and Resampling",
+    "section": "2.2 Simulation over various sample sizes",
+    "text": "2.2 Simulation over various sample sizes\nConsider the effect of the sample size have on these results. Provide a graphical and numerical summary of what happens as \\(n\\) increases – say \\(n=20\\), \\(n=50\\), \\(n=100\\), and \\(n=500\\). Does the result in your initial simulation hold across samples? Or, do things change as the sample size changes? Ensure to set your randomization seed.\n\n\n\n\n\nTable 2: Table of Estimators Across Sample Sizes\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\ndistribution\nsampleSize\nsn1_bias\nsn1_precision\nsn1_mse\nsn_bias\nsn_precision\nsn_mse\n\n\n\n\nPoisson\n20\n0.09\n2.00\n0.51\n-0.01\n2.21\n0.45\n\n\nBinomial\n20\n0.07\n1.98\n0.51\n-0.03\n2.19\n0.46\n\n\nNormal\n20\n0.10\n1.93\n0.53\n0.00\n2.14\n0.47\n\n\nExponential\n20\n0.08\n0.65\n1.55\n-0.02\n0.72\n1.40\n\n\nPoisson\n50\n0.05\n4.31\n0.23\n0.01\n4.49\n0.22\n\n\nBinomial\n50\n0.04\n4.91\n0.21\n0.00\n5.12\n0.20\n\n\nNormal\n50\n0.05\n5.87\n0.17\n0.01\n6.12\n0.16\n\n\nExponential\n50\n0.09\n1.34\n0.75\n0.05\n1.40\n0.72\n\n\nPoisson\n100\n0.03\n9.86\n0.10\n0.01\n10.06\n0.10\n\n\nBinomial\n100\n-0.01\n10.73\n0.09\n-0.03\n10.95\n0.09\n\n\nNormal\n100\n0.04\n12.15\n0.08\n0.02\n12.40\n0.08\n\n\nExponential\n100\n0.05\n2.81\n0.36\n0.03\n2.86\n0.35\n\n\nPoisson\n500\n0.01\n53.64\n0.02\n0.00\n53.86\n0.02\n\n\nBinomial\n500\n0.01\n54.18\n0.02\n0.00\n54.40\n0.02\n\n\nNormal\n500\n0.01\n58.57\n0.02\n0.00\n58.80\n0.02\n\n\nExponential\n500\n0.00\n15.46\n0.06\n0.00\n15.52\n0.06\n\n\n\n\n\n\n\n\n\n\n\n\nCode\n #| echo: false\n #| label: fig-2.2-bias\n #| fig-cap: Estimator Bias by Sample Size Across Distribution\n \n plot = df |&gt;\n  ggplot() +\n  geom_line(aes(x = sampleSize, y = sn1_bias, colour = \"sn1 bias\")) +\n  geom_line(aes(x = sampleSize, y = sn_bias,  colour = \"sn bias\")) +\n  geom_point(aes(x = sampleSize, y = sn1_bias, colour = \"sn1 bias\")) +\n  geom_point(aes(x = sampleSize, y = sn_bias,  colour = \"sn bias\")) +\n  scale_colour_manual(\n    name   = \"Estimator\",\n    values = c(\"sn1 bias\" = \"#FF0000\",\n               \"sn bias\"  = \"#0000FF\")\n  ) +\n  labs(x = \"Sample Size\", y = \"Bias\") +\n  facet_wrap(~distribution)\n\n(plot) \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 2: Simulation Results by Distribution across sample sizes",
+    "crumbs": [
+      "Lab Eleven -- Point Estimation and Resampling"
+    ]
+  },
+  {
+    "objectID": "labs/11/Lab11WriteUp.html#simulation",
+    "href": "labs/11/Lab11WriteUp.html#simulation",
+    "title": "Lab Eleven – Point Estimation and Resampling",
+    "section": "2.3 Simulation",
+    "text": "2.3 Simulation\nYou have written code to draw a random sample of various sizes from each distribution, and to calculate and store the calculated estimates. Rework your code to produce a density plot of the \\(s_{n-1}^2\\) and \\(s_{n}^2\\). Do you have a guess about their distribution? Ensure to set your randomization seed.\nSolution\nI previously generated density plots. As shown in Figure 2 The plots look pretty normal, and tend to look more normal as sample size increases.",
+    "crumbs": [
+      "Lab Eleven -- Point Estimation and Resampling"
+    ]
+  },
+  {
+    "objectID": "labs/11/Lab11WriteUp.html#bootstrap",
+    "href": "labs/11/Lab11WriteUp.html#bootstrap",
+    "title": "Lab Eleven – Point Estimation and Resampling",
+    "section": "2.4 Bootstrap",
+    "text": "2.4 Bootstrap\nNow, take one sample from each distribution. Instead of drawing a random sample at each iteration, sample with replacement from the one sample. Produce a density plot of the \\(s_{n-1}^2\\) and \\(s_{n}^2\\). Do we get roughly the same information as we do in the full simulation? Try this over several seeds – what do you notice? Ensure to set your randomization seed.\nSolution\n\n\n\nCode\nbootstrap.sample.variances = function(n,size, distribution,mean) {\n  sn1 = c()\n  sn = c()\n  sample.orig = distribution(size)\n  for (i in 1:n) {\n    sample.virtual = sample(sample.orig,size,replace=T)\n    difference.squared = (sample.virtual - mean)^2\n    total = sum(difference.squared)\n    sn1 = c(sn1,(1 / (size - 1)) * total)\n    sn = c(sn,(1 / size) * total)\n  }\n\n  list(sn1 = sn1, sn = sn, sn1_mean = mean(sn1), sn1_var = var(sn1), sn_mean = mean(sn), sn_var = var(sn))\n}\n\ngen.boostrapped.variances.df = function(sizes,distributions,true_variance) {\n  map(sizes, function(size) {\n  distributions |&gt;\n    rowwise() |&gt;\n    mutate(\n      sampleSize = size,\n      sim           = list(bootstrap.sample.variances(num.sims, size, func, mean)),\n      sn1_mean      = sim[[\"sn1_mean\"]],\n      sn1_var       = sim[[\"sn1_var\"]],\n      sn_mean       = sim[[\"sn_mean\"]],\n      sn_var        = sim[[\"sn_var\"]],\n      sn1_bias      = sn1_mean - true_variance, #fixed\n      sn1_precision = 1 / sn1_var,\n      sn1_mse       = sn1_bias^2 + sn1_var,\n      sn_bias       = sn_mean - true_variance, #fixed\n      sn_precision  = 1 / sn_var,\n      sn_mse        = sn_bias^2 + sn_var\n\n    ) |&gt;\n    ungroup()\n  }) |&gt;\n  list_rbind()\n}\n\n\n\n\n\n\n\n\n\nFigure 3: Boostrapped sample with random seed 7272\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 4: Boostrapped sample with random seed 777\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 5: Boostrapped sample with random seed 2718 with sample size 20\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 6: Boostrapped sample with random seed 2718 with sample size 200\n\n\n\n\n\n\n\n\n\nYes, Bootstrapping shows fairly similar density plots as traditional sampling. Though by comparing Figure 3 and Figure 4 we can see that the difference between our two estimators with a small sample size is influenced by our choice of random seed. Still, given the plots it is reasonable to conclude that bootstrapping captured most of the information from the full sample.",
+    "crumbs": [
+      "Lab Eleven -- Point Estimation and Resampling"
+    ]
+  },
+  {
+    "objectID": "labs/08/Lab8WriteUp.html",
+    "href": "labs/08/Lab8WriteUp.html",
+    "title": "Lab Eight – Probability",
+    "section": "",
+    "text": "Tips",
+    "crumbs": [
+      "Lab Eight -- Probability"
+    ]
+  },
+  {
+    "objectID": "labs/08/Lab8WriteUp.html#the-binomial-distribution",
+    "href": "labs/08/Lab8WriteUp.html#the-binomial-distribution",
+    "title": "Lab Eight – Probability",
+    "section": "1.1 The Binomial Distribution",
+    "text": "1.1 The Binomial Distribution\nIn many introductory courses, we make the simplifying assumption of independence in Bernoulli trials. For example, when playing best two-out-of-three legs in a darts match, we would assume Player A has an 70% chance of winning each leg. We write: \\[X \\sim \\text{Binomial}(n=3, p=0.70)\\] where\n\n\\(X\\) is the number of legs won\n\\(n\\) is the number of trials\n\\(p\\) is the probability of the event of interest\n\nOf note, it is not necessarily the case that the players play all three legs – if either player wins legs one and two the match ends.\nThere are eight possible outcomes for Player A:\n\n(win, win, “win”) \\(\\longrightarrow\\) Player A wins\n(win, win, “lose”) \\(\\longrightarrow\\) Player A wins\n(win, lose, win) \\(\\longrightarrow\\) Player A wins\n(win, lose, lose) \\(\\longrightarrow\\) Player A loses\n(lose, win, win) \\(\\longrightarrow\\) Player A wins\n(lose, win, lose) \\(\\longrightarrow\\) Player A loses\n(lose, lose, “win”) \\(\\longrightarrow\\) Player A loses\n(lose, lose, “lose”) \\(\\longrightarrow\\) Player A loses\n\nNote: I use quotations above to denote outcomes where the last match isn’t actually played.\nUse the Binomial distribution to compute the probability that Player A wins the match. Make sure write out your probability statement and work to write it in terms of the distribution function (PMF/CDF) to plot the probability using ggplot.\nSolution The probability that X wins = \\(P(X&gt;=2) = f_X(2) + f_X(3)= \\left( \\binom{3}{2} \\times .7^2 \\times .3 \\right) + \\left( \\binom{3}{3} \\times .7^3 \\right)\\)\n\n\n\nCode\n(win.prob = dbinom(2,3,.7) + dbinom(3,3,.7))\n\n\n[1] 0.784\n\n\n\n\n\n\n\n\n\nFigure 1: PMF and CDF of the Binomial distribution with n=3 and p=0.7 with P(Win) = P(x &gt;= 2)",
+    "crumbs": [
+      "Lab Eight -- Probability"
+    ]
+  },
+  {
+    "objectID": "labs/08/Lab8WriteUp.html#the-negative-binomial-distribution",
+    "href": "labs/08/Lab8WriteUp.html#the-negative-binomial-distribution",
+    "title": "Lab Eight – Probability",
+    "section": "1.2 The Negative Binomial Distribution",
+    "text": "1.2 The Negative Binomial Distribution\nIn intermediate courses, we learn the Negative Binomial distribution that we use to model the number of “failures” until the \\(r\\)th success. Note that this approach still makes the simplifying assumption of independence in Bernoulli trials.\nSpecify the two cases necessary to compute the probability. Fully explain these probability statements in the context of a best two-out-of-three match and the Negative Binomial distribution. Finally, compute the probability that Player A wins the match and show you get the same result as the Binomial approach. Make sure write out your probability statement and work to write it in terms of the distribution function (PMF/CDF) to plot the probability using ggplot.\nSolution\nEither you have 0 failures until the 2nd success, or 1 failure until the 2nd success. These correspond to winning in straight sets or either (1) losing the first game and winning the next two or (2) winning the first game, losing the second, and winning the third.\n\n\n\nCode\n(win.prob = dnbinom(0,2,p) + dnbinom(1,2,p))\n\n\n[1] 0.784\n\n\n\n\n\n\n\n\n\nFigure 2: PMF and CDF of the Negative Binomial distribution with r=2 and p=0.7\n\n\n\n\n\n\n\n\n\nBoth methods show a win probability of \\(.784\\)",
+    "crumbs": [
+      "Lab Eight -- Probability"
+    ]
+  },
+  {
+    "objectID": "labs/08/Lab8WriteUp.html#the-beta-part",
+    "href": "labs/08/Lab8WriteUp.html#the-beta-part",
+    "title": "Lab Eight – Probability",
+    "section": "2.1 The Beta Part",
+    "text": "2.1 The Beta Part\n\nPlot the corresponding Beta distribution. Interpret the plot in the context of a best two-out-of-three match and the Binomial distribution.\nHint: The Beta distribution is available in base R via _beta().\n\nSolution\n\n\n\n\n\n\nFigure 3: PDF and CDF of the Beta distribution with alpha=7 and beta=3\n\n\n\n\n\n\n\n\n\n\nHow does the Beta incorporate uncertainty about the skill of Player A? Compute the mean and variance of the distribution.\nHint: You will find the integrate(...) function helpful here. \\[\\begin{align*}\n  E(P) &= \\mu_P = \\int_{0}^1 p f_P(p) dp\\\\\n  var(P) &= \\sigma^2_P = \\int_{0}^1 (p-\\mu_P)^2 f_P(p) dp\\\\\n\\end{align*}\\]\n\nSolution\n\n\n\nCode\nbeta.exp.func = function(p) {\n  p * dbeta(p,shape1=alpha,shape2=beta)\n}\n\nbeta.expectation = integrate(beta.exp.func,0,1)$value\n\n(beta.expectation)\n\n\n[1] 0.7\n\n\nCode\nbeta.var.func = function(p) {\n  (p - beta.expectation)^2 * dbeta(p,shape1=alpha,shape2=beta)\n}\n\nbeta.variance = integrate(beta.var.func,0,1)\n\n(beta.variance)\n\n\n0.01909091 with absolute error &lt; 2.1e-16\n\n\n\nThe expectation is .7, which is intuitive given that we want the beta-binomial distribution to model a more complicated version of the situation where the player has a .7 probability of winning.\n\nWhat is the probability that Player A has a win probability of exactly 0.70? Make sure write out your probability statement and work to write it in terms of the distribution function (PDF/CDF) to plot the probability using ggplot.\nHint: Think carefully about the properties of continuous distributions here.\n\nSolution \\(P(P=.7) = \\int_{.7}^{.7} f(p) dp = 0\\)\n\n\n\n\n\n\nFigure 4: PDF and CDF of the Beta(7,3) distribution. The vertical line at p=0.7 shows P(P=0.7)=0\n\n\n\n\n\n\n\n\n\n\nWhat is the probability that Player A has a win probability of at least 0.50? Make sure write out your probability statement and work to write it in terms of the distribution function (PDF/CDF) to plot the probability using ggplot.\n\n\n\n\nCode\nprob = pbeta(1,shape1=alpha,shape2=beta) - pbeta(.5,shape1=alpha,shape2=beta)\n(prob)\n\n\n[1] 0.9101562\n\n\n\n\n\n\n\n\n\nFigure 5: PDF and CDF of the Beta(7,3) distribution. The shaded region represents P(P &gt;= 0.50).\n\n\n\n\n\n\n\n\n\n\nWhat is the 90th percentile of Player A’s win probability based on this Beta distribution? Make sure write out your probability statement and work to write it in terms of the distribution function (PDF/CDF) to plot the percentile using ggplot.\n\n\n\n\n\n\n\nFigure 6: PDF and CDF of the Beta(7,3) distribution. The shaded region represents the area below the 90th percentile",
+    "crumbs": [
+      "Lab Eight -- Probability"
+    ]
+  },
+  {
+    "objectID": "labs/08/Lab8WriteUp.html#the-beta-binomial-part",
+    "href": "labs/08/Lab8WriteUp.html#the-beta-binomial-part",
+    "title": "Lab Eight – Probability",
+    "section": "2.2 The Beta-Binomial Part",
+    "text": "2.2 The Beta-Binomial Part\nCompute the probability that Player A wins the match. Compare your result to the Binomial and Negative Binomial results. Make sure write out your probability statement and work to write it in terms of the distribution function (PMF/CDF) to plot the probability using ggplot\nSolution\n\n\n\nCode\nwin.prob = extraDistr::dbbinom(2,size,alpha=alpha,beta=beta) + extraDistr::dbbinom(3,size,alpha=alpha,beta=beta)\n(win.prob)\n\n\n[1] 0.7636364\n\n\n\n\n\n\n\n\n\nFigure 7: PMF and CDF of the Beta-Binomial distribution with n=3, alpha=7, and beta=3. The probability that Player A wins is P(X &gt;= 2).",
+    "crumbs": [
+      "Lab Eight -- Probability"
+    ]
+  },
+  {
+    "objectID": "labs/08/Lab8WriteUp.html#the-why",
+    "href": "labs/08/Lab8WriteUp.html#the-why",
+    "title": "Lab Eight – Probability",
+    "section": "2.3 The Why",
+    "text": "2.3 The Why\nCheck the expected value and variance of each distribution.\nAnalytically, we have \\[\\begin{align*}\n  E(X) &= np  &&var(X) = np(1-p) \\tag{Binomial Distribution}\\\\\n  E(X) &= n\\left(\\frac{\\alpha}{\\alpha+\\beta}\\right)  &&var(X) = \\frac{n \\alpha \\beta (\\alpha + \\beta + n)}{(\\alpha+\\beta)^2(\\alpha + \\beta + 1)} \\tag{Beta-Binomial Distribution}\n\\end{align*}\\]\nFor each distribution, compute the mean number of legs won for player A.\nHint: You can perform the sum over the finite support set here. \\[\\begin{align*}\n  E(X)   = \\mu_X    &= \\sum_{i=0}^3 i f_X(i)\\\\\n  var(X) = \\sigma_X &= \\sum_{i=0}^3 (i-\\mu_X) f_X(i)\n\\end{align*}\\]\nSolution\n\n\n\nCode\nbinom.exp = 0\nfor (i in 0:3) {\n  binom.exp = binom.exp + (i * dbinom(i,size,p))\n}\n(binom.exp)\n\n\n[1] 2.1\n\n\nCode\nbbinom.exp = 0\nfor (i in 0:3) {\n  bbinom.exp = bbinom.exp + (i * extraDistr::dbbinom(i,size,alpha,beta))\n}\n\n(bbinom.exp)\n\n\n[1] 2.1\n\n\n\nThe mean is the same for the two distributions!",
+    "crumbs": [
+      "Lab Eight -- Probability"
+    ]
+  },
+  {
+    "objectID": "labs/08/Lab8WriteUp.html#probability-mass-function",
+    "href": "labs/08/Lab8WriteUp.html#probability-mass-function",
+    "title": "Lab Eight – Probability",
+    "section": "3.1 Probability Mass Function",
+    "text": "3.1 Probability Mass Function\nThe mass function for this distribution is below. While it used to be available in the MBD package for R, this package is no longer available. \\[f_X(x) = \\frac{1}{c} {n \\choose x} p^x (1-p)^{n-x} \\theta^{x(n-x)}I(x \\in \\{0, 1, ..., n\\})\\] where \\[c = \\sum_{i=0}^n {n \\choose i} p^i (1-p)^{n-i} \\theta^{i(n-i)}\\]\nWrite a function in R called daltbinom() for computing the PMF of this distribution. Use your function to plot the distribution where \\(p=0.70\\) where \\(\\theta=0.50\\), \\(\\theta=1\\), and \\(\\theta=1.50\\). Comment on the differences in the context of a best two-out-of-three match\nSolution\n\n\n\nCode\ndaltbinom = function(x,size,p,theta) {\n  if (size &lt;= 0) {\n    return(-1)\n  }\n  \n  c = 0\n  for (i in 0:size) {\n    c = c + (choose(size,i) * (p**i) * (1-p)**(size-i) * (theta**(i*(size-i))))\n  }\n\n  (1/c) * (choose(size,x) * (p**x) * (1-p)**(size-x) * (theta**(x*(size-x))))\n}\n\n\nplot.pmf = function(size,p,theta) {\n  ggdat = tibble(x= 0:size) |&gt;\n  mutate(\n        PMF = daltbinom(x,size=size,p=p,theta=theta),\n        )\n  PMF.plot = ggplot() +\n    geom_linerange(data = ggdat, aes(x=x,ymin=0,ymax=PMF)) +\n    geom_hline(yintercept = 0) +\n    scale_x_continuous(\"x\",breaks=0:size) + \n    ylab(\"Probability\") + \n    theme_bw()\n\n  return(PMF.plot)\n}\n\nthetas = c(.5,1,1.5)\n\n\n\n\n\n\n\n\n\nFigure 8: PMF of Altham’s Multiplicative Binomial distribution with n=3, p=0.70, and theta=0.5.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 9: PMF of Altham’s Multiplicative Binomial distribution with n=3, p=0.70, and theta=1.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 10: PMF of Altham’s Multiplicative Binomial distribution with n=3, p=0.70, and theta=1.5.\n\n\n\n\n\n\n\n\n\nAs seen in the figures below, the choice of theta influences the probability of winning since as theta increases, the distribution shifts to the left, decreasing the probability of winning which is \\(P(X \\ge 2)\\)",
+    "crumbs": [
+      "Lab Eight -- Probability"
+    ]
+  },
+  {
+    "objectID": "labs/08/Lab8WriteUp.html#cumulative-distribution-function",
+    "href": "labs/08/Lab8WriteUp.html#cumulative-distribution-function",
+    "title": "Lab Eight – Probability",
+    "section": "3.2 Cumulative Distribution Function",
+    "text": "3.2 Cumulative Distribution Function\nUse your daltbinom() function to create a paltbinom() function for computing the CDF of this distribution. Use your function to plot the distribution where \\(p=0.70\\) where \\(\\theta=0.50\\), \\(\\theta=1\\), and \\(\\theta=1.50\\).\nSolution\n\n\n\nCode\npaltbinom = function(x, size, p, theta) {\n  sapply(x, function(xi) {\n    x.int = floor(xi)\n    cdf = 0\n    for (i in 0:x.int) {\n      cdf = cdf + daltbinom(i, size, p, theta)\n    }\n    cdf\n  })\n}\n\nplot.cdf = function(size,p,theta) {\n  ggdat = tibble(x= 0:size) |&gt;\n  mutate(\n        CDF = paltbinom(x,size=size,p=p,theta=theta)\n        )\n  \n  CDF.plot = ggplot() +\n    geom_step(data=ggdat, aes(x=x, y=CDF)) +\n    geom_point(data=ggdat, aes(x = x, y = CDF)) +\n    geom_hline(yintercept = 0) +\n    scale_x_continuous(\"x\", breaks = 0:size) +\n    ylab(\"Cumulative Probability\") + \n    theme_bw()\n\n  return(CDF.plot)\n}\n\n\n\n\n\n\n\n\n\nFigure 11: CDF of Altham’s Multiplicative Binomial distribution with n=3, p=0.70, and theta=0.5\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 12: CDF of Altham’s Multiplicative Binomial distribution with n=3, p=0.70, and theta=1\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 13: CDF of Altham’s Multiplicative Binomial distribution with n=3, p=0.70, and theta=1.5",
+    "crumbs": [
+      "Lab Eight -- Probability"
+    ]
+  },
+  {
+    "objectID": "labs/08/Lab8WriteUp.html#the-winning-probability",
+    "href": "labs/08/Lab8WriteUp.html#the-winning-probability",
+    "title": "Lab Eight – Probability",
+    "section": "3.3 The Winning Probability",
+    "text": "3.3 The Winning Probability\nCompute the probability that Player A wins the match using Altham’s Multiplicative Binomial Distribution. Compare your result to the Binomial and Negative Binomial results. Compare your results to the Beta-Binomial model, too. Make sure write out your probability statement and work to write it in terms of the distribution function (PMF/CDF) to plot the probability using ggplot.\nSolution\n\n\n\nCode\nwinning.probs = tibble(theta=thetas) |&gt;\n  mutate(prob.win = daltbinom(2,size,p,theta) + daltbinom(3,size,p,theta))\n\nwinning.probs\n\n\n# A tibble: 3 × 2\n  theta prob.win\n  &lt;dbl&gt;    &lt;dbl&gt;\n1   0.5    0.859\n2   1      0.784\n3   1.5    0.747",
+    "crumbs": [
+      "Lab Eight -- Probability"
+    ]
+  },
+  {
+    "objectID": "labs/08/Lab8WriteUp.html#probability-mass-function-1",
+    "href": "labs/08/Lab8WriteUp.html#probability-mass-function-1",
+    "title": "Lab Eight – Probability",
+    "section": "4.1 Probability Mass Function",
+    "text": "4.1 Probability Mass Function\nThe mass function for this distribution is below. \\[f_X(x) = \\left[\\int_{0}^1 dp\\left(\\frac{1}{c} {n \\choose x} p^x (1-p)^{n-x} \\theta^{x(n-x)}\\right)\\left(\\frac{\\Gamma(\\alpha+\\beta)}{\\Gamma(\\alpha)\\Gamma(\\beta)} p^{\\alpha-1}(1-p)^{\\beta-1}\\right)\\right]I(x \\in \\{0, 1, ..., n\\})\\]\nWrite a function in R called daltbbinom() for computing the PMF of this distribution. Use your function to plot the distribution where \\(\\alpha=7\\) and \\(\\beta=3\\) where \\(\\theta=0.50\\), \\(\\theta=1\\), and \\(\\theta=1.50\\). Comment on the differences in the context of a best two-out-of-three match.\n\n\n\n\nCode\ndaltbbinom = function(x,size,alpha,beta,theta) {\n  integrand = function(p) {\n    daltbinom(x,size,p,theta) * dbeta(p,alpha,beta)\n  }\n  integrate(integrand,0,1)$value\n}\n\nplot.altbbinom = function(size,alpha,beta,theta) {\n  ggdat = tibble(x= 0:size) |&gt;\n  rowwise() |&gt;\n  mutate(\n        PMF = daltbbinom(x,size,alpha,beta,theta),\n        )\n  PMF.plot = ggplot() +\n    geom_linerange(data = ggdat, aes(x=x,ymin=0,ymax=PMF)) +\n    geom_hline(yintercept = 0) +\n    scale_x_continuous(\"x\",breaks=0:size) + \n    ylab(\"Probability\") + \n    theme_bw()\n\n  return(PMF.plot)\n}\n\n\n\n\n\n\n\n\n\nFigure 14: PMF of Altham’s Multiplicative Beta-Binomial distribution with n=3, alpha=7, beta=3, and theta=0.50.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 15: PMF of Altham’s Multiplicative Beta-Binomial distribution with n=3, alpha=7, beta=3, and theta=1.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 16: PMF of Altham’s Multiplicative Beta-Binomial distribution with n=3, alpha=7, beta=3, and theta=1.50.\n\n\n\n\n\n\n\n\n\nHint: You can use the integrate() in R to compute the integral. Note that this requires the function to be vectorized – it should be unless you have added any block conditionals.",
+    "crumbs": [
+      "Lab Eight -- Probability"
     ]
   }
 ]
