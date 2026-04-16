@@ -141,7 +141,10 @@ When `CellType` is "MDM", it is a Monocyte-Derived Macrophages. That is, the cel
 **Solution**
 ```{r}
 dat.kitsberg.cleaned = dat.kitsberg.cleaned |>
-  mutate(CellType = case_when((CellType == 'MDM' | CellType == 'mac') ~ 'mac', CellType == 'mono' ~ 'mono', CellType == 'PDGFR' ~ 'PDGFR'))
+  mutate(CellType = case_when(
+                  (CellType == 'MDM' | CellType == 'mac') ~ 'mac', 
+                  CellType == 'mono' ~ 'mono', 
+                  CellType == 'PDGFR' ~ 'PDGFR'))
 
 unique(dat.kitsberg.cleaned$CellType)
 ```
@@ -168,8 +171,12 @@ Clean up the data entry. Replace the shorthand the researchers used with the nea
 
 ```{r}
 dat.kitsberg.cleaned = dat.kitsberg.cleaned |>
-  mutate(SampleType = case_when(SampleType == "primary" ~ "Healthy Donor", SampleType == "THP1" ~ "THP-1")) |>
-  mutate(CellType = case_when(CellType == "mono" ~ "Monocytes", CellType == "mac" ~ "Macrophages")) |>
+  mutate(SampleType = case_when(
+        SampleType == "primary" ~ "Healthy Donor", 
+        SampleType == "THP1" ~ "THP-1")) |>
+  mutate(CellType = case_when(
+        CellType == "mono" ~ "Monocytes", 
+        CellType == "mac" ~ "Macrophages")) |>
   mutate(Treatment = "12 Hours Post-Infection") #all uninfected already removed
 
 head(dat.kitsberg.cleaned)
@@ -185,11 +192,17 @@ In an `R` code block, combine your answers into one code block that completes th
 dat.kitsberg.cleaned = dat.kitsberg |>
   separate_wider_delim("sample","_",names=c("SampleType","CellType","Treatment")) |>
   filter(Treatment != "uninfected") |> #remove uninfected
-  mutate(CellType = case_when((CellType == 'MDM' | CellType == 'mac') ~ 'mac', CellType == 'mono' ~ 'mono')) |> #rename MDM to mac
+  mutate(CellType = case_when(
+        (CellType == 'MDM' | CellType == 'mac') ~ 'mac', 
+        CellType == 'mono' ~ 'mono')) |> #rename MDM to mac
   filter(CellType %in% c("mono","mac")) |> #only keep mono and mac
   #prettier data entry -------------
-  mutate(SampleType = case_when(SampleType == "primary" ~ "Healthy Donor", SampleType == "THP1" ~ "THP-1")) |>
-  mutate(CellType = case_when(CellType == "mono" ~ "Monocytes", CellType == "mac" ~ "Macrophages")) |>
+  mutate(SampleType = case_when(
+        SampleType == "primary" ~ "Healthy Donor", 
+        SampleType == "THP1" ~ "THP-1")) |>
+  mutate(CellType = case_when(
+    CellType == "mono" ~ "Monocytes", 
+    CellType == "mac" ~ "Macrophages")) |>
   mutate(Treatment = "12 Hours Post-Infection") #all uninfected already removed
 head(dat.kitsberg.cleaned)
 ```
@@ -241,6 +254,8 @@ dat.kitsberg.cleaned |>
   knitr::kable(digits=2)
 ```
 
+As shown in @tbl-3b, the count of both cell types across both samples is crowded around 0, while the means are higher for Macrophages across both cell types. The means differ by .03 across sample types for both cell types, which is quite small given that the variable of interest is a count variable.
+
 
 
 **Hint**: I would use `group_by(...)` and `summarize(...)` to complete this. Don't forget to use the proper formatting using `knitr::kable(...)` as described in the Quarto Cheatsheet.
@@ -275,6 +290,8 @@ dat.bal.cleaned = dat.bal |>
 head(dat.bal.cleaned$price)
 ```
 
+200 rows were removed from the dataset due to having missing values.
+
 **Hint**: I would use the `mutate(...)` function.
 
 ### Part C
@@ -283,7 +300,12 @@ The authors recorded the country that each Supramax or Ultramax ship was built i
 **Solution**
 ```{r}
 dat.bal.cleaned = dat.bal.cleaned |>
-  mutate(OriginCountry = case_when(Japan == 1 ~ "Japan", `China, People's Republic Of` == 1 ~ "China, People's Republic Of", Philippines == 1 ~ "Philippines", `Korea, South` == 1 ~ "Korea, South", TRUE ~ "Others Country Build"))
+  mutate(OriginCountry = case_when(
+    Japan == 1 ~ "Japan", 
+    `China, People's Republic Of` == 1 ~ "China, People's Republic Of", 
+    Philippines == 1 ~ "Philippines", 
+    `Korea, South` == 1 ~ "Korea, South", 
+    TRUE ~ "Others Country Build"))
 unique(dat.bal.cleaned$OriginCountry)
 ```
 
@@ -295,7 +317,11 @@ The authors recorded each Supramax and Ultramax ship's main engine manufacturer 
 **Solution**
 ```{r}
 dat.bal.cleaned = dat.bal.cleaned |>
-  mutate(Manufacturer = case_when(Caterpillar == 1 ~ "Caterpillar", `MAN-B&W` == 1 ~ "Man-B&W", Wartsila == 1 ~ 'Wartsila', Mitsubishi == 1 ~ 'Mitsubishi'))
+  mutate(Manufacturer = case_when(
+        Caterpillar == 1 ~ "Caterpillar", 
+        `MAN-B&W` == 1 ~ "Man-B&W", 
+        Wartsila == 1 ~ 'Wartsila', 
+        Mitsubishi == 1 ~ 'Mitsubishi'))
 unique(dat.bal.cleaned$Manufacturer)
 ```
 
@@ -311,7 +337,18 @@ The authors recorded P&I clubs in the columns `Japan P&I Club`, `Gard`,	`West of
 ```{r}
 #| code-overflow: wrap
 dat.bal.cleaned = dat.bal.cleaned |>
-  mutate(PI.club = case_when(`Japan P&I Club` == 1 ~ "Japan P&I Club", Gard == 1 ~ "Gard", `North of England` == 1 ~ 'North of England',`West of England` == 1 ~ "West of England", `UK P&I` == 1 ~ "UK P&I", `Britannia P&I` == 1 ~ "Britannia P&I", `London P&I Club` == 1 ~ "London P&I Club", Skuld == 1 ~ "Skuld", `Steamship Mutual` == 1 ~ "Steamship Mutual", Others == 1 ~ "Others", Unknown == 1 ~ "Unknown"))
+  mutate(PI.club = case_when(
+    `Japan P&I Club` == 1 ~ "Japan P&I Club", 
+    Gard == 1 ~ "Gard", 
+    `North of England` == 1 ~ 'North of England',
+    `West of England` == 1 ~ "West of England", 
+    `UK P&I` == 1 ~ "UK P&I", 
+    `Britannia P&I` == 1 ~ "Britannia P&I", 
+    `London P&I Club` == 1 ~ "London P&I Club",
+     Skuld == 1 ~ "Skuld", 
+     `Steamship Mutual` == 1 ~ "Steamship Mutual", 
+     Others == 1 ~ "Others", 
+     Unknown == 1 ~ "Unknown"))
 unique(dat.bal.cleaned$PI.club)
 ```
 
@@ -326,7 +363,15 @@ The authors recorded class society in the columns `Nippon Kaiji Kyokai (IACS)`, 
 **Solution**
 ```{r}
 dat.bal.cleaned = dat.bal.cleaned |>
-  mutate(Class = case_when(`Nippon Kaiji Kyokai (IACS)` == 1 ~ "Nippon Kaiji Kyokai (IACS)", `Lloyd's Register` == 1 ~ "Lloyd's Register", `Bureau Veritas (IACS)` == 1 ~ "Bureau Vertias (IACS)",`Det Norske Veritas (IACS)` == 1 ~ "Det Norske Veritas (IACS)", `American Bureau of Shipping (IACS)` == 1 ~ "American Bureau of Shipping (IACS)", `Others Class` == 1 ~ "Others Class", `With Two Classes` == 1 ~ "With Two Classes", Disclassed == 1 ~ "Disclassed"))
+  mutate(Class = case_when(
+    `Nippon Kaiji Kyokai (IACS)` == 1 ~ "Nippon Kaiji Kyokai (IACS)", 
+    `Lloyd's Register` == 1 ~ "Lloyd's Register", 
+    `Bureau Veritas (IACS)` == 1 ~ "Bureau Vertias (IACS)",
+    `Det Norske Veritas (IACS)` == 1 ~ "Det Norske Veritas (IACS)", 
+    `American Bureau of Shipping (IACS)` == 1 ~ "American Bureau of Shipping (IACS)", 
+    `Others Class` == 1 ~ "Others Class", 
+    `With Two Classes` == 1 ~ "With Two Classes", 
+    Disclassed == 1 ~ "Disclassed"))
 
 unique(dat.bal.cleaned$Class)
 ```
@@ -345,7 +390,15 @@ The authors recorded flag states in the columns `Panama`, `Marshall Islands`,	`L
 
 ```{r}
 dat.bal.cleaned = dat.bal.cleaned |>
-  mutate(FlagState = case_when(Panama == 1 ~ "Panama", `Marshall Islands` == 1 ~ "Marshall Islands", Liberia == 1 ~ "Liberia", Malta == 1 ~ "Malta", `Hong Kong, China` == 1 ~ "Hong Kong, China", Singapore == 1 ~ "Singapore", `Others Flag` == 1 ~ "Others Flag", `With two flags` == 1 ~ "With two flags"))
+  mutate(FlagState = case_when(
+      Panama == 1 ~ "Panama", 
+      `Marshall Islands` == 1 ~ "Marshall Islands", 
+      Liberia == 1 ~ "Liberia", 
+      Malta == 1 ~ "Malta", 
+      `Hong Kong, China` == 1 ~ "Hong Kong, China", 
+      Singapore == 1 ~ "Singapore", 
+      `Others Flag` == 1 ~ "Others Flag", 
+      `With two flags` == 1 ~ "With two flags"))
 
 unique(dat.bal.cleaned$FlagState)
 ```
@@ -361,15 +414,50 @@ In an `R` code block, combine your answers into one code block that completes th
 dat.bal.cleaned = dat.bal |> 
   mutate(price = (10^SPLog) / 1000000) |>
   
-  mutate(OriginCountry = case_when(Japan == 1 ~ "Japan", `China, People's Republic Of` == 1 ~ "China, People's Republic Of", Philippines == 1 ~ "Philippines", `Korea, South` == 1 ~ "Korea, South", TRUE ~ "Others Country Build")) |>
+  mutate(OriginCountry = case_when(
+    Japan == 1 ~ "Japan", 
+    `China, People's Republic Of` == 1 ~ "China, People's Republic Of",
+    Philippines == 1 ~ "Philippines", 
+    `Korea, South` == 1 ~ "Korea, South", 
+    TRUE ~ "Others Country Build")) |>
   
-  mutate(Manufacturer = case_when(Caterpillar == 1 ~ "Caterpillar", `MAN-B&W` == 1 ~ "Man-B&W", Wartsila == 1 ~ 'Wartsila', Mitsubishi == 1 ~ 'Mitsubishi')) |>
+  mutate(Manufacturer = case_when(
+    Caterpillar == 1 ~ "Caterpillar", 
+    `MAN-B&W` == 1 ~ "Man-B&W", 
+    Wartsila == 1 ~ 'Wartsila', 
+    Mitsubishi == 1 ~ 'Mitsubishi')) |>
   
-  mutate(PI.club = case_when(`Japan P&I Club` == 1 ~ "Japan P&I Club", Gard == 1 ~ "Gard", `North of England` == 1 ~ 'North of England',`West of England` == 1 ~ "West of England", `UK P&I` == 1 ~ "UK P&I", `Britannia P&I` == 1 ~ "Britannia P&I", `London P&I Club` == 1 ~ "London P&I Club", Skuld == 1 ~ "Skuld", `Steamship Mutual` == 1 ~ "Steamship Mutual", Others == 1 ~ "Others", Unknown == 1 ~ "Unknown")) |>
+  mutate(PI.club = case_when(
+    `Japan P&I Club` == 1 ~ "Japan P&I Club", 
+    Gard == 1 ~ "Gard", 
+    `North of England` == 1 ~ 'North of England',
+    `West of England` == 1 ~ "West of England",
+    `UK P&I` == 1 ~ "UK P&I", 
+    `Britannia P&I` == 1 ~ "Britannia P&I",
+    `London P&I Club` == 1 ~ "London P&I Club", 
+    Skuld == 1 ~ "Skuld", 
+    `Steamship Mutual` == 1 ~ "Steamship Mutual", 
+    Others == 1 ~ "Others", 
+    Unknown == 1 ~ "Unknown")) |>
   
-  mutate(Class = case_when(`Nippon Kaiji Kyokai (IACS)` == 1 ~ "Nippon Kaiji Kyokai (IACS)", `Lloyd's Register` == 1 ~ "Lloyd's Register", `Bureau Veritas (IACS)` == 1 ~ "Bureau Vertias (IACS)",`Det Norske Veritas (IACS)` == 1 ~ "Det Norske Veritas (IACS)", `American Bureau of Shipping (IACS)` == 1 ~ "American Bureau of Shipping (IACS)", `Others Class` == 1 ~ "Others Class", `With Two Classes` == 1 ~ "With Two Classes", Disclassed == 1 ~ "Disclassed")) |>
+  mutate(Class = case_when(
+    `Nippon Kaiji Kyokai (IACS)` == 1 ~ "Nippon Kaiji Kyokai (IACS)", 
+    `Lloyd's Register` == 1 ~ "Lloyd's Register", 
+    `Bureau Veritas (IACS)` == 1 ~ "Bureau Vertias (IACS)",
+    `Det Norske Veritas (IACS)` == 1 ~ "Det Norske Veritas (IACS)", 
+    `American Bureau of Shipping (IACS)` == 1 ~ "American Bureau of Shipping (IACS)", 
+    `Others Class` == 1 ~ "Others Class", 
+    `With Two Classes` == 1 ~ "With Two Classes",
+    Disclassed == 1 ~ "Disclassed")) |>
   
-  mutate(FlagState = case_when(Panama == 1 ~ "Panama", `Marshall Islands` == 1 ~ "Marshall Islands", Liberia == 1 ~ "Liberia", Malta == 1 ~ "Malta", `Hong Kong, China` == 1 ~ "Hong Kong, China", Singapore == 1 ~ "Singapore", `Others Flag` == 1 ~ "Others Flag", `With two flags` == 1 ~ "With two flags"))
+  mutate(FlagState = case_when(Panama == 1 ~ "Panama", 
+  `Marshall Islands` == 1 ~ "Marshall Islands", 
+  Liberia == 1 ~ "Liberia", 
+  Malta == 1 ~ "Malta", 
+  `Hong Kong, China` == 1 ~ "Hong Kong, China", 
+  Singapore == 1 ~ "Singapore", 
+  `Others Flag` == 1 ~ "Others Flag", 
+  `With two flags` == 1 ~ "With two flags"))
 ```
 
 **Note**: You will use this in the next section

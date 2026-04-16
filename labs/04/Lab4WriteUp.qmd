@@ -118,7 +118,7 @@ Ask for the column `x1`.
 **Solution:**
 
 ```{r}
-(column1 = df[,c("x1")])
+(column1 = df$x1)
 ```
 
 ## Part d
@@ -162,7 +162,7 @@ Below, I create an empty column called `x12`. Fill in the details of the `for(..
 n <- nrow(df)                # How many rows to we have to fill?
 df$x12 <- rep(NA, nrow(df))   # Create an empty column for x12
 for(i in 1:nrow(df)){
-  df[i,"x12"] = df[i,"x1"] * df[i,"x2"]
+  df$x12[i] = df$x1[i] * df$x2[i]
 }
 (head(df))
 ```
@@ -325,8 +325,7 @@ Now that we have all the things we need, let's try to print the recipe. Below, I
 #| echo: false
 #| results: asis
 # width="50%" shrinks the image for printing
-(image.url)
-cat(paste('<img src="', image.url, '" style="width: 50%; height: auto;">'))
+cat(paste0('<img src="', image.url, '" style="width: 50%; height: auto;">'))
 ```
 
 **Ingredients**
