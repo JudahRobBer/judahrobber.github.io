@@ -655,47 +655,49 @@ Figure&nbsp;3: My sad parallelogram.
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1"></a><span class="co">#initializing my matrices</span></span>
-<span id="cb40-2"><a href="#cb40-2"></a>Mk <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">0</span>,.<span class="dv">5</span>,<span class="dv">1</span>),<span class="at">nrow=</span><span class="dv">2</span>,<span class="at">ncol=</span><span class="dv">2</span>)</span>
-<span id="cb40-3"><a href="#cb40-3"></a>A <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">5</span>,<span class="sc">-</span><span class="dv">7</span>,<span class="dv">9</span>),<span class="at">nrow=</span><span class="dv">2</span>,<span class="at">ncol=</span><span class="dv">2</span>)</span>
-<span id="cb40-4"><a href="#cb40-4"></a>T <span class="ot">=</span> Mk <span class="sc">%*%</span> A</span>
-<span id="cb40-5"><a href="#cb40-5"></a></span>
-<span id="cb40-6"><a href="#cb40-6"></a><span class="co">#it's basis vector time</span></span>
-<span id="cb40-7"><a href="#cb40-7"></a>basis.vector<span class="fl">.1</span> <span class="ot">=</span> T[,<span class="dv">1</span>]</span>
-<span id="cb40-8"><a href="#cb40-8"></a>basis.vector<span class="fl">.2</span> <span class="ot">=</span> T[,<span class="dv">2</span>]</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1"></a><span class="co">#Let's plot!</span></span>
+<span id="cb40-2"><a href="#cb40-2"></a><span class="co">#| label: fig-square-v4</span></span>
+<span id="cb40-3"><a href="#cb40-3"></a><span class="co">#| fig-cap: "Vertically Sheared Parallelogram"</span></span>
+<span id="cb40-4"><a href="#cb40-4"></a><span class="co">#| fig-width: 3</span></span>
+<span id="cb40-5"><a href="#cb40-5"></a><span class="co">#| fig-height: 3</span></span>
+<span id="cb40-6"><a href="#cb40-6"></a><span class="co">#| scale: "80%"</span></span>
+<span id="cb40-7"><a href="#cb40-7"></a><span class="co">#| fig-align: "center"</span></span>
+<span id="cb40-8"><a href="#cb40-8"></a><span class="co">#| size: "scriptsize"</span></span>
 <span id="cb40-9"><a href="#cb40-9"></a></span>
-<span id="cb40-10"><a href="#cb40-10"></a><span class="co">#Grabbing my points</span></span>
-<span id="cb40-11"><a href="#cb40-11"></a>p0 <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>)</span>
-<span id="cb40-12"><a href="#cb40-12"></a>p1 <span class="ot">=</span> basis.vector<span class="fl">.1</span></span>
-<span id="cb40-13"><a href="#cb40-13"></a>p2 <span class="ot">=</span> basis.vector<span class="fl">.1</span> <span class="sc">+</span> basis.vector<span class="fl">.2</span></span>
-<span id="cb40-14"><a href="#cb40-14"></a>p3 <span class="ot">=</span> basis.vector<span class="fl">.2</span></span>
-<span id="cb40-15"><a href="#cb40-15"></a></span>
-<span id="cb40-16"><a href="#cb40-16"></a><span class="co">#Let's plot!</span></span>
-<span id="cb40-17"><a href="#cb40-17"></a><span class="co">#| label: fig-squarev3</span></span>
-<span id="cb40-18"><a href="#cb40-18"></a><span class="co">#| fig-cap: "My sad parallelogram."</span></span>
-<span id="cb40-19"><a href="#cb40-19"></a><span class="co">#| fig-width: 3</span></span>
-<span id="cb40-20"><a href="#cb40-20"></a><span class="co">#| fig-height: 3</span></span>
-<span id="cb40-21"><a href="#cb40-21"></a><span class="co">#| scale: "80%"</span></span>
-<span id="cb40-22"><a href="#cb40-22"></a><span class="co">#| fig-align: "center"</span></span>
-<span id="cb40-23"><a href="#cb40-23"></a><span class="co">#| size: "scriptsize"</span></span>
-<span id="cb40-24"><a href="#cb40-24"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb40-25"><a href="#cb40-25"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> p0[<span class="dv">1</span>], <span class="at">xend =</span> p1[<span class="dv">1</span>],</span>
-<span id="cb40-26"><a href="#cb40-26"></a>                   <span class="at">y=</span>p0[<span class="dv">2</span>], <span class="at">yend =</span> p1[<span class="dv">2</span>]))<span class="sc">+</span></span>
-<span id="cb40-27"><a href="#cb40-27"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> p0[<span class="dv">1</span>], <span class="at">y =</span> p0[<span class="dv">2</span>]), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb40-28"><a href="#cb40-28"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> p1[<span class="dv">1</span>], <span class="at">xend =</span> p2[<span class="dv">1</span>],</span>
-<span id="cb40-29"><a href="#cb40-29"></a>                   <span class="at">y=</span>p1[<span class="dv">2</span>], <span class="at">yend =</span> p2[<span class="dv">2</span>]))<span class="sc">+</span></span>
-<span id="cb40-30"><a href="#cb40-30"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> p1[<span class="dv">1</span>], <span class="at">y =</span> p1[<span class="dv">2</span>]), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb40-31"><a href="#cb40-31"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> p2[<span class="dv">1</span>], <span class="at">xend =</span> p3[<span class="dv">1</span>],</span>
-<span id="cb40-32"><a href="#cb40-32"></a>                   <span class="at">y=</span>p2[<span class="dv">2</span>], <span class="at">yend =</span> p3[<span class="dv">2</span>]))<span class="sc">+</span></span>
-<span id="cb40-33"><a href="#cb40-33"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> p2[<span class="dv">1</span>], <span class="at">y =</span> p2[<span class="dv">2</span>]), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb40-34"><a href="#cb40-34"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> p3[<span class="dv">1</span>], <span class="at">xend =</span> p0[<span class="dv">1</span>],</span>
-<span id="cb40-35"><a href="#cb40-35"></a>                   <span class="at">y=</span>p3[<span class="dv">2</span>], <span class="at">yend =</span> p0[<span class="dv">2</span>])) <span class="sc">+</span></span>
-<span id="cb40-36"><a href="#cb40-36"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> p3[<span class="dv">1</span>], <span class="at">y =</span> p3[<span class="dv">2</span>]), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb40-37"><a href="#cb40-37"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
-<span id="cb40-38"><a href="#cb40-38"></a>  <span class="fu">xlim</span>(<span class="sc">-</span><span class="dv">20</span>, <span class="dv">20</span>)<span class="sc">+</span></span>
-<span id="cb40-39"><a href="#cb40-39"></a>  <span class="fu">ylim</span>(<span class="sc">-</span><span class="dv">20</span>, <span class="dv">20</span>)<span class="sc">+</span></span>
-<span id="cb40-40"><a href="#cb40-40"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"x"</span>, </span>
-<span id="cb40-41"><a href="#cb40-41"></a>       <span class="at">y =</span> <span class="st">"y"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb40-10"><a href="#cb40-10"></a><span class="co">#initializing my matrices</span></span>
+<span id="cb40-11"><a href="#cb40-11"></a>Mk <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">0</span>,.<span class="dv">5</span>,<span class="dv">1</span>),<span class="at">nrow=</span><span class="dv">2</span>,<span class="at">ncol=</span><span class="dv">2</span>)</span>
+<span id="cb40-12"><a href="#cb40-12"></a>A <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">5</span>,<span class="sc">-</span><span class="dv">7</span>,<span class="dv">9</span>),<span class="at">nrow=</span><span class="dv">2</span>,<span class="at">ncol=</span><span class="dv">2</span>)</span>
+<span id="cb40-13"><a href="#cb40-13"></a>T <span class="ot">=</span> Mk <span class="sc">%*%</span> A</span>
+<span id="cb40-14"><a href="#cb40-14"></a></span>
+<span id="cb40-15"><a href="#cb40-15"></a><span class="co">#it's basis vector time</span></span>
+<span id="cb40-16"><a href="#cb40-16"></a>basis.vector<span class="fl">.1</span> <span class="ot">=</span> T[,<span class="dv">1</span>]</span>
+<span id="cb40-17"><a href="#cb40-17"></a>basis.vector<span class="fl">.2</span> <span class="ot">=</span> T[,<span class="dv">2</span>]</span>
+<span id="cb40-18"><a href="#cb40-18"></a></span>
+<span id="cb40-19"><a href="#cb40-19"></a><span class="co">#Grabbing my points</span></span>
+<span id="cb40-20"><a href="#cb40-20"></a>p0 <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>)</span>
+<span id="cb40-21"><a href="#cb40-21"></a>p1 <span class="ot">=</span> basis.vector<span class="fl">.1</span></span>
+<span id="cb40-22"><a href="#cb40-22"></a>p2 <span class="ot">=</span> basis.vector<span class="fl">.1</span> <span class="sc">+</span> basis.vector<span class="fl">.2</span></span>
+<span id="cb40-23"><a href="#cb40-23"></a>p3 <span class="ot">=</span> basis.vector<span class="fl">.2</span></span>
+<span id="cb40-24"><a href="#cb40-24"></a></span>
+<span id="cb40-25"><a href="#cb40-25"></a></span>
+<span id="cb40-26"><a href="#cb40-26"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb40-27"><a href="#cb40-27"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> p0[<span class="dv">1</span>], <span class="at">xend =</span> p1[<span class="dv">1</span>],</span>
+<span id="cb40-28"><a href="#cb40-28"></a>                   <span class="at">y=</span>p0[<span class="dv">2</span>], <span class="at">yend =</span> p1[<span class="dv">2</span>]))<span class="sc">+</span></span>
+<span id="cb40-29"><a href="#cb40-29"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> p0[<span class="dv">1</span>], <span class="at">y =</span> p0[<span class="dv">2</span>]), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb40-30"><a href="#cb40-30"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> p1[<span class="dv">1</span>], <span class="at">xend =</span> p2[<span class="dv">1</span>],</span>
+<span id="cb40-31"><a href="#cb40-31"></a>                   <span class="at">y=</span>p1[<span class="dv">2</span>], <span class="at">yend =</span> p2[<span class="dv">2</span>]))<span class="sc">+</span></span>
+<span id="cb40-32"><a href="#cb40-32"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> p1[<span class="dv">1</span>], <span class="at">y =</span> p1[<span class="dv">2</span>]), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb40-33"><a href="#cb40-33"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> p2[<span class="dv">1</span>], <span class="at">xend =</span> p3[<span class="dv">1</span>],</span>
+<span id="cb40-34"><a href="#cb40-34"></a>                   <span class="at">y=</span>p2[<span class="dv">2</span>], <span class="at">yend =</span> p3[<span class="dv">2</span>]))<span class="sc">+</span></span>
+<span id="cb40-35"><a href="#cb40-35"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> p2[<span class="dv">1</span>], <span class="at">y =</span> p2[<span class="dv">2</span>]), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb40-36"><a href="#cb40-36"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> p3[<span class="dv">1</span>], <span class="at">xend =</span> p0[<span class="dv">1</span>],</span>
+<span id="cb40-37"><a href="#cb40-37"></a>                   <span class="at">y=</span>p3[<span class="dv">2</span>], <span class="at">yend =</span> p0[<span class="dv">2</span>])) <span class="sc">+</span></span>
+<span id="cb40-38"><a href="#cb40-38"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> p3[<span class="dv">1</span>], <span class="at">y =</span> p3[<span class="dv">2</span>]), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb40-39"><a href="#cb40-39"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb40-40"><a href="#cb40-40"></a>  <span class="fu">xlim</span>(<span class="sc">-</span><span class="dv">20</span>, <span class="dv">20</span>)<span class="sc">+</span></span>
+<span id="cb40-41"><a href="#cb40-41"></a>  <span class="fu">ylim</span>(<span class="sc">-</span><span class="dv">20</span>, <span class="dv">20</span>)<span class="sc">+</span></span>
+<span id="cb40-42"><a href="#cb40-42"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"x"</span>, </span>
+<span id="cb40-43"><a href="#cb40-43"></a>       <span class="at">y =</span> <span class="st">"y"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -729,47 +731,49 @@ Figure&nbsp;3: My sad parallelogram.
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1"></a><span class="co">#initializing my matrices</span></span>
-<span id="cb43-2"><a href="#cb43-2"></a>Mk <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,.<span class="dv">5</span>,<span class="dv">0</span>,<span class="dv">1</span>),<span class="at">nrow=</span><span class="dv">2</span>,<span class="at">ncol=</span><span class="dv">2</span>)</span>
-<span id="cb43-3"><a href="#cb43-3"></a>A <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">5</span>,<span class="sc">-</span><span class="dv">7</span>,<span class="dv">9</span>),<span class="at">nrow=</span><span class="dv">2</span>,<span class="at">ncol=</span><span class="dv">2</span>)</span>
-<span id="cb43-4"><a href="#cb43-4"></a>T <span class="ot">=</span> Mk <span class="sc">%*%</span> A</span>
-<span id="cb43-5"><a href="#cb43-5"></a></span>
-<span id="cb43-6"><a href="#cb43-6"></a><span class="co">#it's basis vector time</span></span>
-<span id="cb43-7"><a href="#cb43-7"></a>basis.vector<span class="fl">.1</span> <span class="ot">=</span> T[,<span class="dv">1</span>]</span>
-<span id="cb43-8"><a href="#cb43-8"></a>basis.vector<span class="fl">.2</span> <span class="ot">=</span> T[,<span class="dv">2</span>]</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1"></a><span class="co">#Let's plot!</span></span>
+<span id="cb43-2"><a href="#cb43-2"></a><span class="co">#| label: fig-square-v5</span></span>
+<span id="cb43-3"><a href="#cb43-3"></a><span class="co">#| fig-cap: "Horizontally Sheered Parallelogram."</span></span>
+<span id="cb43-4"><a href="#cb43-4"></a><span class="co">#| fig-width: 3</span></span>
+<span id="cb43-5"><a href="#cb43-5"></a><span class="co">#| fig-height: 3</span></span>
+<span id="cb43-6"><a href="#cb43-6"></a><span class="co">#| scale: "80%"</span></span>
+<span id="cb43-7"><a href="#cb43-7"></a><span class="co">#| fig-align: "center"</span></span>
+<span id="cb43-8"><a href="#cb43-8"></a><span class="co">#| size: "scriptsize"</span></span>
 <span id="cb43-9"><a href="#cb43-9"></a></span>
-<span id="cb43-10"><a href="#cb43-10"></a><span class="co">#Grabbing my points</span></span>
-<span id="cb43-11"><a href="#cb43-11"></a>p0 <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>)</span>
-<span id="cb43-12"><a href="#cb43-12"></a>p1 <span class="ot">=</span> basis.vector<span class="fl">.1</span></span>
-<span id="cb43-13"><a href="#cb43-13"></a>p2 <span class="ot">=</span> basis.vector<span class="fl">.1</span> <span class="sc">+</span> basis.vector<span class="fl">.2</span></span>
-<span id="cb43-14"><a href="#cb43-14"></a>p3 <span class="ot">=</span> basis.vector<span class="fl">.2</span></span>
-<span id="cb43-15"><a href="#cb43-15"></a></span>
-<span id="cb43-16"><a href="#cb43-16"></a><span class="co">#Let's plot!</span></span>
-<span id="cb43-17"><a href="#cb43-17"></a><span class="co">#| label: fig-squarev3</span></span>
-<span id="cb43-18"><a href="#cb43-18"></a><span class="co">#| fig-cap: "My sad parallelogram."</span></span>
-<span id="cb43-19"><a href="#cb43-19"></a><span class="co">#| fig-width: 3</span></span>
-<span id="cb43-20"><a href="#cb43-20"></a><span class="co">#| fig-height: 3</span></span>
-<span id="cb43-21"><a href="#cb43-21"></a><span class="co">#| scale: "80%"</span></span>
-<span id="cb43-22"><a href="#cb43-22"></a><span class="co">#| fig-align: "center"</span></span>
-<span id="cb43-23"><a href="#cb43-23"></a><span class="co">#| size: "scriptsize"</span></span>
-<span id="cb43-24"><a href="#cb43-24"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb43-25"><a href="#cb43-25"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> p0[<span class="dv">1</span>], <span class="at">xend =</span> p1[<span class="dv">1</span>],</span>
-<span id="cb43-26"><a href="#cb43-26"></a>                   <span class="at">y=</span>p0[<span class="dv">2</span>], <span class="at">yend =</span> p1[<span class="dv">2</span>]))<span class="sc">+</span></span>
-<span id="cb43-27"><a href="#cb43-27"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> p0[<span class="dv">1</span>], <span class="at">y =</span> p0[<span class="dv">2</span>]), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb43-28"><a href="#cb43-28"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> p1[<span class="dv">1</span>], <span class="at">xend =</span> p2[<span class="dv">1</span>],</span>
-<span id="cb43-29"><a href="#cb43-29"></a>                   <span class="at">y=</span>p1[<span class="dv">2</span>], <span class="at">yend =</span> p2[<span class="dv">2</span>]))<span class="sc">+</span></span>
-<span id="cb43-30"><a href="#cb43-30"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> p1[<span class="dv">1</span>], <span class="at">y =</span> p1[<span class="dv">2</span>]), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb43-31"><a href="#cb43-31"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> p2[<span class="dv">1</span>], <span class="at">xend =</span> p3[<span class="dv">1</span>],</span>
-<span id="cb43-32"><a href="#cb43-32"></a>                   <span class="at">y=</span>p2[<span class="dv">2</span>], <span class="at">yend =</span> p3[<span class="dv">2</span>]))<span class="sc">+</span></span>
-<span id="cb43-33"><a href="#cb43-33"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> p2[<span class="dv">1</span>], <span class="at">y =</span> p2[<span class="dv">2</span>]), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb43-34"><a href="#cb43-34"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> p3[<span class="dv">1</span>], <span class="at">xend =</span> p0[<span class="dv">1</span>],</span>
-<span id="cb43-35"><a href="#cb43-35"></a>                   <span class="at">y=</span>p3[<span class="dv">2</span>], <span class="at">yend =</span> p0[<span class="dv">2</span>])) <span class="sc">+</span></span>
-<span id="cb43-36"><a href="#cb43-36"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> p3[<span class="dv">1</span>], <span class="at">y =</span> p3[<span class="dv">2</span>]), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb43-37"><a href="#cb43-37"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
-<span id="cb43-38"><a href="#cb43-38"></a>  <span class="fu">xlim</span>(<span class="sc">-</span><span class="dv">20</span>, <span class="dv">20</span>)<span class="sc">+</span></span>
-<span id="cb43-39"><a href="#cb43-39"></a>  <span class="fu">ylim</span>(<span class="sc">-</span><span class="dv">20</span>, <span class="dv">20</span>)<span class="sc">+</span></span>
-<span id="cb43-40"><a href="#cb43-40"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"x"</span>, </span>
-<span id="cb43-41"><a href="#cb43-41"></a>       <span class="at">y =</span> <span class="st">"y"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb43-10"><a href="#cb43-10"></a><span class="co">#initializing my matrices</span></span>
+<span id="cb43-11"><a href="#cb43-11"></a>Mk <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,.<span class="dv">5</span>,<span class="dv">0</span>,<span class="dv">1</span>),<span class="at">nrow=</span><span class="dv">2</span>,<span class="at">ncol=</span><span class="dv">2</span>)</span>
+<span id="cb43-12"><a href="#cb43-12"></a>A <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">5</span>,<span class="sc">-</span><span class="dv">7</span>,<span class="dv">9</span>),<span class="at">nrow=</span><span class="dv">2</span>,<span class="at">ncol=</span><span class="dv">2</span>)</span>
+<span id="cb43-13"><a href="#cb43-13"></a>T <span class="ot">=</span> Mk <span class="sc">%*%</span> A</span>
+<span id="cb43-14"><a href="#cb43-14"></a></span>
+<span id="cb43-15"><a href="#cb43-15"></a><span class="co">#it's basis vector time</span></span>
+<span id="cb43-16"><a href="#cb43-16"></a>basis.vector<span class="fl">.1</span> <span class="ot">=</span> T[,<span class="dv">1</span>]</span>
+<span id="cb43-17"><a href="#cb43-17"></a>basis.vector<span class="fl">.2</span> <span class="ot">=</span> T[,<span class="dv">2</span>]</span>
+<span id="cb43-18"><a href="#cb43-18"></a></span>
+<span id="cb43-19"><a href="#cb43-19"></a><span class="co">#Grabbing my points</span></span>
+<span id="cb43-20"><a href="#cb43-20"></a>p0 <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>)</span>
+<span id="cb43-21"><a href="#cb43-21"></a>p1 <span class="ot">=</span> basis.vector<span class="fl">.1</span></span>
+<span id="cb43-22"><a href="#cb43-22"></a>p2 <span class="ot">=</span> basis.vector<span class="fl">.1</span> <span class="sc">+</span> basis.vector<span class="fl">.2</span></span>
+<span id="cb43-23"><a href="#cb43-23"></a>p3 <span class="ot">=</span> basis.vector<span class="fl">.2</span></span>
+<span id="cb43-24"><a href="#cb43-24"></a></span>
+<span id="cb43-25"><a href="#cb43-25"></a></span>
+<span id="cb43-26"><a href="#cb43-26"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb43-27"><a href="#cb43-27"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> p0[<span class="dv">1</span>], <span class="at">xend =</span> p1[<span class="dv">1</span>],</span>
+<span id="cb43-28"><a href="#cb43-28"></a>                   <span class="at">y=</span>p0[<span class="dv">2</span>], <span class="at">yend =</span> p1[<span class="dv">2</span>]))<span class="sc">+</span></span>
+<span id="cb43-29"><a href="#cb43-29"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> p0[<span class="dv">1</span>], <span class="at">y =</span> p0[<span class="dv">2</span>]), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb43-30"><a href="#cb43-30"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> p1[<span class="dv">1</span>], <span class="at">xend =</span> p2[<span class="dv">1</span>],</span>
+<span id="cb43-31"><a href="#cb43-31"></a>                   <span class="at">y=</span>p1[<span class="dv">2</span>], <span class="at">yend =</span> p2[<span class="dv">2</span>]))<span class="sc">+</span></span>
+<span id="cb43-32"><a href="#cb43-32"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> p1[<span class="dv">1</span>], <span class="at">y =</span> p1[<span class="dv">2</span>]), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb43-33"><a href="#cb43-33"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> p2[<span class="dv">1</span>], <span class="at">xend =</span> p3[<span class="dv">1</span>],</span>
+<span id="cb43-34"><a href="#cb43-34"></a>                   <span class="at">y=</span>p2[<span class="dv">2</span>], <span class="at">yend =</span> p3[<span class="dv">2</span>]))<span class="sc">+</span></span>
+<span id="cb43-35"><a href="#cb43-35"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> p2[<span class="dv">1</span>], <span class="at">y =</span> p2[<span class="dv">2</span>]), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb43-36"><a href="#cb43-36"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> p3[<span class="dv">1</span>], <span class="at">xend =</span> p0[<span class="dv">1</span>],</span>
+<span id="cb43-37"><a href="#cb43-37"></a>                   <span class="at">y=</span>p3[<span class="dv">2</span>], <span class="at">yend =</span> p0[<span class="dv">2</span>])) <span class="sc">+</span></span>
+<span id="cb43-38"><a href="#cb43-38"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> p3[<span class="dv">1</span>], <span class="at">y =</span> p3[<span class="dv">2</span>]), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb43-39"><a href="#cb43-39"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb43-40"><a href="#cb43-40"></a>  <span class="fu">xlim</span>(<span class="sc">-</span><span class="dv">20</span>, <span class="dv">20</span>)<span class="sc">+</span></span>
+<span id="cb43-41"><a href="#cb43-41"></a>  <span class="fu">ylim</span>(<span class="sc">-</span><span class="dv">20</span>, <span class="dv">20</span>)<span class="sc">+</span></span>
+<span id="cb43-42"><a href="#cb43-42"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"x"</span>, </span>
+<span id="cb43-43"><a href="#cb43-43"></a>       <span class="at">y =</span> <span class="st">"y"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -802,47 +806,50 @@ Figure&nbsp;3: My sad parallelogram.
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1"></a><span class="co">#initializing my matrices</span></span>
-<span id="cb46-2"><a href="#cb46-2"></a>Mk <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,.<span class="dv">5</span>,.<span class="dv">5</span>,<span class="dv">1</span>),<span class="at">nrow=</span><span class="dv">2</span>,<span class="at">ncol=</span><span class="dv">2</span>)</span>
-<span id="cb46-3"><a href="#cb46-3"></a>A <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">5</span>,<span class="sc">-</span><span class="dv">7</span>,<span class="dv">9</span>),<span class="at">nrow=</span><span class="dv">2</span>,<span class="at">ncol=</span><span class="dv">2</span>)</span>
-<span id="cb46-4"><a href="#cb46-4"></a>T <span class="ot">=</span> Mk <span class="sc">%*%</span> A</span>
-<span id="cb46-5"><a href="#cb46-5"></a></span>
-<span id="cb46-6"><a href="#cb46-6"></a><span class="co">#it's basis vector time</span></span>
-<span id="cb46-7"><a href="#cb46-7"></a>basis.vector<span class="fl">.1</span> <span class="ot">=</span> T[,<span class="dv">1</span>]</span>
-<span id="cb46-8"><a href="#cb46-8"></a>basis.vector<span class="fl">.2</span> <span class="ot">=</span> T[,<span class="dv">2</span>]</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1"></a><span class="co">#Let's plot!</span></span>
+<span id="cb46-2"><a href="#cb46-2"></a><span class="co">#| label: fig-square-v6</span></span>
+<span id="cb46-3"><a href="#cb46-3"></a><span class="co">#| fig-cap: "Doubly sheered Parallelogram"</span></span>
+<span id="cb46-4"><a href="#cb46-4"></a><span class="co">#| fig-width: 3</span></span>
+<span id="cb46-5"><a href="#cb46-5"></a><span class="co">#| fig-height: 3</span></span>
+<span id="cb46-6"><a href="#cb46-6"></a><span class="co">#| scale: "80%"</span></span>
+<span id="cb46-7"><a href="#cb46-7"></a><span class="co">#| fig-align: "center"</span></span>
+<span id="cb46-8"><a href="#cb46-8"></a><span class="co">#| size: "scriptsize"</span></span>
 <span id="cb46-9"><a href="#cb46-9"></a></span>
-<span id="cb46-10"><a href="#cb46-10"></a><span class="co">#Grabbing my points</span></span>
-<span id="cb46-11"><a href="#cb46-11"></a>p0 <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>)</span>
-<span id="cb46-12"><a href="#cb46-12"></a>p1 <span class="ot">=</span> basis.vector<span class="fl">.1</span></span>
-<span id="cb46-13"><a href="#cb46-13"></a>p2 <span class="ot">=</span> basis.vector<span class="fl">.1</span> <span class="sc">+</span> basis.vector<span class="fl">.2</span></span>
-<span id="cb46-14"><a href="#cb46-14"></a>p3 <span class="ot">=</span> basis.vector<span class="fl">.2</span></span>
+<span id="cb46-10"><a href="#cb46-10"></a></span>
+<span id="cb46-11"><a href="#cb46-11"></a><span class="co">#initializing my matrices</span></span>
+<span id="cb46-12"><a href="#cb46-12"></a>Mk <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,.<span class="dv">5</span>,.<span class="dv">5</span>,<span class="dv">1</span>),<span class="at">nrow=</span><span class="dv">2</span>,<span class="at">ncol=</span><span class="dv">2</span>)</span>
+<span id="cb46-13"><a href="#cb46-13"></a>A <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">5</span>,<span class="sc">-</span><span class="dv">7</span>,<span class="dv">9</span>),<span class="at">nrow=</span><span class="dv">2</span>,<span class="at">ncol=</span><span class="dv">2</span>)</span>
+<span id="cb46-14"><a href="#cb46-14"></a>T <span class="ot">=</span> Mk <span class="sc">%*%</span> A</span>
 <span id="cb46-15"><a href="#cb46-15"></a></span>
-<span id="cb46-16"><a href="#cb46-16"></a><span class="co">#Let's plot!</span></span>
-<span id="cb46-17"><a href="#cb46-17"></a><span class="co">#| label: fig-squarev3</span></span>
-<span id="cb46-18"><a href="#cb46-18"></a><span class="co">#| fig-cap: "My sad parallelogram."</span></span>
-<span id="cb46-19"><a href="#cb46-19"></a><span class="co">#| fig-width: 3</span></span>
-<span id="cb46-20"><a href="#cb46-20"></a><span class="co">#| fig-height: 3</span></span>
-<span id="cb46-21"><a href="#cb46-21"></a><span class="co">#| scale: "80%"</span></span>
-<span id="cb46-22"><a href="#cb46-22"></a><span class="co">#| fig-align: "center"</span></span>
-<span id="cb46-23"><a href="#cb46-23"></a><span class="co">#| size: "scriptsize"</span></span>
-<span id="cb46-24"><a href="#cb46-24"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb46-25"><a href="#cb46-25"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> p0[<span class="dv">1</span>], <span class="at">xend =</span> p1[<span class="dv">1</span>],</span>
-<span id="cb46-26"><a href="#cb46-26"></a>                   <span class="at">y=</span>p0[<span class="dv">2</span>], <span class="at">yend =</span> p1[<span class="dv">2</span>]))<span class="sc">+</span></span>
-<span id="cb46-27"><a href="#cb46-27"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> p0[<span class="dv">1</span>], <span class="at">y =</span> p0[<span class="dv">2</span>]), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb46-28"><a href="#cb46-28"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> p1[<span class="dv">1</span>], <span class="at">xend =</span> p2[<span class="dv">1</span>],</span>
-<span id="cb46-29"><a href="#cb46-29"></a>                   <span class="at">y=</span>p1[<span class="dv">2</span>], <span class="at">yend =</span> p2[<span class="dv">2</span>]))<span class="sc">+</span></span>
-<span id="cb46-30"><a href="#cb46-30"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> p1[<span class="dv">1</span>], <span class="at">y =</span> p1[<span class="dv">2</span>]), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb46-31"><a href="#cb46-31"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> p2[<span class="dv">1</span>], <span class="at">xend =</span> p3[<span class="dv">1</span>],</span>
-<span id="cb46-32"><a href="#cb46-32"></a>                   <span class="at">y=</span>p2[<span class="dv">2</span>], <span class="at">yend =</span> p3[<span class="dv">2</span>]))<span class="sc">+</span></span>
-<span id="cb46-33"><a href="#cb46-33"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> p2[<span class="dv">1</span>], <span class="at">y =</span> p2[<span class="dv">2</span>]), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb46-34"><a href="#cb46-34"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> p3[<span class="dv">1</span>], <span class="at">xend =</span> p0[<span class="dv">1</span>],</span>
-<span id="cb46-35"><a href="#cb46-35"></a>                   <span class="at">y=</span>p3[<span class="dv">2</span>], <span class="at">yend =</span> p0[<span class="dv">2</span>])) <span class="sc">+</span></span>
-<span id="cb46-36"><a href="#cb46-36"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> p3[<span class="dv">1</span>], <span class="at">y =</span> p3[<span class="dv">2</span>]), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb46-37"><a href="#cb46-37"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
-<span id="cb46-38"><a href="#cb46-38"></a>  <span class="fu">xlim</span>(<span class="sc">-</span><span class="dv">20</span>, <span class="dv">20</span>)<span class="sc">+</span></span>
-<span id="cb46-39"><a href="#cb46-39"></a>  <span class="fu">ylim</span>(<span class="sc">-</span><span class="dv">20</span>, <span class="dv">20</span>)<span class="sc">+</span></span>
-<span id="cb46-40"><a href="#cb46-40"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"x"</span>, </span>
-<span id="cb46-41"><a href="#cb46-41"></a>       <span class="at">y =</span> <span class="st">"y"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb46-16"><a href="#cb46-16"></a><span class="co">#it's basis vector time</span></span>
+<span id="cb46-17"><a href="#cb46-17"></a>basis.vector<span class="fl">.1</span> <span class="ot">=</span> T[,<span class="dv">1</span>]</span>
+<span id="cb46-18"><a href="#cb46-18"></a>basis.vector<span class="fl">.2</span> <span class="ot">=</span> T[,<span class="dv">2</span>]</span>
+<span id="cb46-19"><a href="#cb46-19"></a></span>
+<span id="cb46-20"><a href="#cb46-20"></a><span class="co">#Grabbing my points</span></span>
+<span id="cb46-21"><a href="#cb46-21"></a>p0 <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>)</span>
+<span id="cb46-22"><a href="#cb46-22"></a>p1 <span class="ot">=</span> basis.vector<span class="fl">.1</span></span>
+<span id="cb46-23"><a href="#cb46-23"></a>p2 <span class="ot">=</span> basis.vector<span class="fl">.1</span> <span class="sc">+</span> basis.vector<span class="fl">.2</span></span>
+<span id="cb46-24"><a href="#cb46-24"></a>p3 <span class="ot">=</span> basis.vector<span class="fl">.2</span></span>
+<span id="cb46-25"><a href="#cb46-25"></a></span>
+<span id="cb46-26"><a href="#cb46-26"></a></span>
+<span id="cb46-27"><a href="#cb46-27"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb46-28"><a href="#cb46-28"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> p0[<span class="dv">1</span>], <span class="at">xend =</span> p1[<span class="dv">1</span>],</span>
+<span id="cb46-29"><a href="#cb46-29"></a>                   <span class="at">y=</span>p0[<span class="dv">2</span>], <span class="at">yend =</span> p1[<span class="dv">2</span>]))<span class="sc">+</span></span>
+<span id="cb46-30"><a href="#cb46-30"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> p0[<span class="dv">1</span>], <span class="at">y =</span> p0[<span class="dv">2</span>]), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb46-31"><a href="#cb46-31"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> p1[<span class="dv">1</span>], <span class="at">xend =</span> p2[<span class="dv">1</span>],</span>
+<span id="cb46-32"><a href="#cb46-32"></a>                   <span class="at">y=</span>p1[<span class="dv">2</span>], <span class="at">yend =</span> p2[<span class="dv">2</span>]))<span class="sc">+</span></span>
+<span id="cb46-33"><a href="#cb46-33"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> p1[<span class="dv">1</span>], <span class="at">y =</span> p1[<span class="dv">2</span>]), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb46-34"><a href="#cb46-34"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> p2[<span class="dv">1</span>], <span class="at">xend =</span> p3[<span class="dv">1</span>],</span>
+<span id="cb46-35"><a href="#cb46-35"></a>                   <span class="at">y=</span>p2[<span class="dv">2</span>], <span class="at">yend =</span> p3[<span class="dv">2</span>]))<span class="sc">+</span></span>
+<span id="cb46-36"><a href="#cb46-36"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> p2[<span class="dv">1</span>], <span class="at">y =</span> p2[<span class="dv">2</span>]), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb46-37"><a href="#cb46-37"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> p3[<span class="dv">1</span>], <span class="at">xend =</span> p0[<span class="dv">1</span>],</span>
+<span id="cb46-38"><a href="#cb46-38"></a>                   <span class="at">y=</span>p3[<span class="dv">2</span>], <span class="at">yend =</span> p0[<span class="dv">2</span>])) <span class="sc">+</span></span>
+<span id="cb46-39"><a href="#cb46-39"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> p3[<span class="dv">1</span>], <span class="at">y =</span> p3[<span class="dv">2</span>]), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb46-40"><a href="#cb46-40"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb46-41"><a href="#cb46-41"></a>  <span class="fu">xlim</span>(<span class="sc">-</span><span class="dv">20</span>, <span class="dv">20</span>)<span class="sc">+</span></span>
+<span id="cb46-42"><a href="#cb46-42"></a>  <span class="fu">ylim</span>(<span class="sc">-</span><span class="dv">20</span>, <span class="dv">20</span>)<span class="sc">+</span></span>
+<span id="cb46-43"><a href="#cb46-43"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"x"</span>, </span>
+<span id="cb46-44"><a href="#cb46-44"></a>       <span class="at">y =</span> <span class="st">"y"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>

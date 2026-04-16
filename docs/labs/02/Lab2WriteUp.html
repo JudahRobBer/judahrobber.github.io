@@ -305,6 +305,7 @@ window.Quarto = {
 <section id="part-b" class="level2" data-number="1.2">
 <h2 data-number="1.2" class="anchored" data-anchor-id="part-b"><span class="header-section-number">1.2</span> Part b</h2>
 <p>Load the <code>esquisse</code> package for <code>R</code>. Report the code below. It does not matter whether you set “#| eval: false” because loading the package does not add a lot of time. Note you will not evaluate any code that uses the <code>esquisse</code> package, so there is no need to load it as you compile your Quarto document.</p>
+<p><strong>Solution</strong></p>
 <p></p>
 <div class="cell">
 <details class="code-fold">
@@ -317,6 +318,7 @@ window.Quarto = {
 <section id="part-c" class="level2" data-number="1.3">
 <h2 data-number="1.3" class="anchored" data-anchor-id="part-c"><span class="header-section-number">1.3</span> Part c</h2>
 <p>How can you ask for help about the <code>esquisse</code> package for <code>R</code>? Report the code below, ensuring to set the <code>eval</code> option to <code>false</code>, using “#| eval: false”, so that the help document isn’t loaded every time you compile your Quarto document.</p>
+<p><strong>Solution</strong></p>
 <p></p>
 <div class="cell">
 <details class="code-fold">
@@ -329,20 +331,22 @@ window.Quarto = {
 <section id="part-d" class="level2" data-number="1.4">
 <h2 data-number="1.4" class="anchored" data-anchor-id="part-d"><span class="header-section-number">1.4</span> Part d</h2>
 <p>Is a demo or vignette available for the <code>esquisse</code> package for <code>R</code>? Report the code below, ensuring to set the <code>eval</code> option to <code>false</code>, using “#| eval: false”, so that the you don’t get errors when you compile your Quarto document.</p>
+<p><strong>Solution</strong></p>
 <p></p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">demo</span>(<span class="st">"esquisse"</span>)</span>
-<span id="cb4-2"><a href="#cb4-2"></a><span class="fu">vignette</span>(<span class="st">"esquisse"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">vignette</span>(<span class="at">package=</span><span class="st">"esquisse"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="fu">demo</span>(<span class="at">package=</span><span class="st">"esquisse"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<p> Unfortunately, neither exist.</p>
+<p></p>
+<p>There are two vignettes available, but no demos.</p>
 </section>
 <section id="part-e" class="level2" data-number="1.5">
 <h2 data-number="1.5" class="anchored" data-anchor-id="part-e"><span class="header-section-number">1.5</span> Part e</h2>
 <p>Add the BibTeX citation for <code>esquisse</code> package for <code>R</code> to your <code>.bib</code> file and cite it in a sentence describing what the package does below. Note you can reference a citation named <code>esquisse</code> using “[@esquisse]”.</p>
-<p>Esquisse <span class="citation" data-cites="esquisse">(<a href="#ref-esquisse" role="doc-biblioref">Meyer and Perrier 2025</a>)</span> is a useful tool for making ggplot2 <span class="citation" data-cites="ggplot2">(<a href="#ref-ggplot2" role="doc-biblioref">Wickham 2016</a>)</span> figures interactive!</p>
+<p><strong>Solution</strong> Esquisse <span class="citation" data-cites="esquisse">(<a href="#ref-esquisse" role="doc-biblioref">Meyer and Perrier 2025</a>)</span> is a useful tool for making ggplot2 <span class="citation" data-cites="ggplot2">(<a href="#ref-ggplot2" role="doc-biblioref">Wickham 2016</a>)</span> figures interactive!</p>
 </section>
 <section id="part-f" class="level2" data-number="1.6">
 <h2 data-number="1.6" class="anchored" data-anchor-id="part-f"><span class="header-section-number">1.6</span> Part f</h2>
@@ -352,6 +356,7 @@ window.Quarto = {
 <li>Drag <code>body_mass_g</code> to the X box and <code>species</code> to the fill box.</li>
 <li>Describe what you see in words. What can you conclude about Adelie, Chinstrap, and Gentoo penguins based on the resulting plot?</li>
 </ol>
+<p><strong>Solution</strong></p>
 <p>From the generated histogram, it is clear that Genloo Penguins tend to have a larger body mass than both Chinstrap and Adele Penguins. Because the right tail of the Adele and Chisntrap distribution is cut off by the Gentoo, by looking at a box plot we further see that Chinstrap and Adele have the same median body mass with a highly similar range (including outliers). By excluding outliers or by considering quartiles, Adelle penguins seem to have a slightly greater variation than Chinstrap w.r.t body mass. Gentoo penguins display the greatest variation in body mass as measured by both range and quartiles as shown in the box plot.</p>
 </section>
 </section>
@@ -420,6 +425,7 @@ window.Quarto = {
 <h2 data-number="2.1" class="anchored" data-anchor-id="part-a-1"><span class="header-section-number">2.1</span> Part a</h2>
 <p>The Fibonacci Sequence is a recursive formula: <span class="math display">\[F_n = F_{n-1} + F_{n-2}\]</span> where <span class="math inline">\(F_0=0\)</span> and <span class="math inline">\(F_1=1\)</span>.</p>
 <p>Create a vector of the first 10 Fibonacci numbers.</p>
+<p><strong>Solution</strong></p>
 <p></p>
 <div class="cell">
 <details class="code-fold">
@@ -437,11 +443,12 @@ window.Quarto = {
 <h2 data-number="2.2" class="anchored" data-anchor-id="part-b-1"><span class="header-section-number">2.2</span> Part b</h2>
 <p>Triangular Numbers are the cumulative sums of natural numbers: <span class="math display">\[F_n = \frac{n(n+1)}{2}.\]</span></p>
 <p>Create a vector of the first 10 Triangular Numbers.</p>
+<p><strong>Solution</strong></p>
 <p></p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>(<span class="at">trianguler_nums =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">6</span>,<span class="dv">10</span>,<span class="dv">15</span>,<span class="dv">21</span>,<span class="dv">28</span>,<span class="dv">36</span>,<span class="dv">45</span>,<span class="dv">55</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>(<span class="at">trianguler_nums =</span> (<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span> <span class="sc">*</span> (<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span> <span class="sc">+</span> <span class="dv">1</span>)) <span class="sc">/</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1]  1  3  6 10 15 21 28 36 45 55</code></pre>
@@ -458,6 +465,7 @@ window.Quarto = {
 <li>Create a vector containing each <code>ID</code> repeated three times, once for each treatment.</li>
 <li>Create a vector containing each <code>Treatment</code> repeated for each participant ID.</li>
 </ol>
+<p><strong>Solution</strong></p>
 <p></p>
 <div class="cell">
 <details class="code-fold">
@@ -487,6 +495,19 @@ window.Quarto = {
 <section id="part-d-1" class="level2" data-number="2.4">
 <h2 data-number="2.4" class="anchored" data-anchor-id="part-d-1"><span class="header-section-number">2.4</span> Part d</h2>
 <p>Create a vector containing the <code>character</code> “MATH” and the <code>numeric</code> 240. What is the resulting class? Explain why in a sentence.</p>
+<p><strong>Solution</strong></p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a>vec  <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"MATH"</span>,<span class="dv">240</span>)</span>
+<span id="cb30-2"><a href="#cb30-2"></a>(<span class="fu">class</span>(vec))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "character"</code></pre>
+</div>
+</div>
+<p></p>
 <p>The resulting class is <code>character</code>. R forces class consistency within a vector, and thus interprets every object in the vector into the most flexible class. Any string of characters can be a <code>character</code>, but only some strings are meaningfully interpreted as rational numbers (<code>numeric</code>).</p>
 
 
