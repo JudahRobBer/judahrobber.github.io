@@ -129,12 +129,14 @@ PMF.plot = ggplot() +
   theme_bw()
 
 CDF.plot = ggplot() +
-  geom_step(data = ggdat, aes(x = x, y = CDF)) +
+  geom_step(data = bind_rows(tibble(x = -2, CDF = 0), ggdat, tibble(x = 5, CDF = 1)),
+            aes(x = x, y = CDF)) +
   geom_point(data = ggdat, aes(x = x, y = CDF)) +
   geom_point(data = filter(ggdat, x == 1), aes(x = x, y = CDF),
              color = "darkorchid", size = 3) +
   geom_hline(yintercept = 0) +
   scale_x_continuous("x", breaks = 0:3) +
+  coord_cartesian(xlim = c(-1, size + 1)) +
   ylab("Cumulative Probability") +
   theme_bw()
 
@@ -158,8 +160,9 @@ Either you have 0 failures until the 2nd success, or 1 failure until the 2nd suc
 #| label: fig-negbinom-pmf-cdf
 #| fig-cap: "PMF and CDF of the Negative Binomial distribution with r=2 and p=0.7"
 #| echo: false
+x.limit = 8
 
-ggdat = tibble(x= 0:2) |>
+ggdat = tibble(x= 0:x.limit) |>
   mutate(
         PMF = dnbinom(x,size=size,prob=p),
         CDF = pnbinom(x,size=size,prob=p)
@@ -170,18 +173,20 @@ PMF.plot = ggplot() +
   geom_hline(yintercept = 0) +
   scale_color_manual(values = c("FALSE" = "black", "TRUE" = "darkorchid"),
                      guide = "none") +
-  scale_x_continuous("x",breaks=0:3) + 
+  scale_x_continuous("x",breaks=0:x.limit) + 
   ylab("Probability") + 
   theme_bw()
 
 CDF.plot = ggplot() +
-  geom_step(data=ggdat, aes(x=x, y=CDF)) +
+  geom_step(data = bind_rows(tibble(x = -2, CDF = 0), ggdat, tibble(x = x.limit + 2, CDF = 1)),
+            aes(x=x, y=CDF)) +
   geom_point(data=ggdat, aes(x = x, y = CDF)) +
   geom_point(data=filter(ggdat, x == 1),aes(x = x, y = CDF),
-             color = "darkorchid", size = 3) +
+             color = "darkorchid", size = size) +
   geom_hline(yintercept = 0) +
-  scale_x_continuous("x", breaks = 0:2) +
-  ylab("Cumulative Probability") + 
+  scale_x_continuous("x", breaks = 0:x.limit) +
+  coord_cartesian(xlim = c(-1, x.limit + 1)) +
+  ylab("Cumulative Probability") +
   theme_bw()
 
 PMF.plot | CDF.plot
@@ -299,7 +304,7 @@ PDF.plot | CDF.plot
 ```
 
 
-1. **What is the probability that Player A has a win probability of at least 0.50?  Make sure write out your probability statement and work to write it in terms of the distribution function (PDF/CDF) to plot the probability using `ggplot`.**
+2. **What is the probability that Player A has a win probability of at least 0.50?  Make sure write out your probability statement and work to write it in terms of the distribution function (PDF/CDF) to plot the probability using `ggplot`.**
 
 ```{r}
 prob = pbeta(1,shape1=alpha,shape2=beta) - pbeta(.5,shape1=alpha,shape2=beta)
@@ -338,7 +343,13 @@ CDF.plot <- ggplot(ggdat) +
 PDF.plot | CDF.plot
 ```
 
-1. **What is the 90th percentile of Player A's win probability based on this Beta distribution? Make sure write out your probability statement and work to write it in terms of the distribution function (PDF/CDF) to plot the percentile using `ggplot`.**
+3. **What is the 90th percentile of Player A's win probability based on this Beta distribution? Make sure write out your probability statement and work to write it in terms of the distribution function (PDF/CDF) to plot the percentile using `ggplot`.**
+
+$P(P \leq p_{0.90}) = 0.90$, so we want $p_{0.90} = F_P^{-1}(0.90)$.
+
+```{r}
+(percentile.90th = round(qbeta(.9, shape1=alpha, shape2=beta), 3))
+```
 
 ```{r}
 #| label: fig-beta-90th-percentile
@@ -380,7 +391,8 @@ PDF.plot | CDF.plot
 
 **Solution**
 ```{r}
-win.prob = extraDistr::dbbinom(2,size,alpha=alpha,beta=beta) + extraDistr::dbbinom(3,size,alpha=alpha,beta=beta)
+win.prob = dbbinom(2,size,alpha=alpha,beta=beta) + 
+  dbbinom(3,size,alpha=alpha,beta=beta)
 (win.prob)
 ```
 
@@ -391,8 +403,8 @@ win.prob = extraDistr::dbbinom(2,size,alpha=alpha,beta=beta) + extraDistr::dbbin
 
 ggdat = tibble(x= 0:size) |>
   mutate(
-        PMF = extraDistr::dbbinom(x,size=size,alpha=alpha,beta=beta),
-        CDF = extraDistr::pbbinom(x,size=size,alpha=alpha,beta=beta)
+        PMF = dbbinom(x,size=size,alpha=alpha,beta=beta),
+        CDF = pbbinom(x,size=size,alpha=alpha,beta=beta)
         )
 
 PMF.plot = ggplot() +
@@ -406,12 +418,13 @@ PMF.plot = ggplot() +
   theme_bw()
 
 CDF.plot = ggplot() +
-  geom_step(data = ggdat, aes(x = x, y = CDF)) +
+  geom_step(data = bind_rows(tibble(x = -1, CDF = 0), ggdat, tibble(x = size + 1, CDF = 1)),
+            aes(x = x, y = CDF)) +
   geom_point(data = ggdat, aes(x = x, y = CDF)) +
   geom_point(data = filter(ggdat, x == 1), aes(x = x, y = CDF),
              color = "darkorchid", size = 3) +
   geom_hline(yintercept = 0) +
-  scale_x_continuous("x", breaks = 0:size) +
+  scale_x_continuous("x", breaks = 0:size, limits = c(0, size)) +
   ylab("Cumulative Probability") +
   theme_bw()
 
@@ -436,21 +449,25 @@ Analytically, we have
 
 **Solution**
 ```{r}
-binom.exp = 0
-for (i in 0:3) {
-  binom.exp = binom.exp + (i * dbinom(i,size,p))
-}
-(binom.exp)
+x = 0:size
 
-bbinom.exp = 0
-for (i in 0:3) {
-  bbinom.exp = bbinom.exp + (i * extraDistr::dbbinom(i,size,alpha,beta))
-}
+(binom.exp = sum(x * dbinom(x, size, p)))
+(bbinom.exp = sum(x * dbbinom(x, size, alpha, beta)))
+```
 
-(bbinom.exp)
-``` 
+The mean is the same for both distributions.
 
-The mean is the same for the two distributions!
+**Variance**
+```{r}
+(binom.var.numerical = sum((x - binom.exp)^2 * dbinom(x, size, p)))
+(binom.var.formula   = size * p * (1-p))
+
+(bbinom.var.numerical = sum((x - bbinom.exp)^2 * dbbinom(x, size, alpha, beta)))
+(bbinom.var.formula   = (size * alpha * beta * (alpha + beta + size)) /
+                        ((alpha + beta)^2 * (alpha + beta + 1)))
+```
+
+The Beta-Binomial has higher variance than the Binomial, which is what we'd expect given the randomness introduced by the beta distribution.
 
 # Altham's Multiplicative Binomial Distribution
 While the Beta-Binomial enables us to model cases where winning has a clustering effect (e.g., a "hot hand").
@@ -468,7 +485,7 @@ $$c = \sum_{i=0}^n {n \choose i} p^i (1-p)^{n-i} \theta^{i(n-i)}$$
 ```{r}
 daltbinom = function(x,size,p,theta) {
   if (size <= 0) {
-    return(-1)
+    stop("value cannot be negative")
   }
   
   c = 0
@@ -499,27 +516,13 @@ thetas = c(.5,1,1.5)
 ```
 
 ```{r}
-#| label: fig-altbinom-pmf-theta-05
-#| fig-cap: "PMF of Altham's Multiplicative Binomial distribution with n=3, p=0.70, and theta=0.5."
+#| label: fig-altbinom-pmf-thetas
+#| fig-cap: "PMF of Altham's Multiplicative Binomial distribution with n=3, p=0.70 for theta=0.5, 1, and 1.5."
 #| echo: false
 
-plot.pmf(size,p,thetas[1])
-```
-
-```{r}
-#| label: fig-altbinom-pmf-theta-1
-#| fig-cap: "PMF of Altham's Multiplicative Binomial distribution with n=3, p=0.70, and theta=1."
-#| echo: false
-
-plot.pmf(size,p,thetas[2])
-```
-
-```{r}
-#| label: fig-altbinom-pmf-theta-15
-#| fig-cap: "PMF of Altham's Multiplicative Binomial distribution with n=3, p=0.70, and theta=1.5."
-#| echo: false
-
-plot.pmf(size,p,thetas[3])
+(plot.pmf(size,p,thetas[1]) + ggtitle("theta = 0.5")) |
+(plot.pmf(size,p,thetas[2]) + ggtitle("theta= 1"))   |
+(plot.pmf(size,p,thetas[3]) + ggtitle("theta= 1.5"))
 ```
 
 As seen in the figures below, the choice of theta influences the probability of winning since as theta increases, the distribution shifts to the left, decreasing the probability of winning which is $P(X \ge 2)$
@@ -546,42 +549,20 @@ plot.cdf = function(size,p,theta) {
   mutate(
         CDF = paltbinom(x,size=size,p=p,theta=theta)
         )
-  
+
   CDF.plot = ggplot() +
-    geom_step(data=ggdat, aes(x=x, y=CDF)) +
+    geom_step(data = bind_rows(tibble(x = -1, CDF = 0), ggdat, tibble(x = size + 1, CDF = 1)),
+              aes(x=x, y=CDF)) +
     geom_point(data=ggdat, aes(x = x, y = CDF)) +
     geom_hline(yintercept = 0) +
-    scale_x_continuous("x", breaks = 0:size) +
-    ylab("Cumulative Probability") + 
+    scale_x_continuous("x", breaks = 0:size, limits = c(0, size)) +
+    ylab("Cumulative Probability") +
     theme_bw()
 
   return(CDF.plot)
 }
 ```
 
-```{r}
-#| label: fig-altbinom-cdf-theta-05
-#| fig-cap: "CDF of Altham's Multiplicative Binomial distribution with n=3, p=0.70, and theta=0.5"
-#| echo: false
-
-plot.cdf(size,p,thetas[1])
-```
-
-```{r}
-#| label: fig-altbinom-cdf-theta-1
-#| fig-cap: "CDF of Altham's Multiplicative Binomial distribution with n=3, p=0.70, and theta=1"
-#| echo: false
-
-plot.cdf(size,p,thetas[2])
-```
-
-```{r}
-#| label: fig-altbinom-cdf-theta-15
-#| fig-cap: "CDF of Altham's Multiplicative Binomial distribution with n=3, p=0.70, and theta=1.5"
-#| echo: false
-
-plot.cdf(size,p,thetas[3])
-```
 
 
 
@@ -608,6 +589,9 @@ $$f_X(x) = \left[\int_{0}^1 dp\left(\frac{1}{c} {n \choose x} p^x (1-p)^{n-x} \t
 
 ```{r}
 daltbbinom = function(x,size,alpha,beta,theta) {
+  if (x < 0) {
+    stop("value cannot be negative")
+  }
   integrand = function(p) {
     daltbinom(x,size,p,theta) * dbeta(p,alpha,beta)
   }
@@ -632,27 +616,13 @@ plot.altbbinom = function(size,alpha,beta,theta) {
 ```
 
 ```{r}
-#| label: fig-altbbinom-pmf-theta-050
-#| fig-cap: "PMF of Altham's Multiplicative Beta-Binomial distribution with n=3, alpha=7, beta=3, and theta=0.50."
+#| label: fig-altbbinom-pmf-thetas
+#| fig-cap: "PMF of Altham's Multiplicative Beta-Binomial distribution with n=3, alpha=7, beta=3 for theta=0.5, 1, and 1.5."
 #| echo: false
 
-plot.altbbinom(size,alpha,beta,thetas[1])
-```
-
-```{r}
-#| label: fig-altbbinom-pmf-theta-100
-#| fig-cap: "PMF of Altham's Multiplicative Beta-Binomial distribution with n=3, alpha=7, beta=3, and theta=1."
-#| echo: false
-
-plot.altbbinom(size,alpha,beta,thetas[2])
-```
-
-```{r}
-#| label: fig-altbbinom-pmf-theta-150
-#| fig-cap: "PMF of Altham's Multiplicative Beta-Binomial distribution with n=3, alpha=7, beta=3, and theta=1.50."
-#| echo: false
-
-plot.altbbinom(size,alpha,beta,thetas[3])
+(plot.altbbinom(size,alpha,beta,thetas[1]) + ggtitle("theta = 0.5")) |
+(plot.altbbinom(size,alpha,beta,thetas[2]) + ggtitle("theta = 1"))   |
+(plot.altbbinom(size,alpha,beta,thetas[3]) + ggtitle("theta = 1.5"))
 ```
 
 
