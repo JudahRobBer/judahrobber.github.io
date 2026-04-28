@@ -141,7 +141,6 @@ Suppose a player has a 50\% chance of winning a specific leg, that is let $p=0.5
 ```{r}
 #| label: fig-parta
 #| fig-cap: "Win Probability by Theta"
-#| echo: false
 #| fig-width: 6
 #| fig-height: 4
 df = tibble(theta = seq(from=0,to=1.5,by=.1)) |> 
@@ -162,7 +161,6 @@ Now, plot Altham's Multiplicative Binomial Distribution under the same parameter
 ```{r}
 #| label: fig-partb
 #| fig-cap: "Altham's Multiplicative Binomial PMF with n = 11"
-#| echo: false
 #| fig-width: 6
 #| fig-height: 4
 
@@ -205,7 +203,6 @@ Altham's Multiplicative Binomial Distribution does not typically simplify to the
 $E(X^k) =\sum_{x=0}^{n}x^k*f_X(x) =\sum_{x=0}^{n}x^k*\frac{1}{c} {n \choose x} p^x (1-p)^{n-x} \theta^{x(n-x)}$
 
 ```{r}
-
 moment = function(k,n,p,theta) {
   sum = 0
   for (x in 0:n) {
@@ -280,7 +277,6 @@ In `pdc2024.csv`, I have provided the data for the 2024 Premier League season. T
 **Solution** 
 
 ```{r}
-#| echo: false
 dat.pdc = read_csv("pdc2024.csv")
 dat.pdc.cleaned = dat.pdc |>
   filter(Night != "Finals", Score != "w/o") |>
@@ -292,7 +288,6 @@ dat.pdc.cleaned = dat.pdc |>
 ```{r}
 #| label: fig-game-length_distribution
 #| fig-cap: "Distribution of game length"
-#| echo: false
 #| fig-width: 6
 #| fig-height: 4
 
@@ -315,6 +310,7 @@ dat.pdc.cleaned |>
   geom_col() +
   coord_flip() +
   labs(x = NULL, y = "Games Won") +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
   theme_bw()
 ```
 
@@ -323,7 +319,6 @@ dat.pdc.cleaned |>
 ```{r}
 #| label: tbl-leg-spread-by-player
 #| tbl-cap: "Leg Spread By Player"
-#| echo: false
 
 dat.pdc.long = dat.pdc.cleaned |>
   pivot_longer(cols = c(Winner, Loser), names_to = "Status", values_to = "player") |>
@@ -346,7 +341,6 @@ table = dat.pdc.summary |> rename(`Total Won` = TotalWon, `Total Lost` = TotalLo
 ```{r}
 #| label: fig-leg-spread-by-player
 #| fig-cap: "Leg Spread By Player"
-#| echo: false
 #| fig-width: 6
 #| fig-height: 4
 
@@ -373,8 +367,6 @@ For each player in the 2024 season, use the number of legs won in each match to 
 **Solution**
 
 ```{r}
-#| echo: False
-
 find_mle = function(df,ll.func,guess,player) {
   legs = c(
     dat.pdc.cleaned$WinnerLegs[dat.pdc.cleaned$Winner == player],
@@ -404,7 +396,6 @@ for (player in players) {
 ```
 
 ```{r}
-#| echo: false
 #| label: tbl-altbinom-MLE-by-player
 #| tbl-cap: "MLE Estimation for Altham's Multi Binomial by Player"
 
@@ -412,7 +403,6 @@ df.altbinom.mle |> arrange(rank) |> knitr::kable(digits=2)
 ```
 
 ```{r}
-#| echo: false
 #| label: tbl-altbinom-cor-summary
 #| tbl-cap: "Correlation of p and theta estimates with rank for Altham's Multi. Binomial"
 df.altbinom.mle |> summarize( 
@@ -421,7 +411,7 @@ rank_p_cor = cor(x =rank, y = p)
 ) |> knitr::kable(digits = 2)
 ```
 
-As seen in @tbl-altbinom-MLE-by-player, the estimated single game win probability is monotonically decreasing with rank, consistent with the idea that a player who is more likely to win a random game can be broadly expected to perform better overall, this is supported by the correlation of $-.95$ shown in @tbl-altbinom-cor-summary. The relationshop betweeen rank and theta isn't as clear, but there is a also large negative correlation between rank and theta. Given the limited number of datapoints, correlation analysis has only limited utility.
+As seen in @tbl-altbinom-MLE-by-player, the estimated single game win probability is monotonically decreasing with rank, consistent with the idea that a player who is more likely to win a random game can be broadly expected to perform better overall, this is supported by the correlation of $-.95$ shown in @tbl-altbinom-cor-summary. The relationship betweeen rank and theta isn't as clear, but there is a also large negative correlation between rank and theta. Given the limited number of datapoints, correlation analysis has only limited utility.
 
 
 
@@ -447,7 +437,6 @@ For each player in the 2024 season, use the number of legs won in each match to 
 **Solution**
 
 ```{r}
-#| echo: False
 ll.altbbinom = function(par,data,neg=F) {
   alpha = exp(par[1])
   beta = exp(par[2])
@@ -475,7 +464,6 @@ df.altbbinom.mle = df.altbbinom.mle |>
 ```
 
 ```{r}
-#| echo: false
 #| label: tbl-altbbinom-MLE-by-player
 #| tbl-cap: "MLE Estimation for Altham's Multiplicative Beta Binomial by Player"
 
@@ -501,7 +489,7 @@ rank_beta_cor = cor(x=rank, y = beta)
 #| fig-width: 6
 #| fig-height: 4
 
-dat.beta.pdf <- df.altbbinom.mle |>
+dat.beta.pdf = df.altbbinom.mle |>
   dplyr::select(player,alpha,beta) |>
   pmap(function(player, alpha, beta) {
     tibble(x = seq(0, 1, by = .0001)) |>
