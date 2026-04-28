@@ -18,6 +18,7 @@ website:
       - labs/08/Lab8WriteUp.qmd
       - labs/10/Lab10WriteUp.qmd
       - labs/11/Lab11WriteUp.qmd
+      - review/HypothesisTesting.qmd
       
 
 format:

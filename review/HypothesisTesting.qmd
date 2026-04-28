@@ -1,0 +1,196 @@
+---
+title: Review of One Sample T-testing # Title of the document
+
+# Bibliography Details
+bibliography: HypothesisTesting.bib  # Name of bib file in the same folder 
+bibliographystyle: apa            # Bibliography style
+
+execute:               # Default settings for code blocks
+  warning: false       # Do not print warnings
+  message: false       # Do not print messages
+  size: "scriptsize"   # Set code size to script size
+
+# Below will do html by default. To render the entire project
+# Use the following code:
+# quarto::quarto_render("Lab10WriteUp.qmd")
+format:
+  pdf:        # Specify .pdf formatting options 
+    documentclass: article     # Document Class
+    number-sections: true      # Number Sections
+    reference-section-title: "References" # Title for reference section
+    code-line-numbers: true    # Line numbers printed in code
+    cap-location: top          # Captions at the top of tables 
+    geometry:
+      - top=0.75in
+      - left=0.75in
+      - bottom=0.75in
+      - right=0.75in
+  html:       # Specify HTML formatting options 
+    number-sections: true      # Number Sections
+    code-fold: true            # Button to show code
+    code-line-numbers: true    # Line numbers printed in code
+    cap-location: top          # Captions at the top of tables and figures
+format-links: [pdf]
+---
+```{r}
+#| echo: false
+
+default_chunk_hook  <- knitr::knit_hooks$get("chunk")
+
+latex_font_size <- c("Huge", "huge", "LARGE", "Large", 
+                     "large", "normalsize", "small", 
+                     "footnotesize", "scriptsize", "tiny")
+
+knitr::knit_hooks$set(chunk = function(x, options) {
+  x <- default_chunk_hook(x, options)
+  if(options$size %in% latex_font_size) {
+    paste0("\n \\", options$size, "\n\n", 
+      x, 
+      "\n\n \\normalsize"
+    )
+  } else {
+    x
+  }
+})
+```
+
+```{r}
+#| label: load-packages
+#| include: false
+library(tidyverse)
+library(patchwork)
+library(ggplot2)
+```
+
+## Motivation
+A majority of the data that has been collected in the history of science was collected to answer a specific question about a population of interest. Depending on the field, this broad category of question can be framed quite differently:
+
+* Does medicine x cause change y in patients with condition z?
+* Do people with background a have a bias toward belief b?
+* Does natural disaster $\alpha$ cause more damage than disaster $\beta$?
+* Do companies with risk profile 1 have better outcomes than companies with risk profile 2?
+
+Each scientist or organization asking one such question wants an answer that applies to their entire population of interest, not just a subset. If the data collected corresponds to a non-representative subset of the population, the average population value of the quantity of interest might differ wildly and unpredictably from what's implied by the sample. 
+
+Without a representative sample, any attempt to generalize from sample data to population level information is fraught. Unfortunately, there are several other conditions that our data have to meet to be useful for answering the majority of these questions. The statistical formalization of this process is known as hypothesis testing and in the following review I will provide a summary of the underlying mathematics of the one sample t-test accompanied by a small case study.
+
+## Mathematical Foundations
+
+When performing a hypothesis test, we are interested in making a claim about the value of a population statistic, in our case the mean. Since we only have data from a sample of the population, we are trying to infer information about the population statistic from the sample statistic. For the t-test, we are specifically interested in the mean of the population, so going forward I'll refer to the mean, rather than the "statistic of interesst".
+
+The population only has one mean, so the population mean is a fixed value. In contrast, depending on the particular sample that you've selected, the mean will differ across samples. The distribution of these sample means is aptly referred to as our sampling distribution, and it's the backbone of hypothesis testing.
+
+```{r}
+population = sample(1:1000,500,replace=TRUE)
+sample.means = rep(NA,times=10)
+for (i in 1:10) {
+  smpl = sample(population,50)
+  sample.means[i] = mean(smpl)
+}
+
+(mean(population))
+(sample.means)
+```
+
+
+### Motivating the Central Limit Theorem
+In a nutshell, the idea of hypothesis testing is to quantify how unlikely it is to observe the sample we observed given a population distribution that differs from what we think the population distribution should be. Since we never actually get the entire sampling distribution, we have to make assumptions about the sampling distribution. At this point, we have to ask two questions of our data
+
+* Does the sample look normal?
+* is the sample size big enough?
+
+We need one of these answers to be yes. If representative sample is approximately normal, we'd expect the population to be approximately normal. Our first fun math fact is that if the population distribution is normal, the distribution of sample means is also normal. Our arguably even funner fact is that so long as our sample size is big enough, the distribution of the population is irrelevant! The distribution of sample means will still be normal. This awesome property arises out of the central limit theorem. The most intuitive explanation of this concept I've seen is 3blue1Brown's treatment of the subject using the sums of weighted dice. 
+
+```{r}
+#| echo: false
+#| label: fig-weighted-die
+#| fig-cap: PMF of weighted die
+#| fig-width: 3
+#| fig-height: 2
+faces = 1:6
+probs = c(0.50, 0.25, 0.12, 0.07, 0.04, 0.02)
+
+die_df = data.frame(face = faces, probability = probs)
+
+ggplot(die_df, aes(x = factor(face), y = probability)) +
+  geom_col(fill = "steelblue", color = "black") +
+  labs(x = "Face", y = "Probability") +
+  theme_bw()
+```
+
+```{r}
+#| echo: false
+#| label: fig-clt-dice-sum
+#| fig-cap: Distribution of dice sums for 10,20 and 30 dice
+n_sims = 10000
+dice_counts = c(5, 50, 500)
+
+sim_data = map_dfr(dice_counts, function(n) {
+  sums = replicate(n_sims, sum(sample(faces, n, replace = TRUE, prob = probs)))
+  data.frame(n_dice = paste(n, "Dice"), total = sums)
+}) |>
+  mutate(n_dice = factor(n_dice, levels = paste(dice_counts, "Dice")))
+
+ggplot(sim_data, aes(x = total)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 40,
+                 fill = "steelblue", color = "black", alpha = 0.7) +
+  facet_wrap(~n_dice, scales = "free") +
+  labs(x = "Sum", y = "Density") +
+  theme_minimal()
+```
+
+We can see in @fig-clt-dice-sum that as the sample size increases, the sampling distribution is increasingly symmetric and bell shaped. This example illustrates the fact that the sum of many idependent identically distributed variables is approximately normal. The mean is such a sum divided by a constant. Dividing by a constant is a linear transformation, and any linear transformation of a normal random variable is normal. This is how the CLT is the foundation of t-testing. Now would be a reasonable time to talk about what t is. 
+
+### introducing t
+t best understood with the more familiar notion of z-scores. A z-score is a standardized way of talking about much an observation differs from the mean under a normal distribution with mean $\mu$ and standard deviation $\sigma$. The direct interpretation is the number of standard deviations the observation is above or below the mean. the formula for the z-score is:
+
+$z = \frac{x - \mu}{\sigma}$
+
+As mentioned before, a linear transformation of a normal distribution is normal, and the particularly nice thing about the distribution of z is that it's been normalized to have a mean of 0 and a standard deviation of 1. This normalization makes working with the normal distribution much easier. Anyway, here's the formula for t:
+
+$t = \frac{x - \bar{\mu}}{\frac{s}{\sqrt(n)}}$
+
+$\bar{\mu}$ is the sample mean, and $s$ is the sample standard deviation. By comparing the two formulas, two immediate things jump out: **(1)** the population mean and standard deviation have been replaced by the sample mean and standard deviation **(2)** we are scaling the sample standard deviation by the size of the sample. Given that we know that the z-score follows a normal distribution, a natural guess might be that we got so lucky that t also follows a normal distribution. Unfortunately we are only that lucky at the limit, because t follows it's own distribution, the t-distribution! The t-distribution is centered at 0 and it's only parameter is the degrees of freedom, which we always set as $n - 1$. Since we often want to talk about populations that we don't expect to be centered at 0, we can shift the t distribution as needed. As n approaches infinity, the t distribution approaches the normal distribution:
+
+```{r}
+#| label: fig-t-vs-normal
+#| fig-cap: t-distribution approaching normal as degrees of freedom increase
+#| echo: false
+#| fig-width: 4.67
+#| fig-height: 3.33
+x = seq(-4, 4, length.out = 500)
+dfs = c(1, 5, 10, 30)
+
+t_data = map_dfr(dfs, function(df) {
+  data.frame(x = x, density = dt(x, df = df), label = paste("t (df =", df, ")"))
+})
+
+norm_data = data.frame(x = x, density = dnorm(x), label = "Normal")
+
+plot_data = bind_rows(t_data, norm_data) |>
+  mutate(label = factor(label, levels = c(paste("t (df =", dfs, ")"), "Normal")))
+
+ggplot(plot_data, aes(x = x, y = density, color = label, linetype = label)) +
+  geom_line(linewidth = 0.8) +
+  scale_linetype_manual(values = c(rep("solid", length(dfs)), "dashed")) +
+  labs(x = "x", y = "Density", color = NULL, linetype = NULL) +
+  theme_bw()
+```
+
+Just like the z-score, the t distribution is a measure of how far our observation was from the mean of a given a distribution. Unlike the z-score, we can talk about t using only information from our sample! 
+
+
+### One Sample t-test
+
+Now that we have built up our mathematical tool kit, we can define the flow of our hypothesis test. We are investigating the mean value of a population, and thus our hypotheses will be about the mean. We are never trying to argue that the population mean is a certain value, we are only making claims about what it is not. Principally, we are interested in whether the population mean differs from some default value $\mu_0$. Depending on what we've observed in our sample, we could claim 1 of 3 things: 
+
+* $\mu < \mu_0$
+* $\mu > \mu_0$
+* $\mu \neq \mu_0$
+
+What would our data have to show us for any of these to be true? The p-value is one of the last bits of mathematical machinary that we need, and now that we have the concept of a null distribution it has sufficient context to be introduced.
+
+
+### One Sample t Confidence Interval
+
+## Do failing banks have higher non-core funding on average?
