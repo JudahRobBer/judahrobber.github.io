@@ -145,13 +145,13 @@ We can see in @fig-clt-dice-sum that as the sample size increases, the sampling 
 ### introducing t
 t best understood with the more familiar notion of z-scores. A z-score is a standardized way of talking about much an observation differs from the mean under a normal distribution with mean $\mu$ and standard deviation $\sigma$. The direct interpretation is the number of standard deviations the observation is above or below the mean. the formula for the z-score is:
 
-$z = \frac{x - \mu}{\sigma}$
+$z = \frac{\bar{x} - \mu_x}{\frac{\sigma}{\sqrt(n)}}$
 
 As mentioned before, a linear transformation of a normal distribution is normal, and the particularly nice thing about the distribution of z is that it's been normalized to have a mean of 0 and a standard deviation of 1. This normalization makes working with the normal distribution much easier. Anyway, here's the formula for t:
 
-$t = \frac{x - \bar{\mu}}{\frac{s}{\sqrt(n)}}$
+$t = \frac{\bar{x} - \mu}{\frac{s}{\sqrt(n)}}$
 
-$\bar{\mu}$ is the sample mean, and $s$ is the sample standard deviation. By comparing the two formulas, two immediate things jump out: **(1)** the population mean and standard deviation have been replaced by the sample mean and standard deviation **(2)** we are scaling the sample standard deviation by the size of the sample. Given that we know that the z-score follows a normal distribution, a natural guess might be that we got so lucky that t also follows a normal distribution. Unfortunately we are only that lucky at the limit, because t follows it's own distribution, the t-distribution! The t-distribution is centered at 0 and it's only parameter is the degrees of freedom, which we always set as $n - 1$. Since we often want to talk about populations that we don't expect to be centered at 0, we can shift the t distribution as needed. As n approaches infinity, the t distribution approaches the normal distribution:
+$\bar{\mu}$ is the sample mean, and $s$ is the sample standard deviation. These are super similar!! The only difference is that the t statistic depends only on our sample data! This is great because we don't know the population parameters a priori. Given that we know that the z-score follows a normal distribution, a natural guess might be that we got so lucky that t also follows a normal distribution. Unfortunately we are only that lucky at the limit, because t follows it's own distribution, the t-distribution! The t-distribution is centered at 0 and it's only parameter is the degrees of freedom, which we always set as $n - 1$. Since we often want to talk about populations that we don't expect to be centered at 0, we can shift the t distribution as needed. As n approaches infinity, the t distribution approaches the normal distribution:
 
 ```{r}
 #| label: fig-t-vs-normal
@@ -247,9 +247,9 @@ p_two = ggplot(dist_df, aes(x, y)) +
 
 From the plot, we now have a definition for the p-value for each alternative hypothesis
 
-* left-tailed ($\mu < \mu_0$): p-value = $P(t <= T)$
-* right-tailed ($\mu > \mu_0$): p-value = $P(t >= T)$
-* two-tailed ($\mu < \mu_0$): p-value = $2 * \min(P(t <= T), P(t >= T))$
+* left-tailed ($\mu < \mu_0$): p-value = $P(T \le t)$
+* right-tailed ($\mu > \mu_0$): p-value = $P(T \ge t)$
+* two-tailed ($\mu < \mu_0$): p-value = $2 * \min(P(T \le t), P(T \ge t))$
 
 The two-tailed one is more complicated because we don't know a priori if the true distribution is to the left or the right of the null distribution. We have to scale by some amount because of this uncertainty, and we get to just double the smallest value because the t-distribution is symmetric.
 
