@@ -377,5 +377,5 @@ knitr::kable(results)
 
 Since in @tbl-inference we see that our p value is approximately 0 we have evidence to support the alternative hypothesis! We'd find the same thing if we instead looked at our confidence interval, which does not include 0.
 
-Thanks for sticking through to the end! Since you made it this far you can have a gold star:
+
 
