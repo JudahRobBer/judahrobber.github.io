@@ -13,7 +13,7 @@ website:
     contents:
       - href: index.qmd
         text: Home
-      - section: 
+      - section: "MATH 240 - Computational Statistics"
         contents:
           - text: "240 lab 2: Basic R"
             href: 240/labs/02/Lab2WriteUp.qmd
@@ -31,6 +31,9 @@ website:
             href: 240/labs/11/Lab11WriteUp.qmd
           - text: "Hypothesis Testing Review"
             href: 240/review/HypothesisTesting.qmd
+  page-footer:  
+    left: "© 2026 Colgate University Student Portfolio"
+    right: "[GitHub Source](https://github.com/JudahRobBer)"
 format:
   html:
     theme:
