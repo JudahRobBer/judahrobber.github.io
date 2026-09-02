@@ -16,8 +16,10 @@ about:
       href: https://github.com/JudahRobBer
 ---
 
+# Introduction
 Thanks for stopping by! You stumbled onto my github pages website, which right now is acting as a small portfolio for some of the statistics coursework that I've completed at Colgate. In the near future this page will have more information about the rest of my academic and professional work. I hope to see you then!
 
+# AI Use Statement
 In the meantime, you ought to know about the extent of AI use in my work, as well as my general approach to using generative AI tools. Given the growing concerns surrounding the negative effects of AI use on mathematics education [@CipolliAI] as well as the potential for AI use to complicate users capacity and willingness to consistently follow professional ethical standards such as those provided by the American Statistical Association regarding professional and methodological integrity as well as responsibilities to peers, study participants, and stakeholders [@ASA2022].
 
 The extent of my AI usage largely depends on the scope and context of a project. In educational contexts, I largely restrict my AI usage to limited debugging, syntax assistance, and independent review for concepts I am struggling with. I used to be willing to do these tasks through only a little more effort on stack overflow, but since the collapse of it and similar sites with the rise of AI tools, the first line of information is increasingly generative. Although I have not consistently been explicit in my communicating my AI usage in documentation in the past, going forward I am adopting the AI appendix proposed by Cipolli in [@CipolliAI].
