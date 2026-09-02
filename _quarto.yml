@@ -4,23 +4,33 @@ project:
 
 website:
   title: "Portfolio"
+  favicon: "colgateC.png"
   sidebar:
     style: "docked"
+    logo: "ColgateSeal.png"
+    collapse-level: 1
     search: false
     contents:
       - href: index.qmd
         text: Home
-      - labs/02/Lab2WriteUp.qmd
-      - labs/03/Lab3WriteUp.qmd
-      - labs/04/Lab4WriteUp.qmd
-      - labs/04/Menu.qmd
-      - labs/05/Lab5WriteUp.qmd
-      - labs/08/Lab8WriteUp.qmd
-      - labs/10/Lab10WriteUp.qmd
-      - labs/11/Lab11WriteUp.qmd
-      - review/HypothesisTesting.qmd
-      
-
+      - section: 
+        contents:
+          - text: "240 lab 2: Basic R"
+            href: 240/labs/02/Lab2WriteUp.qmd
+          - text: "240 lab 3: More Basic R"
+            href: 240/labs/03/Lab3WriteUp.qmd
+          - text: "240 lab 4: Programming"
+            href: 240/labs/04/Lab4WriteUp.qmd
+          - text: "240 lab 5: data wrangling"
+            href: 240/labs/05/Lab5WriteUp.qmd
+          - text: "240 lab 5: probability" 
+            href: 240/labs/08/Lab8WriteUp.qmd
+          - text: "240 lab 10: point estimation" 
+            href: 240/labs/10/Lab10WriteUp.qmd
+          - text: "240 lab 11: hypothesis testing" 
+            href: 240/labs/11/Lab11WriteUp.qmd
+          - text: "Hypothesis Testing Review"
+            href: 240/review/HypothesisTesting.qmd
 format:
   html:
     theme:
