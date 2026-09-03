@@ -17,7 +17,7 @@ about:
 ---
 
 # Introduction
-Thanks for stopping by! My name is Judah, I'm a senior at Colgate University studying Mathematics and Computer Science. You stumbled onto my github pages website, which right now is acting as a small portfolio for some of the statistics coursework that I've completed at Colgate. In the near future this page will have more information about the rest of my academic and professional work. I hope to see you then!
+Thanks for stopping by! My name is Judah, I'm a senior at Colgate University studying Mathematics and Computer Science. You stumbled onto my github pages website, which right now is acting as a small portfolio for some of the statistics coursework that I've completed at Colgate. The sidebar on the lefthand side of the page can be used to navigate through finished assignments for the respective courses. Throughout the fall 2026 semester I'll be updating the page with work from my current class, MATH 354: Data Analysis 1.
 
 # AI Use Statement
 In the meantime, you ought to know about the extent of AI use in my work, as well as my general approach to using generative AI tools. Given the growing concerns surrounding the negative effects of AI use on mathematics education [@CipolliAI] and the potential for AI use to complicate users capacity and willingness to consistently follow professional ethical standards such as those provided by the American Statistical Association regarding professional and methodological integrity as well as responsibilities to peers, study participants, and stakeholders [@ASA2022].
