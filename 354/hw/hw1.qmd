@@ -1,0 +1,229 @@
+---
+title: Homework 1 - One Sample Inference
+
+# Bibliography Details
+bibliography: hw1References.bib  # Name of bib file in the same folder 
+bibliographystyle: apa            # Bibliography style
+
+execute:               # Default settings for code blocks
+  warning: false       # Do not print warnings
+  message: false       # Do not print messages
+  size: "scriptsize"   # Set code size to script size
+
+# Below will do html by default. To render the entire project
+# Use the following code:
+# quarto::quarto_render("Lab10WriteUp.qmd")
+format:
+  pdf:        # Specify .pdf formatting options 
+    documentclass: article     # Document Class
+    number-sections: true      # Number Sections
+    reference-section-title: "References" # Title for reference section
+    code-line-numbers: true    # Line numbers printed in code
+    cap-location: top          # Captions at the top of tables 
+    geometry:
+      - top=0.75in
+      - left=0.75in
+      - bottom=0.75in
+      - right=0.75in
+  html:       # Specify HTML formatting options 
+    number-sections: true      # Number Sections
+    code-fold: true            # Button to show code
+    code-line-numbers: true    # Line numbers printed in code
+    cap-location: top          # Captions at the top of tables and figures
+format-links: [pdf]
+---
+
+# Question 1
+
+We are presented with the results of a study conducted by Dror et al. on the capacity of dogs to passively learn vocabulary when immersed in social situations,
+similar to the established language learning capacity of toddlers. This was evaluated by whether the dogs were able to correctly return both familiar toys and the newly introduced 
+toys that the dogs overheard reference to throughout the study period.
+
+We are presented with two results: (1) the proportion of requests for new toys completed, for each dog and (2) the paired difference between this proportion and the proportion of requests
+completed for the familiar toys (familiar - new).
+
+($1$) = $\{1.0000, 1.0000, 0.7500, 1.0000, 0.4167, 0.8333, 0.7500, 0.8333, 0.8333, 1.0000\}$
+
+($2$) = $\{−0.0833, 0.0000, −0.0833, −0.0833, 0.5833, 0.0833, −0.2500, 0.1667, 0.0000, −0.4167\}$
+
+
+```{r}
+#| echo: false
+library(tidyverse)
+library(patchwork)
+```
+
+```{r}
+#| echo: false
+# (1) proportion of requests for the *new* toys completed, by dog
+new.props = c(1.0000, 1.0000, 0.7500, 1.0000, 0.4167,
+              0.8333, 0.7500, 0.8333, 0.8333, 1.0000)
+
+# (2) paired differences (familiar - new), by dog
+paired.diffs = c(-0.0833, 0.0000, -0.0833, -0.0833, 0.5833,
+                  0.0833, -0.2500, 0.1667, 0.0000, -0.4167)
+
+dat.q1 = tibble(
+  dog       = rep(1:10, times = 2),
+  dataset   = rep(c("(1) New-toy proportion",
+                    "(2) Paired difference (familiar - new)"), each = 10),
+  value     = c(new.props, paired.diffs)
+)
+```
+
+## Part A: Choice of Tests
+The authors analyzed both datasets using the Wilcox signed-rank test. For dataset (1), they were considering whether the median dog was better than chance, which is intepreted as a proportion bigger than $.5$. Although it's not stated in the assignment, we can assume that although they were interested in only one tail, a two-tailed Wilcox test was most likely used. Although we aren't told whether they used the exact or approximate test, we don't have a sufficiently large sample size to be comfortable with the asymptotic behavior kicking in, suggesting they should not have used the approximate. Regarding the choice of the median as the statistic of interest, it could be explained by concern about left skew, which is clearly visible in @fig-q1-distributions as due to a single outlier dog who might not be that gifted after all. Unfortunately, the Wilcox signed-rank test assumes an underlying symmetric distribution, and thus is not appropriate for this data. Considering the alternative tests available, to use a proportion based test, we could manipulate the data by considering the binary event for each observation as $(p > .5)$. This is to say that our indicator variable for each dog asks: "did this dog perform better than chance?" Our sample proportion is $.9$, since $9$ of the $10$ dogs had a response rate greater than $.5$. Although this significantly simplifies the richness of the data, it is still applicable for the research question. Since none of the other tests we've discussed are appropriate: Wilson requires symmetry, t and z require normality or sample size conditions; the exact binomial is our best options out of the discussed parametric tests.
+
+For dataset (2), we are under the same constraints regarding the sample size and lack of normality, though the data is now fairly symmetrical. Unfortunately, due to the presence of ties in the dataset, we are unable to use the exact Wilcox. Since we still can't rely on approximate behavior, we could again default to the exact binomial by constructing an indicator variable. Constructing an indicator variable for this data is more nuanced, since we are interested in the distance from 0, rather than just the direction. As such, I prefer to proceed by performing bootstrap one-sample mean inference directly on the difference data.
+
+## Part B: Analysis
+
+Given the collected response proportion data, we are interested in whether the population of gifted word learner dogs performs better than chance on tasks requiring passive vocabulary learning and whether their performance significantly differs on toys that they have directly learned to recognize. Before describing the inferential techniques we employ, we present visual and numerical in @fig-q1-distributions and @tbl-q1-summaries.
+
+```{r}
+#| label: fig-q1-distributions
+#| fig-cap: "Histograms and boxplots of the new-toy proportions (1) and the paired differences (2)"
+#| fig-width: 6
+#| fig-height: 4
+make.plots = function(x, title, xlab, binwidth){
+  ggdat = tibble(value = x)
+
+  hist.plot = ggplot(ggdat, aes(x = value)) +
+    geom_histogram(binwidth = binwidth, boundary = 0,
+                   color = "black", fill = "lightgrey") +
+    geom_rug(alpha = 0.6) +
+    labs(x = xlab, y = "Count", title = title) +
+    theme_bw()
+
+  box.plot = ggplot(ggdat, aes(x = value, y = "")) +
+    geom_boxplot(fill = "lightgrey") +
+    labs(x = xlab, y = "") +
+    theme_bw()
+
+  hist.plot / box.plot + plot_layout(heights = c(2, 1))
+}
+
+p1 = make.plots(new.props, "(1) New toy proportions",
+                "Proportion of new toy requests ", binwidth = 0.10)
+p2 = make.plots(paired.diffs, "(2) Paired differences",
+                "Familiar - new proportion", binwidth = 0.10)
+
+(p1 | p2)
+```
+
+```{r}
+#| label: tbl-q1-summaries
+#| tbl-cap: "Numerical summaries of the new-toy proportions (1) and the paired differences (2)"
+dat.q1 |>
+  group_by(dataset) |>
+  summarize(
+    n        = n(),
+    mean     = mean(value),
+    median   = median(value),
+    sd       = sd(value),
+    skewness = e1071::skewness(value, type = 2),
+    min      = min(value),
+    max      = max(value)
+  ) |>
+  knitr::kable(digits = 4)
+```
+
+### New Toy Response
+
+Due to the small sample size, skew, and presence of ties in the new toy proportions dataset, we perform our analysis using the exact binomial test on the proportion of dogs that perform better than chance. We construct the indicator $(p > .5)$ for each member of our sample. We then calculate the proportion of dogs that perform better than chance. Our null hypothesis, $H_0$ is that $p=.5$, and our alternative hypothesis $H_a$ is that $p \ne .5$. Our results from a two-sided exact binomial test at a confidence level of $95\%$ include a p-value of $.02$ and a $95\%$ confidence interval of $(.555,.997)$. Taken together, our test results suggest that the population proportion of dogs that perform better than chance is significantly different from $.5$, and we are $95\%$ confident that the true population value falls in the range $(.555,.997)$
+
+```{r}
+set.seed(41)
+success.count = sum(ifelse(new.props > .5, 1, 0))
+test = binom.test(
+  x = success.count,
+  n = length(new.props),
+  p = .5,
+  alternative = "two.sided",
+  conf.level = .95
+)
+(test$p.value)
+(as.numeric(test$conf.int))
+```
+
+### Paired Differences 
+For our analysis of the paired differences, we are interested in whether there is difference between the dog's response rate for familiar and new toys. Our null hypothesis $H_0$ is that $\mu = 0$ and the alternative $H_a$ is that $\mu \ne 0$. As mentioned previously we are unable to use the exact Wilcox signed-rank test for our paired dataset due to the presence of ties. As such, we proceed with a bootstrap analysis. While we could apply a bootstrap test that requires shifting the data, to avoid any complications that may arise when a shift in the mean affects the variance, we instead directly produce a bootstrap $95\%$ confidence interval. We report the interval as $(-.150,1.58)$. As such, we do not find convincing evidence of the alternative hypothesis, so our results suggest that the population difference is not significantly different from 0.
+
+```{r}
+#| label: q1b-bootstrap
+set.seed(41) 
+B = 10000
+n = length(paired.diffs)
+
+boot.dist = numeric(B)   # storage for the resampled means
+
+for(i in 1:B){
+  resample = sample(paired.diffs, size = n, replace = TRUE)
+  boot.dist[i] = mean(resample)
+}
+
+boot.ci = quantile(boot.dist, probs = c(0.025, 0.975))
+
+(as.numeric(boot.ci))
+```
+
+
+# Question 2
+
+Now, the researchers are consider the proportion of dogs who were able to retrieve the new toys. They report the proportion as 1, meaning that all 10 dogs were able to retrieve the toy.
+
+## Part A
+
+The binomial distribution is suited for a sum of independent identical bernoulli variables. Whether or not an individual dog retrieved the correct toy is clearly a binary event, and it is reasonable to assume that individual events are both independent and identical, though whether or not the bernoulli variables are identical depends slightly on how variable the dogs capacities are. It's also reasonable to asume that the sample is representative of the population, though this is rarely verifiable. Since the test is exact, we don't require any assumptions regarding sample size for asymptotic behavior to be relevant. Using discrete distributions for statistical tests is made more difficult by the discontinuity of the CDF making it impossible to generally specify an exact confidence level.
+
+## Part B
+
+```{r}
+success = 10
+trials = 10
+success.prob = .5
+(prob = dbinom(x=success,size=trials,prob=success.prob))
+```
+
+There is a roughly $.1\%$ probability of all 10 dogs getting both toys right on the first try assuming that the probability of any individual dog accomplishing the task in $.5$
+
+
+## Part C
+
+Using a normal approximation:
+
+```{r}
+mu = trials * success.prob
+sd = sqrt(mu*(1-success.prob))
+epsilon = .5
+(prob = pnorm(1 + epsilon ,mu,sd) - pnorm(1 - epsilon,mu,sd))
+```
+
+The results of the normal approximation heavily depend on the choice of epsilon, though they generally agree with the binomial in that the observation is highly unlikely.
+
+## Part D
+
+Yes, even with somewhat obviously positive results in the sample inference is still important. Principally, without inference conclusions can only be drawn for the sample, rather than the population. Scientists generally aren't interested in making claims about a particular collection of clever dogs, they are interested in making claims about an entire population of clever dogs. Inference is necessary for the process because it allows us to evaluate the strength of the evidence of the sample for making judgements about the entire population. With this information, we can make qualified claims about the population with pre-determined levels of confidence.
+
+Given that, we perform a two-sided exact binomial test at a $95\%$ confidence level and report the results below
+
+```{r}
+set.seed(41)
+test = binom.test(
+  x = 10,
+  n = 10,
+  p = .5,
+  alternative = "two.sided"
+)
+
+(test$p.value)
+(as.numeric(test$conf.int))
+```
+
+As shown in the p-value of $.002$ and a confidence interval that excludes $.5$, our test suggests that the population proportion significantly differs from $.5$. 
+
+
+
+
+
+

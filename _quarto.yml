@@ -31,6 +31,10 @@ website:
             href: 240/labs/11/Lab11WriteUp.qmd
           - text: "Hypothesis Testing Review"
             href: 240/review/HypothesisTesting.qmd
+      - section: "Math 354 - Data Analysis 1"
+        contents:
+          - text: "354 Homework 1: One Sample Inference"
+            href: 354/hw/hw1.qmd
   page-footer:  
     left: "© 2026 Colgate University Student Portfolio"
     right: "[GitHub Source](https://github.com/JudahRobBer)"
