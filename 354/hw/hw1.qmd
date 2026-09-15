@@ -72,7 +72,7 @@ dat.q1 = tibble(
 ```
 
 ## Part A: Choice of Tests
-The authors analyzed both datasets using the Wilcox signed-rank test. For dataset (1), they were considering whether the median dog was better than chance, which is intepreted as a proportion bigger than $.5$. Although it's not stated in the assignment, we can assume that although they were interested in only one tail, a two-tailed Wilcox test was most likely used. Although we aren't told whether they used the exact or approximate test, we don't have a sufficiently large sample size to be comfortable with the asymptotic behavior kicking in, suggesting they should not have used the approximate. Regarding the choice of the median as the statistic of interest, it could be explained by concern about left skew, which is clearly visible in @fig-q1-distributions as due to a single outlier dog who might not be that gifted after all. Unfortunately, the Wilcox signed-rank test assumes an underlying symmetric distribution, and thus is not appropriate for this data. Considering the alternative tests available, to use a proportion based test, we could manipulate the data by considering the binary event for each observation as $(p > .5)$. This is to say that our indicator variable for each dog asks: "did this dog perform better than chance?" Our sample proportion is $.9$, since $9$ of the $10$ dogs had a response rate greater than $.5$. Although this significantly simplifies the richness of the data, it is still applicable for the research question. Since none of the other tests we've discussed are appropriate: Wilson requires symmetry, t and z require normality or sample size conditions; the exact binomial is our best options out of the discussed parametric tests.
+The authors analyzed both datasets using the Wilcox signed-rank test. For dataset (1), they were considering whether the median dog was better than chance, which is intepreted as a proportion bigger than $.5$. Although it's not stated in the assignment, we can assume that although they were interested in only one tail, a two-tailed Wilcox test was most likely used. Although we aren't told whether they used the exact or approximate test, we don't have a sufficiently large sample size to be comfortable with the asymptotic behavior kicking in, suggesting they should not have used the approximate. Regarding the choice of the median as the statistic of interest, it could be explained by concern about left skew, which is clearly visible in @fig-q1-distributions as due to a single outlier dog who might not be that gifted after all. Unfortunately, the Wilcox signed-rank test assumes an underlying symmetric distribution, and thus is not appropriate for this data. Considering the alternative tests available, to use a proportion based test, we could manipulate the data by considering the binary event for each observation as $(p > .5)$. This is to say that our indicator variable for each dog asks: "did this dog perform better than chance?" Our sample proportion is $.9$, since $9$ of the $10$ dogs had a response rate greater than $.5$. Although this significantly simplifies the richness of the data, it is still applicable for the research question. Since none of the other tests we've discussed are appropriate: Wilcox requires symmetry, t requires normality, z requires bernoulli, while t and z can rely on sample size conditions; the exact binomial is our best options out of the discussed parametric tests.
 
 For dataset (2), we are under the same constraints regarding the sample size and lack of normality, though the data is now fairly symmetrical. Unfortunately, due to the presence of ties in the dataset, we are unable to use the exact Wilcox. Since we still can't rely on approximate behavior, we could again default to the exact binomial by constructing an indicator variable. Constructing an indicator variable for this data is more nuanced, since we are interested in the distance from 0, rather than just the direction. As such, I prefer to proceed by performing bootstrap one-sample mean inference directly on the difference data.
 
@@ -174,18 +174,18 @@ Now, the researchers are consider the proportion of dogs who were able to retrie
 
 ## Part A
 
-The binomial distribution is suited for a sum of independent identical bernoulli variables. Whether or not an individual dog retrieved the correct toy is clearly a binary event, and it is reasonable to assume that individual events are both independent and identical, though whether or not the bernoulli variables are identical depends slightly on how variable the dogs capacities are. It's also reasonable to asume that the sample is representative of the population, though this is rarely verifiable. Since the test is exact, we don't require any assumptions regarding sample size for asymptotic behavior to be relevant. Using discrete distributions for statistical tests is made more difficult by the discontinuity of the CDF making it impossible to generally specify an exact confidence level.
+The binomial distribution is suited for a sum of independent identical bernoulli variables. Whether or not an individual dog retrieved the correct toy is clearly a binary event. Although the individual events are not independent, since the dogs appear in multiple trials, the within dog differences are expected to be independent across dogs. It's also reasonable to asume that the sample is representative of the population, though this is rarely verifiable. Since the test is exact, we don't require any assumptions regarding sample size for asymptotic behavior to be relevant. Using discrete distributions for statistical tests is made more difficult by the discontinuity of the CDF making it impossible to generally specify an exact confidence level.
 
 ## Part B
 
 ```{r}
 success = 10
 trials = 10
-success.prob = .5
+success.prob = .25
 (prob = dbinom(x=success,size=trials,prob=success.prob))
 ```
 
-There is a roughly $.1\%$ probability of all 10 dogs getting both toys right on the first try assuming that the probability of any individual dog accomplishing the task in $.5$
+There is a roughly $.1\%$ probability of all 10 dogs getting both toys right on the first try assuming that the probability of any individual dog accomplishing the task in $.5$. As considering the random variable such that a dog gets both toys right, the overall probability could be estimated as $.25$, though this assumes independence, which doesn't hold.
 
 
 ## Part C
@@ -212,7 +212,7 @@ set.seed(41)
 test = binom.test(
   x = 10,
   n = 10,
-  p = .5,
+  p = success.prob,
   alternative = "two.sided"
 )
 
@@ -220,7 +220,13 @@ test = binom.test(
 (as.numeric(test$conf.int))
 ```
 
-As shown in the p-value of $.002$ and a confidence interval that excludes $.5$, our test suggests that the population proportion significantly differs from $.5$. 
+Given the very small p-value and a confidence interval that excludes $.5$, our test suggests that the population proportion significantly differs from $.5$. 
+
+# AI Use Appendix:
+
+* I described psuedo code for the bootstrap test and fed a chat model previous code implementing bootstrap tests to confirm my understanding of the implementation details, the model outputted code which I significantly simplified.
+
+* I forgot how to set the transparency of histogram figures, so I fed in previous code from 240 creating histograms and prompted the chat model to modify the code with a transparent effect. This is where geom_rug came from. 
 
 
 

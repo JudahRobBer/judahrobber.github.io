@@ -278,6 +278,7 @@ window.Quarto = {
   <li><a href="#part-c" id="toc-part-c" class="nav-link" data-scroll-target="#part-c"><span class="header-section-number">2.3</span> Part C</a></li>
   <li><a href="#part-d" id="toc-part-d" class="nav-link" data-scroll-target="#part-d"><span class="header-section-number">2.4</span> Part D</a></li>
   </ul></li>
+  <li><a href="#ai-use-appendix" id="toc-ai-use-appendix" class="nav-link" data-scroll-target="#ai-use-appendix"><span class="header-section-number">3</span> AI Use Appendix:</a></li>
   </ul>
 <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="hw1.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
     </div>
@@ -311,7 +312,7 @@ window.Quarto = {
 <p>(<span class="math inline">\(2\)</span>) = <span class="math inline">\(\{−0.0833, 0.0000, −0.0833, −0.0833, 0.5833, 0.0833, −0.2500, 0.1667, 0.0000, −0.4167\}\)</span></p>
 <section id="part-a-choice-of-tests" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="part-a-choice-of-tests"><span class="header-section-number">1.1</span> Part A: Choice of Tests</h2>
-<p>The authors analyzed both datasets using the Wilcox signed-rank test. For dataset (1), they were considering whether the median dog was better than chance, which is intepreted as a proportion bigger than <span class="math inline">\(.5\)</span>. Although it’s not stated in the assignment, we can assume that although they were interested in only one tail, a two-tailed Wilcox test was most likely used. Although we aren’t told whether they used the exact or approximate test, we don’t have a sufficiently large sample size to be comfortable with the asymptotic behavior kicking in, suggesting they should not have used the approximate. Regarding the choice of the median as the statistic of interest, it could be explained by concern about left skew, which is clearly visible in <a href="#fig-q1-distributions" class="quarto-xref">Figure&nbsp;1</a> as due to a single outlier dog who might not be that gifted after all. Unfortunately, the Wilcox signed-rank test assumes an underlying symmetric distribution, and thus is not appropriate for this data. Considering the alternative tests available, to use a proportion based test, we could manipulate the data by considering the binary event for each observation as <span class="math inline">\((p &gt; .5)\)</span>. This is to say that our indicator variable for each dog asks: “did this dog perform better than chance?” Our sample proportion is <span class="math inline">\(.9\)</span>, since <span class="math inline">\(9\)</span> of the <span class="math inline">\(10\)</span> dogs had a response rate greater than <span class="math inline">\(.5\)</span>. Although this significantly simplifies the richness of the data, it is still applicable for the research question. Since none of the other tests we’ve discussed are appropriate: Wilson requires symmetry, t and z require normality or sample size conditions; the exact binomial is our best options out of the discussed parametric tests.</p>
+<p>The authors analyzed both datasets using the Wilcox signed-rank test. For dataset (1), they were considering whether the median dog was better than chance, which is intepreted as a proportion bigger than <span class="math inline">\(.5\)</span>. Although it’s not stated in the assignment, we can assume that although they were interested in only one tail, a two-tailed Wilcox test was most likely used. Although we aren’t told whether they used the exact or approximate test, we don’t have a sufficiently large sample size to be comfortable with the asymptotic behavior kicking in, suggesting they should not have used the approximate. Regarding the choice of the median as the statistic of interest, it could be explained by concern about left skew, which is clearly visible in <a href="#fig-q1-distributions" class="quarto-xref">Figure&nbsp;1</a> as due to a single outlier dog who might not be that gifted after all. Unfortunately, the Wilcox signed-rank test assumes an underlying symmetric distribution, and thus is not appropriate for this data. Considering the alternative tests available, to use a proportion based test, we could manipulate the data by considering the binary event for each observation as <span class="math inline">\((p &gt; .5)\)</span>. This is to say that our indicator variable for each dog asks: “did this dog perform better than chance?” Our sample proportion is <span class="math inline">\(.9\)</span>, since <span class="math inline">\(9\)</span> of the <span class="math inline">\(10\)</span> dogs had a response rate greater than <span class="math inline">\(.5\)</span>. Although this significantly simplifies the richness of the data, it is still applicable for the research question. Since none of the other tests we’ve discussed are appropriate: Wilcox requires symmetry, t requires normality, z requires bernoulli, while t and z can rely on sample size conditions; the exact binomial is our best options out of the discussed parametric tests.</p>
 <p>For dataset (2), we are under the same constraints regarding the sample size and lack of normality, though the data is now fairly symmetrical. Unfortunately, due to the presence of ties in the dataset, we are unable to use the exact Wilcox. Since we still can’t rely on approximate behavior, we could again default to the exact binomial by constructing an indicator variable. Constructing an indicator variable for this data is more nuanced, since we are interested in the distance from 0, rather than just the direction. As such, I prefer to proceed by performing bootstrap one-sample mean inference directly on the difference data.</p>
 </section>
 <section id="part-b-analysis" class="level2" data-number="1.2">
@@ -494,7 +495,7 @@ Table&nbsp;1: Numerical summaries of the new-toy proportions (1) and the paired 
 <p>Now, the researchers are consider the proportion of dogs who were able to retrieve the new toys. They report the proportion as 1, meaning that all 10 dogs were able to retrieve the toy.</p>
 <section id="part-a" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="part-a"><span class="header-section-number">2.1</span> Part A</h2>
-<p>The binomial distribution is suited for a sum of independent identical bernoulli variables. Whether or not an individual dog retrieved the correct toy is clearly a binary event, and it is reasonable to assume that individual events are both independent and identical, though whether or not the bernoulli variables are identical depends slightly on how variable the dogs capacities are. It’s also reasonable to asume that the sample is representative of the population, though this is rarely verifiable. Since the test is exact, we don’t require any assumptions regarding sample size for asymptotic behavior to be relevant. Using discrete distributions for statistical tests is made more difficult by the discontinuity of the CDF making it impossible to generally specify an exact confidence level.</p>
+<p>The binomial distribution is suited for a sum of independent identical bernoulli variables. Whether or not an individual dog retrieved the correct toy is clearly a binary event. Although the individual events are not independent, since the dogs appear in multiple trials, the within dog differences are expected to be independent across dogs. It’s also reasonable to asume that the sample is representative of the population, though this is rarely verifiable. Since the test is exact, we don’t require any assumptions regarding sample size for asymptotic behavior to be relevant. Using discrete distributions for statistical tests is made more difficult by the discontinuity of the CDF making it impossible to generally specify an exact confidence level.</p>
 </section>
 <section id="part-b" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="part-b"><span class="header-section-number">2.2</span> Part B</h2>
@@ -503,14 +504,14 @@ Table&nbsp;1: Numerical summaries of the new-toy proportions (1) and the paired 
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-label="1"></a>success <span class="ot">=</span> <span class="dv">10</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-label="2"></a>trials <span class="ot">=</span> <span class="dv">10</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-label="3"></a>success.prob <span class="ot">=</span> .<span class="dv">5</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-label="3"></a>success.prob <span class="ot">=</span> .<span class="dv">25</span></span>
 <span id="cb9-4"><a href="#cb9-4" aria-label="4"></a>(<span class="at">prob =</span> <span class="fu">dbinom</span>(<span class="at">x=</span>success,<span class="at">size=</span>trials,<span class="at">prob=</span>success.prob))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.0009765625</code></pre>
+<pre><code>[1] 9.536743e-07</code></pre>
 </div>
 </div>
-<p>There is a roughly <span class="math inline">\(.1\%\)</span> probability of all 10 dogs getting both toys right on the first try assuming that the probability of any individual dog accomplishing the task in <span class="math inline">\(.5\)</span></p>
+<p>There is a roughly <span class="math inline">\(.1\%\)</span> probability of all 10 dogs getting both toys right on the first try assuming that the probability of any individual dog accomplishing the task in <span class="math inline">\(.5\)</span>. As considering the random variable such that a dog gets both toys right, the overall probability could be estimated as <span class="math inline">\(.25\)</span>, though this assumes independence, which doesn’t hold.</p>
 </section>
 <section id="part-c" class="level2" data-number="2.3">
 <h2 data-number="2.3" class="anchored" data-anchor-id="part-c"><span class="header-section-number">2.3</span> Part C</h2>
@@ -524,7 +525,7 @@ Table&nbsp;1: Numerical summaries of the new-toy proportions (1) and the paired 
 <span id="cb11-4"><a href="#cb11-4" aria-label="4"></a>(<span class="at">prob =</span> <span class="fu">pnorm</span>(<span class="dv">1</span> <span class="sc">+</span> epsilon ,mu,sd) <span class="sc">-</span> <span class="fu">pnorm</span>(<span class="dv">1</span> <span class="sc">-</span> epsilon,mu,sd))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.01121508</code></pre>
+<pre><code>[1] 0.1605409</code></pre>
 </div>
 </div>
 <p>The results of the normal approximation heavily depend on the choice of epsilon, though they generally agree with the binomial in that the observation is highly unlikely.</p>
@@ -540,14 +541,14 @@ Table&nbsp;1: Numerical summaries of the new-toy proportions (1) and the paired 
 <span id="cb13-2"><a href="#cb13-2" aria-label="2"></a>test <span class="ot">=</span> <span class="fu">binom.test</span>(</span>
 <span id="cb13-3"><a href="#cb13-3" aria-label="3"></a>  <span class="at">x =</span> <span class="dv">10</span>,</span>
 <span id="cb13-4"><a href="#cb13-4" aria-label="4"></a>  <span class="at">n =</span> <span class="dv">10</span>,</span>
-<span id="cb13-5"><a href="#cb13-5" aria-label="5"></a>  <span class="at">p =</span> .<span class="dv">5</span>,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-label="5"></a>  <span class="at">p =</span> success.prob,</span>
 <span id="cb13-6"><a href="#cb13-6" aria-label="6"></a>  <span class="at">alternative =</span> <span class="st">"two.sided"</span></span>
 <span id="cb13-7"><a href="#cb13-7" aria-label="7"></a>)</span>
 <span id="cb13-8"><a href="#cb13-8" aria-label="8"></a></span>
 <span id="cb13-9"><a href="#cb13-9" aria-label="9"></a>(test<span class="sc">$</span>p.value)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.001953125</code></pre>
+<pre><code>[1] 9.536743e-07</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -557,10 +558,17 @@ Table&nbsp;1: Numerical summaries of the new-toy proportions (1) and the paired 
 <pre><code>[1] 0.6915029 1.0000000</code></pre>
 </div>
 </div>
-<p>As shown in the p-value of <span class="math inline">\(.002\)</span> and a confidence interval that excludes <span class="math inline">\(.5\)</span>, our test suggests that the population proportion significantly differs from <span class="math inline">\(.5\)</span>.</p>
-
-
+<p>Given the very small p-value and a confidence interval that excludes <span class="math inline">\(.5\)</span>, our test suggests that the population proportion significantly differs from <span class="math inline">\(.5\)</span>.</p>
 </section>
+</section>
+<section id="ai-use-appendix" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> AI Use Appendix:</h1>
+<ul>
+<li><p>I described psuedo code for the bootstrap test and fed a chat model previous code implementing bootstrap tests to confirm my understanding of the implementation details, the model outputted code which I significantly simplified.</p></li>
+<li><p>I forgot how to set the transparency of histogram figures, so I fed in previous code from 240 creating histograms and prompted the chat model to modify the code with a transparent effect. This is where geom_rug came from.</p></li>
+</ul>
+
+
 </section>
 
 </main> <!-- /main -->
