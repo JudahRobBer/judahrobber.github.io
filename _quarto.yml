@@ -34,7 +34,7 @@ website:
       - section: "Math 354 - Data Analysis 1"
         contents:
           - text: "354 Homework 1: One Sample Inference"
-            href: 354/hw/hw1.qmd
+            href: 354/hw/hw1/hw1.qmd
   page-footer:  
     left: "© 2026 Colgate University Student Portfolio"
     right: "[GitHub Source](https://github.com/JudahRobBer)"
