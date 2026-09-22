@@ -35,6 +35,8 @@ website:
         contents:
           - text: "354 Homework 1: One Sample Inference"
             href: 354/hw/hw1/hw1.qmd
+          - text: "354 Homework 1: ANOVA"
+            href: 354/hw/hw2/hw2.qmd
   page-footer:  
     left: "© 2026 Colgate University Student Portfolio"
     right: "[GitHub Source](https://github.com/JudahRobBer)"

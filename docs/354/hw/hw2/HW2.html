@@ -269,6 +269,12 @@ window.Quarto = {
  <span class="menu-text">354 Homework 1: One Sample Inference</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../354/hw/hw2/hw2.qmd" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">354 Homework 1: ANOVA</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -301,6 +307,7 @@ window.Quarto = {
   <li><a href="#part-d-1" id="toc-part-d-1" class="nav-link" data-scroll-target="#part-d-1"><span class="header-section-number">3.4</span> Part d</a></li>
   <li><a href="#part-e" id="toc-part-e" class="nav-link" data-scroll-target="#part-e"><span class="header-section-number">3.5</span> Part e</a></li>
   </ul></li>
+  <li><a href="#ai-use-apendix" id="toc-ai-use-apendix" class="nav-link" data-scroll-target="#ai-use-apendix"><span class="header-section-number">4</span> AI Use Apendix</a></li>
   </ul>
 <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="HW2.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
     </div>
@@ -379,14 +386,14 @@ window.Quarto = {
 <span id="cb1-25"><a href="#cb1-25" aria-label="25"></a>(ttest.false.pos)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 532</code></pre>
+<pre><code>[1] 553</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a>(hsdtest.false.pos)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 72</code></pre>
+<pre><code>[1] 84</code></pre>
 </div>
 </div>
 <p></p>
@@ -423,14 +430,14 @@ window.Quarto = {
 <span id="cb5-21"><a href="#cb5-21" aria-label="21"></a>(ttest.false.pos)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 90</code></pre>
+<pre><code>[1] 86</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-label="1"></a>(hsdtest.false.pos)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 75</code></pre>
+<pre><code>[1] 73</code></pre>
 </div>
 </div>
 <p></p>
@@ -519,9 +526,14 @@ window.Quarto = {
 <span id="cb11-47"><a href="#cb11-47" aria-label="47"></a>(<span class="fu">power_plot</span>(<span class="at">n=</span><span class="dv">40</span>,<span class="at">k=</span><span class="dv">5</span>,<span class="at">f=</span>.<span class="dv">25</span>,<span class="at">alpha=</span>.<span class="dv">05</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="HW2_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+<div id="fig-power-a" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-power-a-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Power Analysis Of Minimally Powered Sample Size
+</figcaption>
+<div aria-describedby="fig-power-a-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW2_files/figure-html/fig-power-a-1.png" class="img-fluid figure-img" width="672">
+</div>
 </figure>
 </div>
 </div>
@@ -558,9 +570,14 @@ window.Quarto = {
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-label="1"></a><span class="fu">power_plot</span>(<span class="at">n=</span><span class="dv">30</span>,<span class="at">k=</span><span class="dv">5</span>,<span class="at">f=</span>.<span class="dv">25</span>,<span class="at">alpha=</span>.<span class="dv">05</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="HW2_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+<div id="fig-power-b" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-power-b-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Power Analysis of Under Powered Sample Size
+</figcaption>
+<div aria-describedby="fig-power-b-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW2_files/figure-html/fig-power-b-1.png" class="img-fluid figure-img" width="672">
+</div>
 </figure>
 </div>
 </div>
@@ -649,14 +666,14 @@ window.Quarto = {
 <span id="cb17-21"><a href="#cb17-21" aria-label="21"></a>(power.og)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 17</code></pre>
+<pre><code>[1] 16.7</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-label="1"></a>(power.doubled)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 24.3</code></pre>
+<pre><code>[1] 24.8</code></pre>
 </div>
 </div>
 <p> Given the total sample size of <span class="math inline">\(200\)</span> computed in part a, even after doubling the total sample size to <span class="math inline">\(400\)</span>, the test would still be very underpowered.</p>
@@ -768,7 +785,7 @@ Table&nbsp;1: <span class="math inline">\(\text{SUV}_{\text{max}}\)</span> measu
 <div id="tbl-eda" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-eda-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;2: Summary Statistics
+Table&nbsp;2: SUV max Summary Statistics
 </figcaption>
 <div aria-describedby="tbl-eda-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -836,18 +853,18 @@ Table&nbsp;2: Summary Statistics
 <span id="cb23-6"><a href="#cb23-6" aria-label="6"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> mean <span class="sc">-</span> se, <span class="at">ymax =</span> mean <span class="sc">+</span> se), <span class="at">width =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
 <span id="cb23-7"><a href="#cb23-7" aria-label="7"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> dat, <span class="fu">aes</span>(<span class="at">x =</span> groups, <span class="at">y =</span> x),</span>
 <span id="cb23-8"><a href="#cb23-8" aria-label="8"></a>             <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">fill =</span> <span class="st">"white"</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb23-9"><a href="#cb23-9" aria-label="9"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Condition"</span>, <span class="at">y =</span> <span class="st">"Mean (± 1 SE)"</span>) <span class="sc">+</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-label="9"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Condition"</span>, <span class="at">y =</span> <span class="st">"Mean SUV max (± 1 SE)"</span>) <span class="sc">+</span></span>
 <span id="cb23-10"><a href="#cb23-10" aria-label="10"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">limits =</span> groups) <span class="sc">+</span></span>
 <span id="cb23-11"><a href="#cb23-11" aria-label="11"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<div id="fig-mice-eda" class="quarto-float quarto-figure quarto-figure-center anchored" width="672">
+<div id="fig-mice-eda" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-mice-eda-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-mice-eda-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: SUV max by Condition
 </figcaption>
 <div aria-describedby="fig-mice-eda-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="HW2_files/figure-html/fig-mice-eda-1.png" id="fig-mice-eda" class="img-fluid figure-img" width="672">
+<img src="HW2_files/figure-html/fig-mice-eda-1.png" class="img-fluid figure-img" width="672">
 </div>
 </figure>
 </div>
@@ -912,7 +929,7 @@ Figure&nbsp;1
 <div id="fig-post-hoc" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-post-hoc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2: Post-Hoc Confidence Intervals
+Figure&nbsp;4: Post-Hoc Confidence Intervals
 </figcaption>
 <div aria-describedby="fig-post-hoc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="HW2_files/figure-html/fig-post-hoc-1.png" class="img-fluid figure-img" width="672">
@@ -986,16 +1003,23 @@ Table&nbsp;3: Post-Hoc Effect Sizes
 </div>
 </div>
 <p></p>
-<p>As seen in <a href="#fig-post-hoc" class="quarto-xref">Figure&nbsp;2</a>, we have statistically significant support for the difference in biomarker across control ages. The positive sign of these differences and the relative magnitudes are consistent with the idea that the marker is present at higher levels as mice age. With respect to the experimental results, exposure to the experimental condition leads to no statistically significant differences between <span class="math inline">\(16\)</span> month old mice and both <span class="math inline">\(2\)</span> and <span class="math inline">\(6\)</span> month old mice, as well as significant differences from the control population of <span class="math inline">\(16\)</span> month old mice. This is a significant evidence suggesting that the experimental condition makes mice younger than their age-peers, and statistically indistinguishable from younger mice with respect to the biomarker of interest. As shown in <a href="#tbl-effect-size" class="quarto-xref">Table&nbsp;3</a>, the effect size is large for all comparisons except for the difference between the 16 month old experimental condition and the 6 month old control condition, in which the effect size is medium.</p>
+<p>As seen in <a href="#fig-post-hoc" class="quarto-xref">Figure&nbsp;4</a>, we have statistically significant support for the difference in biomarker across control ages. The positive sign of these differences and the relative magnitudes are consistent with the idea that the marker is present at higher levels as mice age. With respect to the experimental results, exposure to the experimental condition leads to no statistically significant differences between <span class="math inline">\(16\)</span> month old mice and both <span class="math inline">\(2\)</span> and <span class="math inline">\(6\)</span> month old mice, as well as significant differences from the control population of <span class="math inline">\(16\)</span> month old mice. This is a significant evidence suggesting that the experimental condition makes mice younger than their age-peers, and statistically indistinguishable from younger mice with respect to the biomarker of interest. As shown in <a href="#tbl-effect-size" class="quarto-xref">Table&nbsp;3</a>, the effect size is large for all comparisons except for the difference between the 16 month old experimental condition and the 6 month old control condition, in which the effect size is medium.</p>
 </section>
 <section id="part-e" class="level2" data-number="3.5">
 <h2 data-number="3.5" class="anchored" data-anchor-id="part-e"><span class="header-section-number">3.5</span> Part e</h2>
 <p>Write a short paragraph directly addressing the researcher’s hypothesis using your work in (a)-(d).</p>
-<p>The researchers in <span class="citation" data-cites="Yang23"><span class="nocase">Yang et al.</span> (<a href="#ref-Yang23" role="doc-biblioref">2023</a>)</span> are interested in whether nicotine can combat age related metabolic decline. They observe a metabolic biomarker that is known to increase in age across 3 populations of mice: 2 month, 6 month, and 16 month old. The researcher assign the experimental condition to one population of 16 month old mice, and another is left as a control. Using the collected data on the 4 groups of 3 mice per group, we perform Welch’s ANOVA and post-hoc Games-Howell tests. We presume independence of samples and population representativeness given limited domain-specific knowledge. We acknowledge the sample size is insufficient to justify normality give observations of the sample data. We use Welch’s anova and Games-Howell tests specifically because of evidence of violations of the assumption of constant variance across samples as shown in <a href="#fig-mice-eda" class="quarto-xref">Figure&nbsp;1</a>. We report significant support for our omnibus analysis, suggesting there exists some difference across means. We follow up with post-hoc testing as seen in <a href="#fig-post-hoc" class="quarto-xref">Figure&nbsp;2</a> showing that while 16 month old mice in the control population have a discernibly higher lever of the biomarker of interest, 16 month old mice in the experimental population are not statistically discernible from younger mice, and have a discernibly lower level of the biomarker from the 16 month old mice in the control population. Using our effect size results in <a href="#tbl-effect-size" class="quarto-xref">Table&nbsp;3</a>, two differences between the experimental and control conditions had a large effect size, while one difference had a medium effect size. Given the statistical analysis, we conclude that the data offers evidence in favor of the affirmative answer to the broader research question proposed in <span class="citation" data-cites="Yang23"><span class="nocase">Yang et al.</span> (<a href="#ref-Yang23" role="doc-biblioref">2023</a>)</span></p>
-
-
-
+<p>The researchers in <span class="citation" data-cites="Yang23"><span class="nocase">Yang et al.</span> (<a href="#ref-Yang23" role="doc-biblioref">2023</a>)</span> are interested in whether nicotine can combat age related metabolic decline. They observe a metabolic biomarker that is known to increase in age across 3 populations of mice: 2 month, 6 month, and 16 month old. The researcher assign the experimental condition to one population of 16 month old mice, and another is left as a control. Using the collected data on the 4 groups of 3 mice per group, we perform Welch’s ANOVA and post-hoc Games-Howell tests. We presume independence of samples and population representativeness given limited domain-specific knowledge. We acknowledge the sample size is insufficient to justify normality give observations of the sample data. We use Welch’s anova and Games-Howell tests specifically because of evidence of violations of the assumption of constant variance across samples as shown in <a href="#fig-mice-eda" class="quarto-xref">Figure&nbsp;3</a>. We report significant support for our omnibus analysis, suggesting there exists some difference across means. We follow up with post-hoc testing as seen in <a href="#fig-post-hoc" class="quarto-xref">Figure&nbsp;4</a> showing that while 16 month old mice in the control population have a discernibly higher lever of the biomarker of interest, 16 month old mice in the experimental population are not statistically discernible from younger mice, and have a discernibly lower level of the biomarker from the 16 month old mice in the control population. Using our effect size results in <a href="#tbl-effect-size" class="quarto-xref">Table&nbsp;3</a>, two differences between the experimental and control conditions had a large effect size, while one difference had a medium effect size. Given the statistical analysis, we conclude that the data offers evidence in favor of the affirmative answer to the broader research question proposed in <span class="citation" data-cites="Yang23"><span class="nocase">Yang et al.</span> (<a href="#ref-Yang23" role="doc-biblioref">2023</a>)</span></p>
 </section>
+</section>
+<section id="ai-use-apendix" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> AI Use Apendix</h1>
+<ul>
+<li>Given the power plot from lecture as input, I prompted Claude to generate the R code necessary to replicate the plot. I refactored the output into a function.</li>
+<li>I skimmed the paper and found graphics similar to the exploratory data analysis presented above. I thought it was particularly useful given the small sample sizes. I prompted Claude to produce the plotting code needed to replicate the figure.</li>
+</ul>
+
+
+
 </section>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
