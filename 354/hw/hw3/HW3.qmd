@@ -1,0 +1,754 @@
+---
+title: Homework 3 -- Regression # Title of the document
+
+# Bibliography Details
+bibliography: HW3References.bib  # Name of bib file in the same folder 
+bibliographystyle: apa            # Bibliography style
+
+execute:               # Default settings for code blocks
+  warning: false       # Do not print warnings
+  message: false       # Do not print messages
+  size: "scriptsize"   # Set code size to script size
+
+# Below will do html by default. To render the entire project
+# Use the following code:
+# quarto::quarto_render("HW3.qmd")
+format:
+  pdf:        # Specify .pdf formatting options 
+    documentclass: article     # Document Class
+    number-sections: true      # Number Sections
+    reference-section-title: "References" # Title for reference section
+    code-line-numbers: true    # Line numbers printed in code
+    cap-location: top          # Captions at the top of tables 
+    geometry:
+      - top=0.75in
+      - left=0.75in
+      - bottom=0.75in
+      - right=0.75in
+  html:       # Specify HTML formatting options 
+    number-sections: true      # Number Sections
+    code-fold: true            # Button to show code
+    code-line-numbers: true    # Line numbers printed in code
+    cap-location: top          # Captions at the top of tables and figures
+format-links: [pdf]
+---
+```{r}
+#| echo: false
+
+default_chunk_hook  <- knitr::knit_hooks$get("chunk")
+
+latex_font_size <- c("Huge", "huge", "LARGE", "Large", 
+                     "large", "normalsize", "small", 
+                     "footnotesize", "scriptsize", "tiny")
+
+knitr::knit_hooks$set(chunk = function(x, options) {
+  x <- default_chunk_hook(x, options)
+  if(options$size %in% latex_font_size) {
+    paste0("\n \\", options$size, "\n\n", 
+      x, 
+      "\n\n \\normalsize"
+    )
+  } else {
+    x
+  }
+})
+```
+
+```{r}
+#| label: load-packages
+#| include: false
+library(tidyverse)
+library(patchwork)
+library(tolerance)
+source("plotResiduals.R")
+source("plotInfluence.R")
+```
+
+# Question 1
+
+Below, I simulate a rather quite annoying set of regression data.
+```{r}
+#| size: "scriptsize"
+set.seed(0510)
+n <- 250
+dat.q1 <- tibble(x1 = rnorm(n, mean = 50, sd = 10),
+                 x2 = factor(sample(c("A", "B"), n, replace = TRUE)),
+                 x3 = factor(sample(c("Control", "Treat"), n, replace = TRUE)),
+                 x4 = factor(sample(c("Low", "High"), n, replace = TRUE), levels=c("Low", "High")),
+                 x5 = rnorm(n, mean = 0, sd = 1),
+                 x6 = factor(sample(c("Group1", "Group2"), n, replace = TRUE)),
+                 x7 = rnorm(n, mean = 10, sd = 2),
+                 x8 = rnorm(n, mean = 10, sd = 2)) |>
+        mutate(y = 5 +                          # Intercept
+                   # Quantiative x1
+                   2 * x1 +
+                   # Categorical x2
+                   (x2 == "B") * 10 +
+                   # Categorical x Categorical (x3*x4)
+                   (x3 == "Treat") * 5 + (x4 == "High") * 2 + 
+                   (x3 == "Treat" & x4 == "High") * 15 +
+                   # Quantitative x Categorical  (x5*x6)
+                   3 * x5 + (x6 == "Group2") * 4 + 
+                   (x5 * (x6 == "Group2")) * 8 + 
+                   # Quantitative x Quantitative (x7*x8)
+                   1.5 * x7 + 0.5 * x8 + 
+                   0.8 * (x7 * x8) + 
+                   # Error
+                   rnorm(n, mean = 0, sd = 15))
+```
+
+## Part a
+
+Fit the regression model.
+
+\begin{align*}
+  Y_i =& \beta_0  +
+       \beta_1 x_{1i} + \beta_2 I(x_{2i}=\text{B})+ \beta_3 I(x_{3i}=\text{Treat}) + \beta_4 I(x_{4i}=\text{High}) +\\
+       & \beta_5 x_{5i} + \beta_6 I( x_{6i}=\text{Group2}) + \beta_7 x_{7i} + \beta_8 x_{8i}+\\
+       & \beta_9 (I(x_{3i}=\text{Treat}) ~\times~ I(x_{4i}=\text{High})) + \tag{Categorical $\times$ Categorical}\\
+        & \beta_{10} (x_{5i} ~\times~ I(x_{6i}=\text{Group2})) +\tag{Continuous $\times$ Categorical}\\
+        & \beta_{11} (x_{7i} ~\times~ x_{8i}) +
+         \epsilon_i \tag{Continuous $\times$ Continuous}
+\end{align*}
+
+**Solution:** First, we fit the regression model using `lm()`.
+```{r}
+#| size: "scriptsize"
+mod.q1 <- lm(y ~ x1 + x2 + x3*x4 + x5*x6 + x7*x8, data=dat.q1)
+```
+
+## Part b
+Conduct a residual and outlier analysis.
+
+**Solution**
+```{r}
+#| label: "fig-q1-residuals"
+#| fig-cap: "Residual Analysis of Simulated Data"
+plotResiduals(mod.q1)
+```
+
+```{r}
+#| label: "fig-q1-outliers"
+#| fig-cap: "Outlier Analysis of Simulated Data"
+plotInfluence(mod.q1)
+```
+
+
+
+As shown in the residual scott plot in  @fig-q1-residuals, the residuals appear uniformly distributed around 0, with both a highly positive and negative outlier preent. The distribution of the residuals in the quantile plot indicates approximate normality. With respect to the outliers, as shown in @fig-q1-outliers, while there are a few high leverage points and unusual points, the cooks distance and DFFITs plots suggest that they are not problematic for the regression.
+
+## Part c
+Interpret the intercept, the coefficients on $x_1$ and $x_2$.
+
+**Solution**
+
+The intercept $\beta_0$, is the expectation of $Y$ in the absence of any other continuous or categorical features of the model. Thus it's what the model expects of $Y$ if all continuous variables ($x_1,x_5,x_7,x_8$) are $0$, and all of the categorical variables $(x_2,x_4,x_6)$ are $0$, meaning that the observation is not in any of the categories. The coefficient $\beta_1$ indicates the increase in the expectation of $Y$ for a per unit increase in $x_1$, while the coefficient $\beta_2$ is the increase in expectation of $Y$ due to membership in category B.
+
+## Part d
+Untangle and interpret the $x_3*x_4$ interaction using algebra. Use @tbl-q1d-emmeans and @fig-q1d-emmeans for context.
+
+```{r}
+#| size: "scriptsize"
+library(emmeans)
+emm.q1d <- emmeans(mod.q1, ~x3*x4) |> # Don't average across levels: use |x2*x6
+            data.frame() |>
+            rename("Mean"  = "emmean",
+                   "Lower" = "lower.CL",
+                   "Upper" = "upper.CL")
+```
+
+```{r}
+#| label: tbl-q1d-emmeans
+#| tbl-cap: "Estimated marginal means for the model in Question 1."
+#| tbl-align: "center"
+#| echo: false
+emm.q1d |> 
+  knitr::kable(digits = 4)
+```
+
+```{r}
+#| label: fig-q1d-emmeans
+#| fig-cap: "Estimated marginal means for the model in Question 1."
+#| fig-width: 5
+#| fig-height: 3
+#| fig-align: "center"
+#| size: "scriptsize"
+emm.q1d <- emm.q1d |>
+  mutate(Observation = paste("(x3=", x3, ", ", "x4=", x4, ")", sep=""))
+ggplot(emm.q1d) + 
+  geom_point(aes(x=Mean, y=Observation))+
+  geom_errorbar(aes(y=Observation,
+                    xmin=Lower, xmax=Upper),
+                width = 0.25)+
+  # facet_wrap(~x2*x6)+
+  theme_bw()+
+  xlab("Estimated Mean of Y")
+```
+
+**Solution**
+Given the interaction $x_3 \times x_4$, given this is a categorical x categorical interaction, we consider the state of the model under all combinations of values for $I(x_{3i} == Treat), I(x_{4i} == High)$
+
+* **(Control, low)**
+\begin{align*}
+  Y_i =& \beta_0  +
+       \beta_1 x_{1i} + \beta_2 I(x_{2i}=\text{B})+ \\
+       & \beta_5 x_{5i} + \beta_6 I( x_{6i}=\text{Group2}) + \beta_7 x_{7i} + \beta_8 x_{8i}+\\
+        & \beta_{10} (x_{5i} ~\times~ I(x_{6i}=\text{Group2}))\\
+        & \beta_{11} (x_{7i} ~\times~ x_{8i}) + \epsilon_i 
+\end{align*}
+* **(Treat, low)**
+\begin{align*}
+  Y_i =& \beta_0  +
+       \beta_1 x_{1i} + \beta_2 I(x_{2i}=\text{B})+ \\ &\beta_3 +\\
+       & \beta_5 x_{5i} + \beta_6 I( x_{6i}=\text{Group2}) + \beta_7 x_{7i} + \beta_8 x_{8i}+\\
+        & \beta_{10} (x_{5i} ~\times~ I(x_{6i}=\text{Group2})) +\\
+        & \beta_{11} (x_{7i} ~\times~ x_{8i}) + \epsilon_i 
+\end{align*}
+* **(Control, High)**
+
+\begin{align*}
+  Y_i =& \beta_0  +
+       \beta_1 x_{1i} + \beta_2 I(x_{2i}=\text{B})+ \\  &\beta_4 +\\
+       & \beta_5 x_{5i} + \beta_6 I( x_{6i}=\text{Group2}) + \beta_7 x_{7i} + \beta_8 x_{8i}+\\
+        & \beta_{10} (x_{5i} ~\times~ I(x_{6i}=\text{Group2})) +\\
+        & \beta_{11} (x_{7i} ~\times~ x_{8i}) + \epsilon_i 
+\end{align*}
+
+* **(Treat, High)**
+\begin{align*}
+  Y_i =& \beta_0  +
+       \beta_1 x_{1i} + \beta_2 I(x_{2i}=\text{B})+ \\ & \beta_3 + \beta_4  +\\
+       & \beta_5 x_{5i} + \beta_6 I( x_{6i}=\text{Group2}) + \beta_7 x_{7i} + \beta_8 x_{8i}+\\
+       & \beta_9 + \\
+        &\beta_{10} (x_{5i} ~\times~ I(x_{6i}=\text{Group2})) +\\
+        & \beta_{11} (x_{7i} ~\times~ x_{8i}) + \epsilon_i
+\end{align*}
+
+Using the values in the table:
+
+* $\beta_3 = 219.4792 - 212.9676 = 6.5116$
+* $\beta_4 = 216.4894 - 212.9676 = 3.5218$
+* $\beta_9 = 238.1930 - 212.9676 - 3.5218 - 6.5116 = 15.192$
+Thus, we interpret the total effect of $x_3, x_4$ to be $25.2254$, $6.5116$ due to membership in the treatment group, $3.5218$ due to membership in the high group, and $15.192$ the marginal increase due to membership in both groups.
+
+## Part e
+Untangle and interpret the $x_5*x_6$ interaction using algebra. Use @tbl-q1e-emtrends and @fig-q1e-emtrends for context.
+
+```{r}
+#| size: "scriptsize"
+emm.q1e <- emtrends(mod.q1, var="x5", ~x5|x6) |> 
+            data.frame() |>
+            rename("Slope"  = "x5.trend",
+                   "Lower" = "lower.CL",
+                   "Upper" = "upper.CL") |>
+            dplyr::select(x6, Slope, SE, df, Lower, Upper)
+```
+```{r}
+#| label: tbl-q1e-emtrends
+#| tbl-cap: "Estimated marginal trends for the model in Question 1."
+#| tbl-align: "center"
+#| echo: false
+emm.q1e |> 
+  knitr::kable(digits = 4)
+```
+In @fig-q1e-emtrends, the slopes are the same and just the intercepts vary depending on $x_2$, $x_3$, and $x_4$.
+```{r}
+#| label: fig-q1e-emtrends
+#| fig-cap: "Estimated marginal trends for the model in Question 1."
+#| fig-width: 5
+#| fig-height: 3
+#| fig-align: "center"
+#| size: "scriptsize"
+emm.q1e <- emmeans(mod.q1, ~x5*x6,
+                    at = list(x5 = seq(-3, 3, length.out=500))) |> # Don't average across levels: use |x2*x3*x4
+  data.frame() |>
+            rename("Mean"  = "emmean",
+                   "Lower" = "lower.CL",
+                   "Upper" = "upper.CL")
+
+ggplot(emm.q1e) + 
+  geom_line(aes(x=x5, y=Mean, color=x6))+
+  geom_ribbon(aes(x=x5, ymin=Lower, ymax=Upper, fill=x6), alpha=0.25)+
+  # facet_wrap(~x2*x3*x4)+
+  theme_bw()
+```
+
+**Solution**
+As shown in @fig-q1e-emtrends, the interaction coefficient $\beta_{10}$ refers to the the slope of the group $2$ line, $9.4309$, while the coefficient $\beta_5$ refers to the slope of the group $1$ line. The coefficient $\beta_6$ is the increase in expected Y due to membership in group 2, and thus the difference in y-intercept between the group $1$ line and the group $2$ line.
+
+
+## Part f
+Untangle and interpret the $x_7*x_8$ interaction using algebra. Use @tbl-q1f-emtrends-x7 and @tbl-q1f-emtrends-x8 for context.
+
+
+
+```{r}
+#| size: "scriptsize"
+emm.q1f.x7 <- emtrends(mod.q1, var="x7", ~x7|x8, 
+                    at = list(x8 = mean(dat.q1$x8) + c(-1, 0 ,1)*sd(dat.q1$x8))) |> 
+            data.frame() |>
+            rename("Slope"  = "x7.trend",
+                   "Lower" = "lower.CL",
+                   "Upper" = "upper.CL") |>
+            dplyr::select(x8, Slope, SE, df, Lower, Upper)
+```
+```{r}
+#| label: tbl-q1f-emtrends-x7
+#| tbl-cap: "Estimated marginal trends for the model in Question 1."
+#| tbl-align: "center"
+#| echo: false
+emm.q1f.x7 |> 
+  knitr::kable(digits = 4)
+```
+
+```{r}
+#| size: "scriptsize"
+emm.q1f.x8 <- emtrends(mod.q1, var="x8", ~x8|x7, 
+                    at = list(x7 = mean(dat.q1$x7) + c(-1, 0 ,1)*sd(dat.q1$x7))) |> 
+            data.frame() |>
+            rename("Slope"  = "x8.trend",
+                   "Lower" = "lower.CL",
+                   "Upper" = "upper.CL") |>
+            dplyr::select(x7, Slope, SE, df, Lower, Upper)
+```
+```{r}
+#| label: tbl-q1f-emtrends-x8
+#| tbl-cap: "Estimated marginal trends for the model in Question 1."
+#| tbl-align: "center"
+#| echo: false
+emm.q1f.x8 |> 
+  knitr::kable(digits = 4)
+```
+
+A Johnson Neyman analysis using the `interactions` package for `R` [@interactions], shows that the slope of $x_7$ is statistically discernible for all observed values of $x_8$ (@fig-q1f-jni-x7), and vice versa (@fig-q1f-jni-x8).
+
+```{r}
+#| label: fig-q1f-jni-x7
+#| fig-cap: "Johnson Neyman interval for the model in Question 1."
+#| fig-width: 5
+#| fig-height: 3.5
+#| fig-align: "center"
+#| size: "scriptsize"
+library(interactions)
+johnson_neyman(mod.q1, pred = x7, modx = x8, control.fdr = T)
+```
+
+```{r}
+#| label: fig-q1f-jni-x8
+#| fig-cap: "Johnson Neyman interval for the model in Question 1."
+#| fig-width: 5
+#| fig-height: 3.5
+#| fig-align: "center"
+#| size: "scriptsize"
+johnson_neyman(mod.q1, pred = x8, modx = x7, control.fdr = T)
+```
+
+**Solution**
+
+the coefficient $\beta_{11}$ refers to the expected change in $Y$ for a unit increase in $x_{7i}$ after adjusting for the simultaneous linear change in $x_{8i}$ and vice versa.
+
+\begin{align*}
+\frac{\partial Y}{\partial x_{7i}} &= \beta_7 + \beta_{11}x_{8i} \\
+\frac{\partial Y}{\partial x_{8i}} &= \beta_8 + \beta_{11}x_{7i}
+\end{align*}
+
+
+Since the slope of both variables is significantly positive for the entire range of observed variables and the lines are upward sloping, the interaction is positive and increasingly strong at higher values of both variables.
+
+
+## Part g
+Standardize the continuous data and refit the regression model. Redo part f. What do you notice about the coefficient estimates and why does this make the untangling process easier? 
+
+**Solution:** First, we fit the regression model using `lm()`.
+```{r}
+#| size: "scriptsize"
+# Standardize Data
+dat.z <- dat.q1 |>
+  mutate(across(c(x1, x5, x7, x8), ~ as.vector(scale(.))))
+# Refit Model
+mod.q1z <- lm(y ~ x1 + x2 + x3*x4 + x5*x6 + x7*x8, data=dat.z)
+```
+
+```{r}
+#| size: "scriptsize"
+emm.q1g.z7 <- emtrends(mod.q1z, var="x7", ~x7|x8,
+                    at = list(x8 = c(-1, 0 ,1))) |>
+          data.frame() |>
+          rename("Slope"  = "x7.trend",
+                 "Lower" = "lower.CL",
+                 "Upper" = "upper.CL") |>
+          dplyr::select(x8, Slope, SE, df, Lower, Upper)
+```
+```{r}
+#| label: tbl-q1-emtrends-z7
+#| tbl-cap: "Estimated marginal trends for the model in Question 1 when quantitative variables are standardized."
+#| tbl-align: "center"
+#| echo: false
+emm.q1g.z7 |> 
+          knitr::kable(digits = 2, row.names = F)
+```
+```{r}
+#| size: "scriptsize"
+emm.q1g.z8 <- emtrends(mod.q1z, var="x8", ~x8|x7,
+                      at = list(x7 = c(-1, 0 ,1)))|>
+              data.frame() |>
+              rename("Slope"  = "x8.trend",
+                    "Lower" = "lower.CL",
+                    "Upper" = "upper.CL") |>
+              dplyr::select(x7, Slope, SE, df, Lower, Upper)
+
+```
+```{r}
+#| label: tbl-q1-emtrends-z8
+#| tbl-cap: "Estimated marginal trends for the model in Question 1 when quantitative variables are standardized."
+#| tbl-align: "center"
+#| echo: false
+emm.q1g.z8 |> 
+          knitr::kable(digits = 2, row.names = F)
+```
+
+After standardization, a unit change represents a standard deviation change in the variable, simplifying the algebra:
+
+* $z_{7i} = -1 \implies \beta_0 - \beta_7 + (\beta_8 - \beta_{11})z_{8i}$
+* $z_{7i} = 0 \implies \beta_0 + (\beta_8)z_{8i}$
+* $z_{7i} = 1 \implies \beta_0 + \beta_7 + (\beta_8 + \beta_{11})z_{8i}$
+
+Thus, an increase of $1$ s.d of x_7 corresponds to an increase of $3.29$ in the slope of standardized $x_8$
+
+# Question 2
+@Cui25 investigate how freezing and cryogenic temperatures affect the strength, flexibility, stiffness, and internal breaking behavior of 3D-printed CF/PEEK composites.
+
+Carbon fiber reinforced PEEK (CF/PEEK) is a high-performance composite used in 3D printing for aerospace, deep-sea, polar research. The researchers aimed to assess whether and how extremely cold environments impact this composite to understand how 3D-printed CF/PEEK performs in freezing conditions. This work would be important to understand its limits and develop preventative methods to protect against structural failures.
+
+The researchers created fifteen 3D printed dog-bone-shaped test specimens and placed them in a chamber cooled with liquid nitrogen to $25^\circ\text{C}$, $-25^\circ\text{C}$, $-75^\circ\text{C}$, $-125^\circ\text{C}$, and $-175^\circ\text{C}$. To test strength of the specimen, a machine pulled both ends of the specimen until it snapped. 
+
+In the table below, the researchers record the average tensile strength for three specimens from each temperature level.
+
+| Temperature          | Mean Tensile Strength | 
+| :--                  | :--                   |
+| $25^\circ\text{C}$   | 81.93 MPa             |
+| $-25^\circ\text{C}$  | 76.63 MPa             |
+| $-75^\circ\text{C}$  | 63.23 MPa             |
+| $-125^\circ\text{C}$ | 32.13 MPa             |
+| $-175^\circ\text{C}$ | 12.83 MPa             |
+
+## Part a
+Compute the estimates we derived using calculus in lecture 16: 
+\begin{align*} 
+\widehat{\beta}_0 &= \bar{y} - \widehat{\beta}_1 \bar{x}_1 \\ 
+\widehat{\beta}_1 &= \frac{\sum_{i=1}^n (x_{1i} - \bar{x}_1)(y_i-\bar{y})}{\sum_{i=1}^n (x_{1i}-\bar{x}_1)^2}.
+\end{align*}
+
+**Solution**
+
+$\overline{x} = -\frac{375}{5} = -75$
+
+$\overline{y} = \frac{266.75}{5}=53.35$
+
+\begin{equation}
+\widehat{\beta}_1 = \frac{(25 + 75)(81.93-53.35) + (-25 + 75)(76.63 - 53.35) + (-75 + 75)(63.23 - 53.35) + (-125 + 75)(32.15 - 53.35) + (-175 + 75)(12.83 - 53.35)}{(25 + 75)^2 + (-25 + 75)^2 + (-75 + 75)^2 + (-125 + 75)^2 + (-175 + 75)^2} = .36536
+\end{equation}
+
+$\widehat{\beta}_0 = 53.35 - .36536(-75) = 80.752$
+
+## Part b
+Compute the estimates we derived using linear algebra in lecture 16: 
+$$\widehat{\boldsymbol{\beta}} = \left(\mathbf{X}'\mathbf{X}\right)^{-1} \mathbf{X}'\mathbf{Y}.$$
+**Hint:** Run `?matrix()` in `R` for a quick reminder about how to create a matrix. 
+
+**Solution**
+
+```{r}
+X = cbind(1, c(25,-25,-75,-125,-175)) 
+Y = matrix(c(81.93, 76.63, 63.23, 32.13, 12.83))
+Beta = solve((t(X) %*% X)) %*% (t(X) %*% Y)
+(Beta)
+```
+
+
+
+## Part c
+Compute the maximum likelihood estimates using `optim()` in `R` as described in lecture 16:
+$$\max_{\beta_0, \beta_1, \sigma} \mathcal{L}(\boldsymbol{\theta}=\{\beta_0, \beta_1, \sigma\}).$$
+
+**Solution**
+
+
+```{r}
+dat.q2 = tibble(
+  temperatures =  c(25,-25,-75,-125,-175),
+  measurements = c(81.93, 76.63, 63.23, 32.13, 12.83)
+)
+
+optim.func = function(params,data) {
+  -1*sum(dnorm(data$measurements - (params[1] + (params[2] * data$temperatures)),0,sd=params[3],log=TRUE))
+}
+
+fitted = optim(
+  par=c(mean(dat.q2$measurements),0,sd(dat.q2$measurements)),
+  fn=optim.func,
+  data=dat.q2)
+(fitted$par)
+```
+
+## Part d
+Fit the model using `lm()` and plot the resulting model. Compare to the results from parts (a) through (c). 
+
+**Solution**
+```{r}
+#| label: fig-lm-plot
+#| fig-cap: Fitted Linear Model of Measurement vs Temperature
+mod = lm(measurements ~ temperatures, data = dat.q2)
+(mod)
+plot.dat = tibble(
+  x = seq(from=-200,to=50,by=.5),
+  y = coef(mod)[1] + coef(mod)[2] * x
+)
+
+plot = ggplot() +
+  geom_point(data = dat.q2, aes(x = temperatures, y = measurements)) +
+  geom_line(data = plot.dat, aes(x = x, y = y), color = "blue") +
+  labs(x = "Temperature", y = "Measurement") +
+  theme_bw()
+
+(plot)
+```
+
+The results across methods are identical, except for minor rounding differences in the by-hand calculations completed in part a.
+
+# Question 3
+@Bracht16 evaluate MFAP4 as a biomarker for severity of fibrosis in hepatitic C patients. 
+
+```{r}
+#| size: "scriptsize"
+dat.mfap4 <- read_csv("Bracht2016.csv")
+```
+
+## Part a
+Fit the model predicting `MFAP4` using `Fibrosis.Stage`. Write out the resulting estimate model and interpret the coefficients.
+
+**Solution**
+
+\begin{equation*}
+Y_i = \beta_0 + \beta_2I(x_{1i} = 1) + \beta_3I(x_{2i} = 2) + \beta_4I(x_{3i} = 3) + \beta_5I(x_{4i} = 4)
+\end{equation*}
+
+```{r}
+mod = lm(MFAP4 ~ Fibrosis.Stage, data=dat.mfap4)
+(mod)
+```
+
+Each $\beta$ coefficient corresponds to the expected increase in MFAP4 level due to membership in each of the mutually exclusive groups.
+
+## Part b
+Conduct a residual analysis on the model in part a to demonstrate how to identify when you need a log transformation.
+
+**Solution**
+
+```{r}
+#| label: "fig-linear-residuals"
+#| fig-caption: "Residual Analysis of Linear MFAP4 Model"
+plotResiduals(mod)
+```
+
+The residuals are highly non-normal, particularly with respect to the observed quantiles deviating above the theoretical quantiles, which is consistent with right skew of residuals across most categories. The lack of normality of residuals is consistent with a need to transform the data before regressing, since this would resolve the violation of the regression condition due to the lack of residual normality and would mitigate the issue of non-constant variance of residuals.
+
+
+## Part c
+Fit the model predicting `log(MFAP4)` using `Fibrosis.Stage`. Use the natural log, and not the $\log_2(\cdot)$ recorded in the data file. Write out the resulting estimate model and interpret the coefficients.
+
+**Solution**
+
+
+\begin{equation*}
+\ln(Y_i) = \beta_0 + \beta_2I(x_{1i} = 1) + \beta_3I(x_{2i} = 2) + \beta_4I(x_{3i} = 3) + \beta_5I(x_{4i} = 4)
+\end{equation*}
+```{r}
+dat.mfap4 = dat.mfap4 |>
+  mutate(ln.mfap4 = log(MFAP4))
+
+mod.ln = lm(ln.mfap4 ~ Fibrosis.Stage, data = dat.mfap4)
+(mod.ln)
+```
+
+The intercept corresponds to the expected MFAP4 level in the absence of a fibrosis stage while each other coefficient corresponds to the expected increase in MFAP4 level due to membership in the associated stage.
+
+
+## Part d
+Conduct a residual analysis on the model in part c to demonstrate that the conditions for using regression are met.
+
+**Solution**
+
+\begin{equation*}
+\ln(Y_i) = \beta_0 + \beta_2I(x_{1i} = 1) + \beta_3I(x_{2i} = 2) + \beta_4I(x_{3i} = 3) + \beta_5I(x_{4i} = 4)
+\end{equation*}
+
+```{r}
+#| label: "fig-log-residuals"
+#| fig-label: "Residual Analysis of Log-Linear MFAP4 Model"
+plotResiduals(mod.ln)
+```
+
+The plots show the the distribution of residuals is approximately normal, and there are very few unusually large residuals.
+
+## Part e
+Fit the model predicting `log(MFAP4)` using `Fibrosis.Stage`, `Age`, and `Gender`. Use the natural log, and not the $\log_2(\cdot)$ recorded in the data file. Write out the resulting estimate model and interpret the coefficients.
+
+**Solution**
+
+\begin{equation*}
+\ln(Y_i) = \beta_0 + \beta_2I(x_{1i} = 1) + \beta_3I(x_{2i} = 2) + \beta_4I(x_{3i} = 3) + \beta_5I(x_{4i} = 4) + \beta_6x_{5i} + \beta_7I(x_{6i} = \text{Male})
+\end{equation*}
+
+```{r}
+mod.3e = lm(ln.mfap4 ~ Fibrosis.Stage + Age + Gender, data = dat.mfap4)
+(mod.3e)
+```
+
+$\beta_0$ corresponds to the expected value of $\ln(\text{mfap4})$ in the absence of any fibrosis stage, a female gender, and an age of 0. Each of the $\beta$ coefficients $1-5$ correspond to a change membership to each of the mutually exclusive fibrosis stages from a stage of 0. the $\beta_6$ coefficient corresponds to the increase in $\ln(\text{mfap4})$ due to a unit increase in age. $\beta_7$ is the expected difference due to the patient category changing from female to male.
+
+
+
+# Question 4
+
+## Part a
+Simulate data to match regression assumptions in a loop that runs $R=1000$ times.
+\begin{align*}
+    x_i &\sim \text{Uniform}(a=0,b=10)\\
+    \epsilon_i &\sim \text{Gaussian}(\mu=0, \sigma=1)\\
+    y_i &= 2 + 1.5 x_i + \epsilon_i\\
+    n &= 30
+\end{align*}
+In each iteration, fit a regression line to the data and store the coefficient estimates. Plot the resulting estimates. What do you notice?
+
+**Solution**
+```{r}
+regression.sims = function(r, n, error.dist) {
+  beta0 = rep(0,times=r)
+  beta1 = rep(0,times=r)
+  for (i in 1:r) {
+    dat = tibble(
+      x = runif(n=n,min=0,max=10),
+      e = error.dist(n),
+      y = 2 + (1.5 * x) + e
+    )
+    mod = lm(y ~ x, data = dat)
+    beta0[i] = coef(mod)[1]
+    beta1[i] = coef(mod)[2]
+  }
+
+  list(
+  tbl = regression.tbl(beta0,beta1),
+  fig = regression.fig(beta0,beta1)
+  )
+ 
+}
+
+
+regression.tbl = function(beta0,beta1) {
+   tbl = tibble(beta0, beta1) |>
+    pivot_longer(everything(), names_to = "parameter", values_to = "estimate") |>
+    group_by(parameter) |>
+    summarise(
+      mean   = mean(estimate),
+      sd     = sd(estimate),
+      median = median(estimate),
+      skew = e1071::skewness(estimate),
+      kurtosis = e1071::kurtosis(estimate),
+    ) |>
+    knitr::kable(digits=2)
+}
+
+
+regression.fig = function(beta0,beta1) {
+ pvt = tibble(beta0, beta1) |>
+    pivot_longer(everything(), names_to = "parameter", values_to = "estimate")
+ 
+ plt = ggplot(pvt, aes(x = estimate)) +
+    geom_histogram(bins = 40, fill = "grey70", color = "white") +
+    geom_vline(
+      data = pvt |> group_by(parameter) |> summarise(mean = mean(estimate)),
+      aes(xintercept = mean),
+      color = "blue"
+    ) +
+    facet_wrap(~ parameter, scales = "free") +
+    labs(x = "Estimate", y = "Count") +
+    theme_bw()
+}
+
+
+```
+```{r}
+#| label: tbl-normsims
+#| tbl-cap: "Summary Statistics of Beta Coefficients with Normal Error"
+out = regression.sims(r=1000,n=30, error.dist= \(n) rnorm(n))
+(out$tbl)
+```
+```{r}
+#| label: fig-normsims
+#| fig-cap: "Histogram of Beta Coefficients with Normal Error"
+(out$fig)
+```
+
+The estimates for both coefficients are centered at the true values and normally distributed. The coefficient of variation of $\beta_0$ appears to be noticably larger than for $\beta_1$.
+
+
+
+## Part b
+Simulate data to match regression assumptions in a loop that runs $R=1000$ times.
+\begin{align*}
+    x_i &\sim \text{Uniform}(a=0,b=10)\\
+    \epsilon_i &\sim \text{Shifted Exponential}(\lambda=1, \mu=0)\\
+    y_i &= 2 + 1.5 x_i + \epsilon_i\\
+    n &= 30
+\end{align*}
+In each iteration, fit a regression line to the data and store the coefficient estimates. Plot the resulting estimates. What do you notice?
+
+**Hint:** Use the `tolerance::r2exp()` function with `rate=1` and `shift=-1`.
+
+**Solution**
+
+```{r}
+#| label: tbl-shiftedexpsims
+#| tbl-cap: "Summary Statistics of Beta Coefficients with Shifted Exponential Error"
+out = regression.sims(r=1000,n=30, error.dist= \(n) tolerance::r2exp(n,rate=1,shift=-1))
+(out$tbl)
+```
+```{r}
+#| label: fig-shiftedexpsims
+#| fig-cap: "Histogram of Beta Coefficients with Shifted Exponential Error"
+(out$fig)
+```
+
+Both estimates are still centered at the true values, and the previous coefficient of variation observation still holds. Furthermore, the distribution of the $\beta_0$ estimate is now right skewed.
+
+
+
+## Part c
+Simulate data to match regression assumptions in a loop that runs $R=1000$ times.
+\begin{align*}
+    x_i &\sim \text{Uniform}(a=0,b=10)\\
+    \epsilon_i &\sim \text{Cauchy}(m=0, s=1)\\
+    y_i &= 2 + 1.5 x_i + \epsilon_i\\
+    n &= 30
+\end{align*}
+In each iteration, fit a regression line to the data and store the coefficient estimates. Plot the resulting estimates. What do you notice?
+
+**Solution**
+```{r}
+#| label: tbl-cauchysims
+#| tbl-cap: "Summary Statistics of Beta Coefficients with Cauchy Error"
+out = regression.sims(r=1000,n=30, error.dist= \(n) rcauchy(n))
+(out$tbl)
+```
+```{r}
+#| label: fig-cauchysims
+#| fig-cap: "Histogram of Beta Coefficients with Cauchy Error"
+(out$fig)
+```
+
+The estimates are no longer centered, and the coefficient of variation and skew are now sufficiently large such that the means cannot be reasonably interpreted to be representative of the population. Also, the incredibly high kurtosis indicates fatter tails, with a greater likelihood for outliers. This would explain the distortion in the x-axis in @fig-cauchysims. Taken together, the simulation suggests standard OLS is not appropriate for models with an error term sampled from a cauchy distribution with the given parameters.
+
+
+
+
