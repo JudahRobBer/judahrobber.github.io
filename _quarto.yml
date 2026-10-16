@@ -38,7 +38,7 @@ website:
           - text: "354 Homework 2: ANOVA"
             href: 354/hw/hw2/HW2.qmd
           - text: "354 Homework 3: Regression"
-            href: 354/hw/hw3/HW3/qmd
+            href: 354/hw/hw3/HW3.qmd
   page-footer:  
     left: "© 2026 Colgate University Student Portfolio"
     right: "[GitHub Source](https://github.com/JudahRobBer)"
