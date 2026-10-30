@@ -1,0 +1,368 @@
+---
+title: Homework 4 -- Regression Consult # Title of the document
+
+# Bibliography Details
+bibliography: HW4References.bib  # Name of bib file in the same folder 
+bibliographystyle: apa            # Bibliography style
+
+execute:               # Default settings for code blocks
+  warning: false       # Do not print warnings
+  message: false       # Do not print messages
+  size: "scriptsize"   # Set code size to script size
+
+# Below will do html by default. To render the entire project
+# Use the following code:
+# quarto::quarto_render("HW4.qmd")
+format:
+  pdf:        # Specify .pdf formatting options 
+    documentclass: article     # Document Class
+    number-sections: true      # Number Sections
+    reference-section-title: "References" # Title for reference section
+    code-line-numbers: true    # Line numbers printed in code
+    cap-location: top          # Captions at the top of tables 
+    geometry:
+      - top=0.75in
+      - left=0.75in
+      - bottom=0.75in
+      - right=0.75in
+  html:       # Specify HTML formatting options 
+    number-sections: true      # Number Sections
+    code-fold: true            # Button to show code
+    code-line-numbers: true    # Line numbers printed in code
+    cap-location: top          # Captions at the top of tables and figures
+format-links: [pdf]
+---
+```{r}
+#| echo: false
+
+default_chunk_hook  <- knitr::knit_hooks$get("chunk")
+
+latex_font_size <- c("Huge", "huge", "LARGE", "Large", 
+                     "large", "normalsize", "small", 
+                     "footnotesize", "scriptsize", "tiny")
+
+knitr::knit_hooks$set(chunk = function(x, options) {
+  x <- default_chunk_hook(x, options)
+  if(options$size %in% latex_font_size) {
+    paste0("\n \\", options$size, "\n\n", 
+      x, 
+      "\n\n \\normalsize"
+    )
+  } else {
+    x
+  }
+})
+```
+
+```{r}
+#| label: load-packages
+#| include: false
+library(tidyverse)
+library(patchwork)
+library(GGally)
+library(car)
+library(effectsize)
+library(emmeans)
+source("plotResiduals.R")
+source("plotInfluence.R")
+```
+
+When people make decisions, their choices are often swayed by how information is presented. This is often described as "the framing effect." One example of this, is how commercials describe new medications. As an example, Nereus (tradipitant), a new drug for motion-induced vomiting like sea-sickness, is marketed with a **positive frame** as reducing vomiting incidence from 44% to 18% (a reduction of 60%). This marketing makes it seem more effective than a **negative frame** that says just 18% of patients still experienced vomiting, even though both statements are true. 
+
+@Xu24 aimed to evaluate whether older adults are more or less vulnerable to framing than younger adults. They collected a sample of 696 adults aged 18 to 71 and exposed them to three different scenarios
+
+**Scenario 1:** Rate Drug Efficacy (1 = very bad, 6 = very good)
+
+* **Positive Frame:** 70 out of 100 patients felt better
+* **Negative Frame:** 30 out of 100 patients did not feel better
+
+**Scenario 2:** Likelihood to stop drinking cocoa (1 = surely stop, 6 = surely continue)
+
+* **Positive Frame:** Stopping drinking hot cocoa reduces cadmium and cancer risk.
+* **Negative Frame:** Continuing to drink hot cocoa increases cadmium and cancer risk.
+
+**Scenario 3:** Preference for chance choice (1 = surely safe option, 6 = surely risky)
+
+* **Positive Frame:** Choice between 200 saved vs 1/3 chance all 600 are saved.
+* **Negative Frame:** Choice between 400 die vs 2/3 chance all 600 die.
+
+
+In each scenario, participants were randomly assigned a positive or negative frame. They rated their response on a 1-6 scale. The researchers want to build three models, one for each scenario adjusting for simultaneous linear changes in demographic variables (gender, ethnicity, education level, political affiliation).
+ 
+They want to evaluate whether, as adults age, the way choices are worded have more influence on their judgments and ultimate choices. If there is a change, are those changes driven by positive or negative framings? At what age does this effect onset? 
+
+**Your Goals:**
+
+* Determine the correct analysis strategy and conduct the necessary analyses. 
+    * Hint 1: Ensure to assess and communicate results about the model fit. 
+    * Hint 2: Ensure to think about whether or which interactions need to be included.
+    * Hint 3: You will need run various post hoc procedures (e.g., `emmeans`, `emtrends` or `johnson_neyman`).
+    * Hint 4: Looking at the paper may be helpful. They do include `R` code, but I expect you to do a much better job using the techniques we discussed (they do somethings differently)
+* Write a clear, concise, complete, and correct report conveying an answer to their research question.
+
+The data are in `HW4Data.csv` but they will require some manual and `tidyverse` cleaning.
+
+# Loading and Cleaning the Data
+The data are presented in a CSV file such that each row corresponds to a study participant. Before further processing the raw data for exploratory analysis and regression, we manually remove the first row of the dataset, as the appropriate column headers are contained in the second row.
+
+The rest of our analysis will involve the following columns: gender, age, politics, ethnicity, education, treatment(1-3), and pick(1-3). If we were to filter the data, We would also use the two attention columns: attentionCheck and ageAttentionCheck as our data cleaning filters. Any null values or ages that disagreed with the age attention check would be removed. After filtration, we would have $n = 535$. Due to the small effect of the data, any significant removal of data severly limits the power. To make further analysis feasible, we acknowledge the concerns regarding failing to remove this potentially problematic data, but include it nevertheless. Finally, for the sake of simplification, we assume that education is ordinal, and recategorize at as such. Finally, following the approach of the original work, we standardize age such that the lowest age (18) is 0.
+
+```{r}
+dat = read_csv("HW4Data.csv")
+
+dat = dat |> 
+  dplyr::select(attentioncheck,
+  gender,age,politics,
+  ethnicity,education,
+  treatment1,treatment2,treatment3,
+  pick1,pick2,pick3,
+ ) |>
+  mutate(education_ord = case_when(
+    education == "Less than high school" ~ 0,
+    education == "High school graduate" ~ 1,
+    education == "Some college" ~ 2,
+    education == "2 year degree" ~ 3,
+    education == "4 year degree" ~ 4,
+    education == "Professional degree" ~ 5,
+    education == "Doctorate" ~ 6
+  )) |>
+  mutate(age18 = age - 18)
+```
+
+
+# Exploratory Data Analyses
+```{r}
+#| label: fig-age-valence-pairs
+#| fig-cap: "Age, Frame Valence, and Response Correlation Analysis"
+#| fig-subcap: ["Attribute", "Goal", "Risky Choice"]
+#| layout-ncol: 3
+#| fig-width: 5
+#| fig-height: 5
+
+for (i in 1:3) {
+  print(ggpairs(dat, columns = c("age", paste0("treatment", i), paste0("pick", i))) + theme_bw())
+}
+```
+
+@fig-age-valence-pairs shows that with respect to the variable of interest, the age sample is somewhat right skewed, while the treatment assignment is balanced and the age distribution across treatments is consistent. The mixed results regarding correlation of age and reponse variable suggest that age itself is not primarily responsible for the observed variability in willingness  to take risk as measured by scenario 2 and 3 or view of drug efficacy as measured by scenario 1. Similarly, the plots do not strongly suggest that the treatments are clearly discernible with respect to the response variable for any scenario, though this does not directly address the significance of the interaction effect.
+
+```{r}
+#| label: fig-dv-pairs
+#| fig-cap: "Response Correlation Analysis"
+#| fig-width: 4
+#| fig-height: 4
+
+ggpairs(dat,columns=c("pick1","pick2","pick3")) + theme_bw()
+```
+
+@fig-dv-pairs do not suggest any significant relationship among response variables. Furthermore, the plot indicates that the response variables differ in their sample distribution.
+
+```{r}
+#| label: fig-demographic-pairs
+#| fig-cap: "Demographic Features Correlation Analysis"
+#| fig-width: 10
+#| fig-height: 10
+#| out-width: "100%"
+
+ggpairs(dat,
+        columns = c("age", "education_ord", "politics", "gender", "ethnicity"),
+        lower = list(combo = "box_no_facet", discrete = "count"),
+        upper = list(combo = "box_no_facet", discrete = "count"),
+        diag  = list(discrete = "barDiag")) +
+  theme_bw(base_size = 8) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+```
+
+@fig-demographic-pairs first immediately indicate that there are concerns regarding representativeness with varying degrees of severity. Primarily, women and democrats are moderately over-represented, while white people are vastly over-represented and hispanic is not even indicated as a primary category. Although there's not strong prior evidence to suggest variability in susceptibility to frame valence across ethnic groups, this is still problematic. My intuition suggests that there are more likely differences across gendered and political lines, but the difference in sample sizes is not catastrophic. The correlation between education and age is insignificant, and no other demographic features indicate strong evidence of multicollinearity
+
+
+# Regression Analyses
+
+## Model Fit
+```{r}
+mod1 = lm(pick1 ~ gender + politics + ethnicity + education_ord + treatment1*age, data = dat)
+mod2 = lm(pick2 ~ gender + politics + ethnicity + education_ord +  treatment2*age, data = dat)
+mod3 = lm(pick3 ~ gender + politics + ethnicity + education_ord +  treatment3*age, data = dat)
+mods = list(mod1,mod2,mod3)
+```
+
+```{r}
+#| label: fig-res-analysis
+#| fig-cap: "Residual Analysis"
+#| fig-subcap: ["Attribute", "Goal", "Risky Choice"]
+#| layout-ncol: 3
+#| fig-width: 6
+#| fig-height: 5
+
+for (model in mods) {
+  print(plotResiduals(model))
+}
+```
+
+Residual Analysis suggests moderate skew and excess kurtosis particularly for scenario 2, while there is observable but not obviously highly problematic tail behavior for both scenarios 1 and 3.
+
+
+
+```{r}
+#| label: fig-influence-analysis
+#| fig-cap: "Influence Analysis"
+#| fig-subcap: ["Attribute", "Goal", "Risky Choice"]
+#| layout: [[1,1], [1]]
+#| fig-width: 3.5
+#| fig-height: 3.5
+
+for (model in mods) {
+  print(plotInfluence(model))
+}
+```
+
+Influence analysis in @fig-influence-analysis shows the exist of several high leverage points across scenarios, as well as several moderate outliers across scenarios. In particular, scenario 1 has more negative outliers, while scenario 2 has more positive outliers, consistent with the tail behavior of the residual analysis in @fig-res-analysis. The log transform increases the prevalance and severity of outliers as measured by studentized residual for both scenario 1 and 2, and thus we apply the transform only to scenario 2. This is reasonable because although the responses are similarly measured, they need not describe highly similar random processes, and thus the appropriate model may differ.
+
+```{r}
+mod1 = lm(pick1 ~ gender + politics + ethnicity + education_ord + treatment1*age, data = dat)
+mod2 = lm(log(pick2) ~ gender + politics + ethnicity + education_ord +  treatment2*age, data = dat)
+mod3 = lm(pick3 ~ gender + politics + ethnicity + education_ord +  treatment3*age, data = dat)
+mods = list(mod1,mod2,mod3)
+```
+
+```{r}
+#| label: fig-log-res-analysis
+#| fig-cap: "Final Residual Analysis"
+#| fig-subcap: ["Attribute", "Goal", "Risky Choice"]
+#| layout-ncol: 3
+#| fig-width: 6
+#| fig-height: 5
+
+for (model in mods) {
+  print(plotResiduals(model))
+}
+```
+
+Residual Analysis suggests moderate skew and excess kurtosis particularly for scenario 2, while there is observable but not obviously highly problematic tail behavior for both scenarios 1 and 3.
+
+```{r}
+#| label: fig-log-influence-analysis
+#| fig-cap: "Final Influence Analysis"
+#| fig-subcap: ["Attribute", "Goal", "Risky Choice"]
+#| layout: [[1,1], [1]]
+#| fig-width: 3.5
+#| fig-height: 3.5
+
+for (model in mods) {
+  print(plotInfluence(model))
+}
+```
+
+```{r}
+#| label: tbl-vif-analysis
+#| tbl-cap: "VIF Summary"
+
+get_vif = \(m) {
+  v = car::vif(m)
+  if (is.matrix(v)) v = v[, ncol(v)]   # GVIF^(1/(2*Df))
+  names(v) = gsub("treatment[0-9]", "Treatment", names(v))
+  v
+}
+
+vif_tab = do.call(cbind, lapply(mods, get_vif))
+colnames(vif_tab) = c("Attribute", "Goal", "Risky Choice")
+
+knitr::kable(vif_tab, digits = 2)
+```
+
+@tbl-vif-analysis indicate no concerning evidence of multicollinearity via VIF, while the highest reported value is due to the interaction effect, which is an inflation due to the fact that the interaction must correlate with the respective components of the interaction.
+
+## Model Interpretation
+
+```{r}
+#| label: tbl-1-anova
+#| tbl-cap: "Attribute Model Anova Analysis"
+anova(mod1) |> dplyr::select(Df, `F value`, `Pr(>F)`) |> knitr::kable(digits=2)
+```
+
+```{r}
+#| label: tbl-2-anova
+#| tbl-cap: "Goal Model Anova Analysis"
+anova(mod2) |>  dplyr::select(Df, `F value`, `Pr(>F)`) |> knitr::kable(digits=2)
+```
+
+```{r}
+#| label: tbl-3-anova
+#| tbl-cap: "Risky Choice Model Anova Analysis"
+anova(mod3) |> dplyr::select(Df, `F value`, `Pr(>F)`) |> knitr::kable(digits=2)
+```
+
+As expected, the effect of the treatment alone is highly significant, while the interaction effect is borderline significant for goal and risky-choice framing, and insignificant for attribute framing. These results are robust to the application of the log transform for the attribute and and risky-choice scenario, but sensitive for the goal scenario. Specifically, if the log transform is not applied to the goal scenario response variable, the response is insignificant. Given that the result is only borderline significant in the transformed model, this further suggests a healthy dose of skepticism regarding the significance of these results. As such, we only perform post-hoc analysis on the risky-choice model, though the techniques and approach are identical for the remaining 2 scenarios.
+
+
+
+### Anova Effect Size
+```{r}
+#| label: tbl-ovr-es
+#| tbl-cap: "Overall Model Effect Size (Omega-squared, 95% CI)"
+scen   = c("Attribute", "Goal", "Risky-Choice")
+fmt_ci = \(est, lo, hi) sprintf("%.2f [%.2f, %.2f]", est, lo, hi)
+
+ovr = do.call(rbind, lapply(seq_along(mods), \(i) {
+  fs = summary(mods[[i]])$fstatistic
+  es = effectsize::F_to_omega2(fs[1], fs[2], fs[3], alternative = "two.sided")
+  data.frame(Scenario = scen[i],
+             `Omega-squared [95% CI]` = fmt_ci(es$Omega2_partial, es$CI_low, es$CI_high),
+             check.names = FALSE)
+}))
+
+knitr::kable(ovr, row.names = FALSE)
+```
+
+```{r}
+#| label: tbl-predictor-es
+#| tbl-cap: "Partial Omega-squared for Treatment, Age, and Their Interaction (95% CI)"
+pred = lapply(mods, \(m) {
+  es = effectsize::omega_squared(anova(m), alternative = "two.sided")
+  es$Parameter = gsub("treatment[0-9]", "Treatment", es$Parameter)
+  es = es[grepl("Treatment|age", es$Parameter), ]
+  setNames(fmt_ci(es$Omega2_partial, es$CI_low, es$CI_high), es$Parameter)
+})
+
+tab = do.call(cbind, pred)
+colnames(tab) = scen
+rownames(tab) = c("Treatment", "Age", "Treatment x Age")
+knitr::kable(tab)
+```
+
+The overall effect size is significantly non-zero for the attribute and risky-chocie model, and is interpreted as small for the risky-choice model and medium for the attribute model. With respect to indivdual predictors, the treatment effect size is significantly non-zero for all scenarios, while the effect size of the age and interaction effect are never significantly non-zero.
+
+## Risky-Choice Post-Hoc
+
+### Coefficient Analysis
+```{r}
+#| label: tbl-coefficients
+#| tbl-cap: "Risky Choice: Model Coefficients"
+
+coefs = summary(mod3)$coefficients
+coefs[c("age", "treatment3pos3", "treatment3pos3:age"), ] |> knitr::kable(digits = 2)
+```
+
+The analysis of coefficients of interest in @tbl-coefficients show that the increase in response variable due to a unit increase in age after adjusting for simulatenous linear changes in the other predictors is positive. The coefficient results for the change due to being assigned the positive treatment condition are insignificant, but this is due to the fact that it is measured at age 18, where there is no significant difference between the two framings as shown in @fig-EMM. The interaction effect is significant and negative, showing that the additional change in the response variable due to both a unit increase in age and changing to the positive group is slightly negative, which is consistent with @fig-EMM.
+
+```{r}
+#| label: fig-EMM
+#| fig-cap: "Risky Choice: Estimated Marginal Means"
+
+ages = seq(min(dat$age), max(dat$age), length.out = 20)
+
+emmeans::emmip(mod3, treatment3 ~ age,
+      at = list(age = ages),
+      CIs = TRUE, weights = "proportional") +
+  labs(x = "Age (years since 18)", y = "Response", color = "Treatment") +
+  scale_color_discrete(labels=c("Negative Framing", "Positive Framing")) +
+  theme_bw()
+```
+
+The estimated marginal means analysis shows that the gap between the response variable in each treatment condition is larger for older participants and the difference is significant roughly after age 30. This result is consistent with age increasing the susceptibiliy to framing valence, and that the change is primarily driven by negative framings.
+
+# Discussion
+
+Our analysis of the framing valence study performed by Xu provide moderate support for the hypothesis that age increases people's susceptibility to frame valence in certain forms of trade-off decision making contexts. In particular, although we do not find significant evidence for an effect in the attribute framing scenario tested in the paper, we find borderline significant results for goal attributes and significant results for risky-choice attributes. We proceed with post-hoc analysis for risky-choice framing and show that although the model and treatment have a small effect size, the interaction has an insignificant effect, yet the coefficient of the interaction effect is significantly non-zero. Our estimated marginal means analysis shows that that after age 30, the change in difference in frame valence has a significant effect on the response variable and that this is primarily due to an increase of the value of the response variable within the negative treatment as patients age.
+
+

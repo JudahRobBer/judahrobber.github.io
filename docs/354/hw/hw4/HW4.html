@@ -1,0 +1,1738 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Homework 4 – Regression Consult – Portfolio</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../colgateC.png" rel="icon" type="image/png">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-2c353fb1ee9795f3e46801e7bd733d82.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../../styles.css">
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../354/hw/hw1/hw1.html">Math 354 - Data Analysis 1</a></li><li class="breadcrumb-item"><a href="../../../354/hw/hw4/HW4.html">354 Homework 4: Regression Case Study</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+      <a href="../../../index.html" class="sidebar-logo-link">
+      <img src="../../../ColgateSeal.png" alt="" class="sidebar-logo light-content py-0 d-lg-inline d-none">
+      <img src="../../../ColgateSeal.png" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none">
+      </a>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Home</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
+ <span class="menu-text">MATH 240 - Computational Statistics</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../240/labs/02/Lab2WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">240 lab 2: Basic R</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../240/labs/03/Lab3WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">240 lab 3: More Basic R</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../240/labs/04/Lab4WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">240 lab 4: Programming</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../240/labs/05/Lab5WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">240 lab 5: data wrangling</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../240/labs/08/Lab8WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">240 lab 5: probability</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../240/labs/10/Lab10WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">240 lab 10: point estimation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../240/labs/11/Lab11WriteUp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">240 lab 11: hypothesis testing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../240/review/HypothesisTesting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Hypothesis Testing Review</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Math 354 - Data Analysis 1</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../354/hw/hw1/hw1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">354 Homework 1: One Sample Inference</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../354/hw/hw2/HW2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">354 Homework 2: ANOVA</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../354/hw/hw3/HW3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">354 Homework 3: Regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../354/hw/hw4/HW4.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">354 Homework 4: Regression Case Study</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#loading-and-cleaning-the-data" id="toc-loading-and-cleaning-the-data" class="nav-link active" data-scroll-target="#loading-and-cleaning-the-data"><span class="header-section-number">1</span> Loading and Cleaning the Data</a></li>
+  <li><a href="#exploratory-data-analyses" id="toc-exploratory-data-analyses" class="nav-link" data-scroll-target="#exploratory-data-analyses"><span class="header-section-number">2</span> Exploratory Data Analyses</a></li>
+  <li><a href="#regression-analyses" id="toc-regression-analyses" class="nav-link" data-scroll-target="#regression-analyses"><span class="header-section-number">3</span> Regression Analyses</a>
+  <ul class="collapse">
+  <li><a href="#model-fit" id="toc-model-fit" class="nav-link" data-scroll-target="#model-fit"><span class="header-section-number">3.1</span> Model Fit</a></li>
+  <li><a href="#model-interpretation" id="toc-model-interpretation" class="nav-link" data-scroll-target="#model-interpretation"><span class="header-section-number">3.2</span> Model Interpretation</a>
+  <ul class="collapse">
+  <li><a href="#anova-effect-size" id="toc-anova-effect-size" class="nav-link" data-scroll-target="#anova-effect-size"><span class="header-section-number">3.2.1</span> Anova Effect Size</a></li>
+  </ul></li>
+  <li><a href="#risky-choice-post-hoc" id="toc-risky-choice-post-hoc" class="nav-link" data-scroll-target="#risky-choice-post-hoc"><span class="header-section-number">3.3</span> Risky-Choice Post-Hoc</a>
+  <ul class="collapse">
+  <li><a href="#coefficient-analysis" id="toc-coefficient-analysis" class="nav-link" data-scroll-target="#coefficient-analysis"><span class="header-section-number">3.3.1</span> Coefficient Analysis</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion"><span class="header-section-number">4</span> Discussion</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="HW4.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../354/hw/hw1/hw1.html">Math 354 - Data Analysis 1</a></li><li class="breadcrumb-item"><a href="../../../354/hw/hw4/HW4.html">354 Homework 4: Regression Case Study</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Homework 4 – Regression Consult</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p></p>
+<p></p>
+<p>When people make decisions, their choices are often swayed by how information is presented. This is often described as “the framing effect.” One example of this, is how commercials describe new medications. As an example, Nereus (tradipitant), a new drug for motion-induced vomiting like sea-sickness, is marketed with a <strong>positive frame</strong> as reducing vomiting incidence from 44% to 18% (a reduction of 60%). This marketing makes it seem more effective than a <strong>negative frame</strong> that says just 18% of patients still experienced vomiting, even though both statements are true.</p>
+<p><span class="citation" data-cites="Xu24">Xu (<a href="#ref-Xu24" role="doc-biblioref">2024</a>)</span> aimed to evaluate whether older adults are more or less vulnerable to framing than younger adults. They collected a sample of 696 adults aged 18 to 71 and exposed them to three different scenarios</p>
+<p><strong>Scenario 1:</strong> Rate Drug Efficacy (1 = very bad, 6 = very good)</p>
+<ul>
+<li><strong>Positive Frame:</strong> 70 out of 100 patients felt better</li>
+<li><strong>Negative Frame:</strong> 30 out of 100 patients did not feel better</li>
+</ul>
+<p><strong>Scenario 2:</strong> Likelihood to stop drinking cocoa (1 = surely stop, 6 = surely continue)</p>
+<ul>
+<li><strong>Positive Frame:</strong> Stopping drinking hot cocoa reduces cadmium and cancer risk.</li>
+<li><strong>Negative Frame:</strong> Continuing to drink hot cocoa increases cadmium and cancer risk.</li>
+</ul>
+<p><strong>Scenario 3:</strong> Preference for chance choice (1 = surely safe option, 6 = surely risky)</p>
+<ul>
+<li><strong>Positive Frame:</strong> Choice between 200 saved vs 1/3 chance all 600 are saved.</li>
+<li><strong>Negative Frame:</strong> Choice between 400 die vs 2/3 chance all 600 die.</li>
+</ul>
+<p>In each scenario, participants were randomly assigned a positive or negative frame. They rated their response on a 1-6 scale. The researchers want to build three models, one for each scenario adjusting for simultaneous linear changes in demographic variables (gender, ethnicity, education level, political affiliation).</p>
+<p>They want to evaluate whether, as adults age, the way choices are worded have more influence on their judgments and ultimate choices. If there is a change, are those changes driven by positive or negative framings? At what age does this effect onset?</p>
+<p><strong>Your Goals:</strong></p>
+<ul>
+<li>Determine the correct analysis strategy and conduct the necessary analyses.
+<ul>
+<li>Hint 1: Ensure to assess and communicate results about the model fit.</li>
+<li>Hint 2: Ensure to think about whether or which interactions need to be included.</li>
+<li>Hint 3: You will need run various post hoc procedures (e.g., <code>emmeans</code>, <code>emtrends</code> or <code>johnson_neyman</code>).</li>
+<li>Hint 4: Looking at the paper may be helpful. They do include <code>R</code> code, but I expect you to do a much better job using the techniques we discussed (they do somethings differently)</li>
+</ul></li>
+<li>Write a clear, concise, complete, and correct report conveying an answer to their research question.</li>
+</ul>
+<p>The data are in <code>HW4Data.csv</code> but they will require some manual and <code>tidyverse</code> cleaning.</p>
+<section id="loading-and-cleaning-the-data" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Loading and Cleaning the Data</h1>
+<p>The data are presented in a CSV file such that each row corresponds to a study participant. Before further processing the raw data for exploratory analysis and regression, we manually remove the first row of the dataset, as the appropriate column headers are contained in the second row.</p>
+<p>The rest of our analysis will involve the following columns: gender, age, politics, ethnicity, education, treatment(1-3), and pick(1-3). If we were to filter the data, We would also use the two attention columns: attentionCheck and ageAttentionCheck as our data cleaning filters. Any null values or ages that disagreed with the age attention check would be removed. After filtration, we would have <span class="math inline">\(n = 535\)</span>. Due to the small effect of the data, any significant removal of data severly limits the power. To make further analysis feasible, we acknowledge the concerns regarding failing to remove this potentially problematic data, but include it nevertheless. Finally, for the sake of simplification, we assume that education is ordinal, and recategorize at as such. Finally, following the approach of the original work, we standardize age such that the lowest age (18) is 0.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a>dat <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">"HW4Data.csv"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-label="2"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-label="3"></a>dat <span class="ot">=</span> dat <span class="sc">|&gt;</span> </span>
+<span id="cb1-4"><a href="#cb1-4" aria-label="4"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(attentioncheck,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-label="5"></a>  gender,age,politics,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-label="6"></a>  ethnicity,education,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-label="7"></a>  treatment1,treatment2,treatment3,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-label="8"></a>  pick1,pick2,pick3,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-label="9"></a> ) <span class="sc">|&gt;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-label="10"></a>  <span class="fu">mutate</span>(<span class="at">education_ord =</span> <span class="fu">case_when</span>(</span>
+<span id="cb1-11"><a href="#cb1-11" aria-label="11"></a>    education <span class="sc">==</span> <span class="st">"Less than high school"</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-label="12"></a>    education <span class="sc">==</span> <span class="st">"High school graduate"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-label="13"></a>    education <span class="sc">==</span> <span class="st">"Some college"</span> <span class="sc">~</span> <span class="dv">2</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-label="14"></a>    education <span class="sc">==</span> <span class="st">"2 year degree"</span> <span class="sc">~</span> <span class="dv">3</span>,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-label="15"></a>    education <span class="sc">==</span> <span class="st">"4 year degree"</span> <span class="sc">~</span> <span class="dv">4</span>,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-label="16"></a>    education <span class="sc">==</span> <span class="st">"Professional degree"</span> <span class="sc">~</span> <span class="dv">5</span>,</span>
+<span id="cb1-17"><a href="#cb1-17" aria-label="17"></a>    education <span class="sc">==</span> <span class="st">"Doctorate"</span> <span class="sc">~</span> <span class="dv">6</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-label="18"></a>  )) <span class="sc">|&gt;</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-label="19"></a>  <span class="fu">mutate</span>(<span class="at">age18 =</span> age <span class="sc">-</span> <span class="dv">18</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p></p>
+</section>
+<section id="exploratory-data-analyses" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Exploratory Data Analyses</h1>
+<p></p>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>) {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-label="2"></a>  <span class="fu">print</span>(<span class="fu">ggpairs</span>(dat, <span class="at">columns =</span> <span class="fu">c</span>(<span class="st">"age"</span>, <span class="fu">paste0</span>(<span class="st">"treatment"</span>, i), <span class="fu">paste0</span>(<span class="st">"pick"</span>, i))) <span class="sc">+</span> <span class="fu">theme_bw</span>())</span>
+<span id="cb2-3"><a href="#cb2-3" aria-label="3"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="fig-age-valence-pairs" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-age-valence-pairs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Age, Frame Valence, and Response Correlation Analysis
+</figcaption>
+<div aria-describedby="fig-age-valence-pairs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-age-valence-pairs" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-age-valence-pairs-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-fig" id="fig-age-valence-pairs-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Attribute
+</figcaption>
+<div aria-describedby="fig-age-valence-pairs-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW4_files/figure-html/fig-age-valence-pairs-1.png" class="img-fluid figure-img" data-ref-parent="fig-age-valence-pairs" width="480">
+</div>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-age-valence-pairs" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-age-valence-pairs-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-fig" id="fig-age-valence-pairs-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Goal
+</figcaption>
+<div aria-describedby="fig-age-valence-pairs-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW4_files/figure-html/fig-age-valence-pairs-2.png" class="img-fluid figure-img" data-ref-parent="fig-age-valence-pairs" width="480">
+</div>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-age-valence-pairs" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-age-valence-pairs-3" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-fig" id="fig-age-valence-pairs-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Risky Choice
+</figcaption>
+<div aria-describedby="fig-age-valence-pairs-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW4_files/figure-html/fig-age-valence-pairs-3.png" class="img-fluid figure-img" data-ref-parent="fig-age-valence-pairs" width="480">
+</div>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</figure>
+</div>
+<p></p>
+<p><a href="#fig-age-valence-pairs" class="quarto-xref">Figure&nbsp;1</a> shows that with respect to the variable of interest, the age sample is somewhat right skewed, while the treatment assignment is balanced and the age distribution across treatments is consistent. The mixed results regarding correlation of age and reponse variable suggest that age itself is not primarily responsible for the observed variability in willingness to take risk as measured by scenario 2 and 3 or view of drug efficacy as measured by scenario 1. Similarly, the plots do not strongly suggest that the treatments are clearly discernible with respect to the response variable for any scenario, though this does not directly address the significance of the interaction effect.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a><span class="fu">ggpairs</span>(dat,<span class="at">columns=</span><span class="fu">c</span>(<span class="st">"pick1"</span>,<span class="st">"pick2"</span>,<span class="st">"pick3"</span>)) <span class="sc">+</span> <span class="fu">theme_bw</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-dv-pairs" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-dv-pairs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Response Correlation Analysis
+</figcaption>
+<div aria-describedby="fig-dv-pairs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW4_files/figure-html/fig-dv-pairs-1.png" class="img-fluid figure-img" width="384">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p><a href="#fig-dv-pairs" class="quarto-xref">Figure&nbsp;2</a> do not suggest any significant relationship among response variables. Furthermore, the plot indicates that the response variables differ in their sample distribution.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a><span class="fu">ggpairs</span>(dat,</span>
+<span id="cb4-2"><a href="#cb4-2" aria-label="2"></a>        <span class="at">columns =</span> <span class="fu">c</span>(<span class="st">"age"</span>, <span class="st">"education_ord"</span>, <span class="st">"politics"</span>, <span class="st">"gender"</span>, <span class="st">"ethnicity"</span>),</span>
+<span id="cb4-3"><a href="#cb4-3" aria-label="3"></a>        <span class="at">lower =</span> <span class="fu">list</span>(<span class="at">combo =</span> <span class="st">"box_no_facet"</span>, <span class="at">discrete =</span> <span class="st">"count"</span>),</span>
+<span id="cb4-4"><a href="#cb4-4" aria-label="4"></a>        <span class="at">upper =</span> <span class="fu">list</span>(<span class="at">combo =</span> <span class="st">"box_no_facet"</span>, <span class="at">discrete =</span> <span class="st">"count"</span>),</span>
+<span id="cb4-5"><a href="#cb4-5" aria-label="5"></a>        <span class="at">diag  =</span> <span class="fu">list</span>(<span class="at">discrete =</span> <span class="st">"barDiag"</span>)) <span class="sc">+</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-label="6"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">8</span>) <span class="sc">+</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-label="7"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-demographic-pairs" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-demographic-pairs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Demographic Features Correlation Analysis
+</figcaption>
+<div aria-describedby="fig-demographic-pairs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW4_files/figure-html/fig-demographic-pairs-1.png" class="img-fluid figure-img" style="width:100.0%">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p><a href="#fig-demographic-pairs" class="quarto-xref">Figure&nbsp;3</a> first immediately indicate that there are concerns regarding representativeness with varying degrees of severity. Primarily, women and democrats are moderately over-represented, while white people are vastly over-represented and hispanic is not even indicated as a primary category. Although there’s not strong prior evidence to suggest variability in susceptibility to frame valence across ethnic groups, this is still problematic. My intuition suggests that there are more likely differences across gendered and political lines, but the difference in sample sizes is not catastrophic. The correlation between education and age is insignificant, and no other demographic features indicate strong evidence of multicollinearity</p>
+</section>
+<section id="regression-analyses" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Regression Analyses</h1>
+<section id="model-fit" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="model-fit"><span class="header-section-number">3.1</span> Model Fit</h2>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a>mod1 <span class="ot">=</span> <span class="fu">lm</span>(pick1 <span class="sc">~</span> gender <span class="sc">+</span> politics <span class="sc">+</span> ethnicity <span class="sc">+</span> education_ord <span class="sc">+</span> treatment1<span class="sc">*</span>age, <span class="at">data =</span> dat)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-label="2"></a>mod2 <span class="ot">=</span> <span class="fu">lm</span>(pick2 <span class="sc">~</span> gender <span class="sc">+</span> politics <span class="sc">+</span> ethnicity <span class="sc">+</span> education_ord <span class="sc">+</span>  treatment2<span class="sc">*</span>age, <span class="at">data =</span> dat)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-label="3"></a>mod3 <span class="ot">=</span> <span class="fu">lm</span>(pick3 <span class="sc">~</span> gender <span class="sc">+</span> politics <span class="sc">+</span> ethnicity <span class="sc">+</span> education_ord <span class="sc">+</span>  treatment3<span class="sc">*</span>age, <span class="at">data =</span> dat)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-label="4"></a>mods <span class="ot">=</span> <span class="fu">list</span>(mod1,mod2,mod3)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p></p>
+<p></p>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-label="1"></a><span class="cf">for</span> (model <span class="cf">in</span> mods) {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-label="2"></a>  <span class="fu">print</span>(<span class="fu">plotResiduals</span>(model))</span>
+<span id="cb6-3"><a href="#cb6-3" aria-label="3"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="fig-res-analysis" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-res-analysis-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Residual Analysis
+</figcaption>
+<div aria-describedby="fig-res-analysis-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-res-analysis" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-res-analysis-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-fig" id="fig-res-analysis-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Attribute
+</figcaption>
+<div aria-describedby="fig-res-analysis-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW4_files/figure-html/fig-res-analysis-1.png" class="img-fluid figure-img" data-ref-parent="fig-res-analysis" width="576">
+</div>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-res-analysis" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-res-analysis-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-fig" id="fig-res-analysis-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Goal
+</figcaption>
+<div aria-describedby="fig-res-analysis-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW4_files/figure-html/fig-res-analysis-2.png" class="img-fluid figure-img" data-ref-parent="fig-res-analysis" width="576">
+</div>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-res-analysis" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-res-analysis-3" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-fig" id="fig-res-analysis-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Risky Choice
+</figcaption>
+<div aria-describedby="fig-res-analysis-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW4_files/figure-html/fig-res-analysis-3.png" class="img-fluid figure-img" data-ref-parent="fig-res-analysis" width="576">
+</div>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</figure>
+</div>
+<p></p>
+<p>Residual Analysis suggests moderate skew and excess kurtosis particularly for scenario 2, while there is observable but not obviously highly problematic tail behavior for both scenarios 1 and 3.</p>
+<p></p>
+<div class="cell" data-layout="[[1,1],[1]]">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-label="1"></a><span class="cf">for</span> (model <span class="cf">in</span> mods) {</span>
+<span id="cb7-2"><a href="#cb7-2" aria-label="2"></a>  <span class="fu">print</span>(<span class="fu">plotInfluence</span>(model))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-label="3"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="fig-influence-analysis" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-influence-analysis-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Influence Analysis
+</figcaption>
+<div aria-describedby="fig-influence-analysis-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-influence-analysis" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-influence-analysis-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-fig" id="fig-influence-analysis-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Attribute
+</figcaption>
+<div aria-describedby="fig-influence-analysis-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW4_files/figure-html/fig-influence-analysis-1.png" class="img-fluid figure-img" data-ref-parent="fig-influence-analysis" width="336">
+</div>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-influence-analysis" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-influence-analysis-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-fig" id="fig-influence-analysis-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Goal
+</figcaption>
+<div aria-describedby="fig-influence-analysis-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW4_files/figure-html/fig-influence-analysis-2.png" class="img-fluid figure-img" data-ref-parent="fig-influence-analysis" width="336">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-influence-analysis" style="flex-basis: 100.0%;justify-content: flex-start;">
+<div id="fig-influence-analysis-3" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-fig" id="fig-influence-analysis-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Risky Choice
+</figcaption>
+<div aria-describedby="fig-influence-analysis-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW4_files/figure-html/fig-influence-analysis-3.png" class="img-fluid figure-img" data-ref-parent="fig-influence-analysis" width="336">
+</div>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>Influence analysis in <a href="#fig-influence-analysis" class="quarto-xref">Figure&nbsp;5</a> shows the exist of several high leverage points across scenarios, as well as several moderate outliers across scenarios. In particular, scenario 1 has more negative outliers, while scenario 2 has more positive outliers, consistent with the tail behavior of the residual analysis in <a href="#fig-res-analysis" class="quarto-xref">Figure&nbsp;4</a>. The log transform increases the prevalance and severity of outliers as measured by studentized residual for both scenario 1 and 2, and thus we apply the transform only to scenario 2. This is reasonable because although the responses are similarly measured, they need not describe highly similar random processes, and thus the appropriate model may differ.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-label="1"></a>mod1 <span class="ot">=</span> <span class="fu">lm</span>(pick1 <span class="sc">~</span> gender <span class="sc">+</span> politics <span class="sc">+</span> ethnicity <span class="sc">+</span> education_ord <span class="sc">+</span> treatment1<span class="sc">*</span>age, <span class="at">data =</span> dat)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-label="2"></a>mod2 <span class="ot">=</span> <span class="fu">lm</span>(<span class="fu">log</span>(pick2) <span class="sc">~</span> gender <span class="sc">+</span> politics <span class="sc">+</span> ethnicity <span class="sc">+</span> education_ord <span class="sc">+</span>  treatment2<span class="sc">*</span>age, <span class="at">data =</span> dat)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-label="3"></a>mod3 <span class="ot">=</span> <span class="fu">lm</span>(pick3 <span class="sc">~</span> gender <span class="sc">+</span> politics <span class="sc">+</span> ethnicity <span class="sc">+</span> education_ord <span class="sc">+</span>  treatment3<span class="sc">*</span>age, <span class="at">data =</span> dat)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-label="4"></a>mods <span class="ot">=</span> <span class="fu">list</span>(mod1,mod2,mod3)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p></p>
+<p></p>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-label="1"></a><span class="cf">for</span> (model <span class="cf">in</span> mods) {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-label="2"></a>  <span class="fu">print</span>(<span class="fu">plotResiduals</span>(model))</span>
+<span id="cb9-3"><a href="#cb9-3" aria-label="3"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="fig-log-res-analysis" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-log-res-analysis-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Final Residual Analysis
+</figcaption>
+<div aria-describedby="fig-log-res-analysis-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-log-res-analysis" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-log-res-analysis-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-fig" id="fig-log-res-analysis-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Attribute
+</figcaption>
+<div aria-describedby="fig-log-res-analysis-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW4_files/figure-html/fig-log-res-analysis-1.png" class="img-fluid figure-img" data-ref-parent="fig-log-res-analysis" width="576">
+</div>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-log-res-analysis" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-log-res-analysis-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-fig" id="fig-log-res-analysis-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Goal
+</figcaption>
+<div aria-describedby="fig-log-res-analysis-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW4_files/figure-html/fig-log-res-analysis-2.png" class="img-fluid figure-img" data-ref-parent="fig-log-res-analysis" width="576">
+</div>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-log-res-analysis" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-log-res-analysis-3" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-fig" id="fig-log-res-analysis-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Risky Choice
+</figcaption>
+<div aria-describedby="fig-log-res-analysis-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW4_files/figure-html/fig-log-res-analysis-3.png" class="img-fluid figure-img" data-ref-parent="fig-log-res-analysis" width="576">
+</div>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</figure>
+</div>
+<p></p>
+<p>Residual Analysis suggests moderate skew and excess kurtosis particularly for scenario 2, while there is observable but not obviously highly problematic tail behavior for both scenarios 1 and 3.</p>
+<p></p>
+<div class="cell" data-layout="[[1,1],[1]]">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-label="1"></a><span class="cf">for</span> (model <span class="cf">in</span> mods) {</span>
+<span id="cb10-2"><a href="#cb10-2" aria-label="2"></a>  <span class="fu">print</span>(<span class="fu">plotInfluence</span>(model))</span>
+<span id="cb10-3"><a href="#cb10-3" aria-label="3"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="fig-log-influence-analysis" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-log-influence-analysis-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: Final Influence Analysis
+</figcaption>
+<div aria-describedby="fig-log-influence-analysis-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-log-influence-analysis" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-log-influence-analysis-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-fig" id="fig-log-influence-analysis-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Attribute
+</figcaption>
+<div aria-describedby="fig-log-influence-analysis-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW4_files/figure-html/fig-log-influence-analysis-1.png" class="img-fluid figure-img" data-ref-parent="fig-log-influence-analysis" width="336">
+</div>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-log-influence-analysis" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-log-influence-analysis-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-fig" id="fig-log-influence-analysis-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Goal
+</figcaption>
+<div aria-describedby="fig-log-influence-analysis-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW4_files/figure-html/fig-log-influence-analysis-2.png" class="img-fluid figure-img" data-ref-parent="fig-log-influence-analysis" width="336">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-log-influence-analysis" style="flex-basis: 100.0%;justify-content: flex-start;">
+<div id="fig-log-influence-analysis-3" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-fig" id="fig-log-influence-analysis-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Risky Choice
+</figcaption>
+<div aria-describedby="fig-log-influence-analysis-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW4_files/figure-html/fig-log-influence-analysis-3.png" class="img-fluid figure-img" data-ref-parent="fig-log-influence-analysis" width="336">
+</div>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-label="1"></a>get_vif <span class="ot">=</span> \(m) {</span>
+<span id="cb11-2"><a href="#cb11-2" aria-label="2"></a>  v <span class="ot">=</span> car<span class="sc">::</span><span class="fu">vif</span>(m)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-label="3"></a>  <span class="cf">if</span> (<span class="fu">is.matrix</span>(v)) v <span class="ot">=</span> v[, <span class="fu">ncol</span>(v)]   <span class="co"># GVIF^(1/(2*Df))</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-label="4"></a>  <span class="fu">names</span>(v) <span class="ot">=</span> <span class="fu">gsub</span>(<span class="st">"treatment[0-9]"</span>, <span class="st">"Treatment"</span>, <span class="fu">names</span>(v))</span>
+<span id="cb11-5"><a href="#cb11-5" aria-label="5"></a>  v</span>
+<span id="cb11-6"><a href="#cb11-6" aria-label="6"></a>}</span>
+<span id="cb11-7"><a href="#cb11-7" aria-label="7"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-label="8"></a>vif_tab <span class="ot">=</span> <span class="fu">do.call</span>(cbind, <span class="fu">lapply</span>(mods, get_vif))</span>
+<span id="cb11-9"><a href="#cb11-9" aria-label="9"></a><span class="fu">colnames</span>(vif_tab) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"Attribute"</span>, <span class="st">"Goal"</span>, <span class="st">"Risky Choice"</span>)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-label="10"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-label="11"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(vif_tab, <span class="at">digits =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-vif-analysis" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-vif-analysis-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: VIF Summary
+</figcaption>
+<div aria-describedby="tbl-vif-analysis-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Attribute</th>
+<th style="text-align: right;">Goal</th>
+<th style="text-align: right;">Risky Choice</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">gender</td>
+<td style="text-align: right;">1.06</td>
+<td style="text-align: right;">1.06</td>
+<td style="text-align: right;">1.06</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">politics</td>
+<td style="text-align: right;">1.05</td>
+<td style="text-align: right;">1.05</td>
+<td style="text-align: right;">1.05</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ethnicity</td>
+<td style="text-align: right;">1.02</td>
+<td style="text-align: right;">1.02</td>
+<td style="text-align: right;">1.02</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">education_ord</td>
+<td style="text-align: right;">1.04</td>
+<td style="text-align: right;">1.04</td>
+<td style="text-align: right;">1.04</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Treatment</td>
+<td style="text-align: right;">3.51</td>
+<td style="text-align: right;">3.49</td>
+<td style="text-align: right;">3.51</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">age</td>
+<td style="text-align: right;">1.37</td>
+<td style="text-align: right;">1.44</td>
+<td style="text-align: right;">1.42</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Treatment:age</td>
+<td style="text-align: right;">3.65</td>
+<td style="text-align: right;">3.64</td>
+<td style="text-align: right;">3.57</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p><a href="#tbl-vif-analysis" class="quarto-xref">Table&nbsp;1</a> indicate no concerning evidence of multicollinearity via VIF, while the highest reported value is due to the interaction effect, which is an inflation due to the fact that the interaction must correlate with the respective components of the interaction.</p>
+</section>
+<section id="model-interpretation" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="model-interpretation"><span class="header-section-number">3.2</span> Model Interpretation</h2>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-label="1"></a><span class="fu">anova</span>(mod1) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">select</span>(Df, <span class="st">`</span><span class="at">F value</span><span class="st">`</span>, <span class="st">`</span><span class="at">Pr(&gt;F)</span><span class="st">`</span>) <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits=</span><span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-1-anova" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-1-anova-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: Attribute Model Anova Analysis
+</figcaption>
+<div aria-describedby="tbl-1-anova-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Df</th>
+<th style="text-align: right;">F value</th>
+<th style="text-align: right;">Pr(&gt;F)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">gender</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0.70</td>
+<td style="text-align: right;">0.55</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">politics</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0.70</td>
+<td style="text-align: right;">0.59</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ethnicity</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">2.23</td>
+<td style="text-align: right;">0.04</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">education_ord</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.84</td>
+<td style="text-align: right;">0.36</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">treatment1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">140.75</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">age</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.80</td>
+<td style="text-align: right;">0.37</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">treatment1:age</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.43</td>
+<td style="text-align: right;">0.12</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Residuals</td>
+<td style="text-align: right;">678</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-label="1"></a><span class="fu">anova</span>(mod2) <span class="sc">|&gt;</span>  dplyr<span class="sc">::</span><span class="fu">select</span>(Df, <span class="st">`</span><span class="at">F value</span><span class="st">`</span>, <span class="st">`</span><span class="at">Pr(&gt;F)</span><span class="st">`</span>) <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits=</span><span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-2-anova" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-2-anova-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3: Goal Model Anova Analysis
+</figcaption>
+<div aria-describedby="tbl-2-anova-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Df</th>
+<th style="text-align: right;">F value</th>
+<th style="text-align: right;">Pr(&gt;F)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">gender</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0.82</td>
+<td style="text-align: right;">0.48</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">politics</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">1.35</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ethnicity</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0.74</td>
+<td style="text-align: right;">0.61</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">education_ord</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.51</td>
+<td style="text-align: right;">0.48</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">treatment2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">26.62</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">age</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3.71</td>
+<td style="text-align: right;">0.05</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">treatment2:age</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3.78</td>
+<td style="text-align: right;">0.05</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Residuals</td>
+<td style="text-align: right;">678</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-label="1"></a><span class="fu">anova</span>(mod3) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">select</span>(Df, <span class="st">`</span><span class="at">F value</span><span class="st">`</span>, <span class="st">`</span><span class="at">Pr(&gt;F)</span><span class="st">`</span>) <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits=</span><span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-3-anova" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-3-anova-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;4: Risky Choice Model Anova Analysis
+</figcaption>
+<div aria-describedby="tbl-3-anova-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Df</th>
+<th style="text-align: right;">F value</th>
+<th style="text-align: right;">Pr(&gt;F)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">gender</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0.28</td>
+<td style="text-align: right;">0.84</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">politics</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4.08</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ethnicity</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0.88</td>
+<td style="text-align: right;">0.51</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">education_ord</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.37</td>
+<td style="text-align: right;">0.54</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">treatment3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">31.72</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">age</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.44</td>
+<td style="text-align: right;">0.12</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">treatment3:age</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4.23</td>
+<td style="text-align: right;">0.04</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Residuals</td>
+<td style="text-align: right;">677</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>As expected, the effect of the treatment alone is highly significant, while the interaction effect is borderline significant for goal and risky-choice framing, and insignificant for attribute framing. These results are robust to the application of the log transform for the attribute and and risky-choice scenario, but sensitive for the goal scenario. Specifically, if the log transform is not applied to the goal scenario response variable, the response is insignificant. Given that the result is only borderline significant in the transformed model, this further suggests a healthy dose of skepticism regarding the significance of these results. As such, we only perform post-hoc analysis on the risky-choice model, though the techniques and approach are identical for the remaining 2 scenarios.</p>
+<section id="anova-effect-size" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1" class="anchored" data-anchor-id="anova-effect-size"><span class="header-section-number">3.2.1</span> Anova Effect Size</h3>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-label="1"></a>scen   <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"Attribute"</span>, <span class="st">"Goal"</span>, <span class="st">"Risky-Choice"</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-label="2"></a>fmt_ci <span class="ot">=</span> \(est, lo, hi) <span class="fu">sprintf</span>(<span class="st">"%.2f [%.2f, %.2f]"</span>, est, lo, hi)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-label="3"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-label="4"></a>ovr <span class="ot">=</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(<span class="fu">seq_along</span>(mods), \(i) {</span>
+<span id="cb15-5"><a href="#cb15-5" aria-label="5"></a>  fs <span class="ot">=</span> <span class="fu">summary</span>(mods[[i]])<span class="sc">$</span>fstatistic</span>
+<span id="cb15-6"><a href="#cb15-6" aria-label="6"></a>  es <span class="ot">=</span> effectsize<span class="sc">::</span><span class="fu">F_to_omega2</span>(fs[<span class="dv">1</span>], fs[<span class="dv">2</span>], fs[<span class="dv">3</span>], <span class="at">alternative =</span> <span class="st">"two.sided"</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-label="7"></a>  <span class="fu">data.frame</span>(<span class="at">Scenario =</span> scen[i],</span>
+<span id="cb15-8"><a href="#cb15-8" aria-label="8"></a>             <span class="st">`</span><span class="at">Omega-squared [95% CI]</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">fmt_ci</span>(es<span class="sc">$</span>Omega2_partial, es<span class="sc">$</span>CI_low, es<span class="sc">$</span>CI_high),</span>
+<span id="cb15-9"><a href="#cb15-9" aria-label="9"></a>             <span class="at">check.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-label="10"></a>}))</span>
+<span id="cb15-11"><a href="#cb15-11" aria-label="11"></a></span>
+<span id="cb15-12"><a href="#cb15-12" aria-label="12"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(ovr, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-ovr-es" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ovr-es-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;5: Overall Model Effect Size (Omega-squared, 95% CI)
+</figcaption>
+<div aria-describedby="tbl-ovr-es-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Scenario</th>
+<th style="text-align: left;">Omega-squared [95% CI]</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Attribute</td>
+<td style="text-align: left;">0.17 [0.11, 0.21]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Goal</td>
+<td style="text-align: left;">0.04 [0.00, 0.05]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Risky-Choice</td>
+<td style="text-align: left;">0.06 [0.01, 0.07]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-label="1"></a>pred <span class="ot">=</span> <span class="fu">lapply</span>(mods, \(m) {</span>
+<span id="cb16-2"><a href="#cb16-2" aria-label="2"></a>  es <span class="ot">=</span> effectsize<span class="sc">::</span><span class="fu">omega_squared</span>(<span class="fu">anova</span>(m), <span class="at">alternative =</span> <span class="st">"two.sided"</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-label="3"></a>  es<span class="sc">$</span>Parameter <span class="ot">=</span> <span class="fu">gsub</span>(<span class="st">"treatment[0-9]"</span>, <span class="st">"Treatment"</span>, es<span class="sc">$</span>Parameter)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-label="4"></a>  es <span class="ot">=</span> es[<span class="fu">grepl</span>(<span class="st">"Treatment|age"</span>, es<span class="sc">$</span>Parameter), ]</span>
+<span id="cb16-5"><a href="#cb16-5" aria-label="5"></a>  <span class="fu">setNames</span>(<span class="fu">fmt_ci</span>(es<span class="sc">$</span>Omega2_partial, es<span class="sc">$</span>CI_low, es<span class="sc">$</span>CI_high), es<span class="sc">$</span>Parameter)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-label="6"></a>})</span>
+<span id="cb16-7"><a href="#cb16-7" aria-label="7"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-label="8"></a>tab <span class="ot">=</span> <span class="fu">do.call</span>(cbind, pred)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-label="9"></a><span class="fu">colnames</span>(tab) <span class="ot">=</span> scen</span>
+<span id="cb16-10"><a href="#cb16-10" aria-label="10"></a><span class="fu">rownames</span>(tab) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"Treatment"</span>, <span class="st">"Age"</span>, <span class="st">"Treatment x Age"</span>)</span>
+<span id="cb16-11"><a href="#cb16-11" aria-label="11"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(tab)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-predictor-es" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-predictor-es-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;6: Partial Omega-squared for Treatment, Age, and Their Interaction (95% CI)
+</figcaption>
+<div aria-describedby="tbl-predictor-es-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Attribute</th>
+<th style="text-align: left;">Goal</th>
+<th style="text-align: left;">Risky-Choice</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Treatment</td>
+<td style="text-align: left;">0.17 [0.12, 0.22]</td>
+<td style="text-align: left;">0.04 [0.01, 0.07]</td>
+<td style="text-align: left;">0.04 [0.02, 0.08]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Age</td>
+<td style="text-align: left;">0.00 [0.00, 0.00]</td>
+<td style="text-align: left;">0.00 [0.00, 0.02]</td>
+<td style="text-align: left;">0.00 [0.00, 0.01]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Treatment x Age</td>
+<td style="text-align: left;">0.00 [0.00, 0.01]</td>
+<td style="text-align: left;">0.00 [0.00, 0.02]</td>
+<td style="text-align: left;">0.00 [0.00, 0.02]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>The overall effect size is significantly non-zero for the attribute and risky-chocie model, and is interpreted as small for the risky-choice model and medium for the attribute model. With respect to indivdual predictors, the treatment effect size is significantly non-zero for all scenarios, while the effect size of the age and interaction effect are never significantly non-zero.</p>
+</section>
+</section>
+<section id="risky-choice-post-hoc" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="risky-choice-post-hoc"><span class="header-section-number">3.3</span> Risky-Choice Post-Hoc</h2>
+<section id="coefficient-analysis" class="level3" data-number="3.3.1">
+<h3 data-number="3.3.1" class="anchored" data-anchor-id="coefficient-analysis"><span class="header-section-number">3.3.1</span> Coefficient Analysis</h3>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-label="1"></a>coefs <span class="ot">=</span> <span class="fu">summary</span>(mod3)<span class="sc">$</span>coefficients</span>
+<span id="cb17-2"><a href="#cb17-2" aria-label="2"></a>coefs[<span class="fu">c</span>(<span class="st">"age"</span>, <span class="st">"treatment3pos3"</span>, <span class="st">"treatment3pos3:age"</span>), ] <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-coefficients" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-coefficients-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;7: Risky Choice: Model Coefficients
+</figcaption>
+<div aria-describedby="tbl-coefficients-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Estimate</th>
+<th style="text-align: right;">Std. Error</th>
+<th style="text-align: right;">t value</th>
+<th style="text-align: right;">Pr(&gt;|t|)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">age</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">2.55</td>
+<td style="text-align: right;">0.01</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">treatment3pos3</td>
+<td style="text-align: right;">0.15</td>
+<td style="text-align: right;">0.38</td>
+<td style="text-align: right;">0.39</td>
+<td style="text-align: right;">0.70</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">treatment3pos3:age</td>
+<td style="text-align: right;">-0.02</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">-2.06</td>
+<td style="text-align: right;">0.04</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>The analysis of coefficients of interest in <a href="#tbl-coefficients" class="quarto-xref">Table&nbsp;7</a> show that the increase in response variable due to a unit increase in age after adjusting for simulatenous linear changes in the other predictors is positive. The coefficient results for the change due to being assigned the positive treatment condition are insignificant, but this is due to the fact that it is measured at age 18, where there is no significant difference between the two framings as shown in <a href="#fig-EMM" class="quarto-xref">Figure&nbsp;8</a>. The interaction effect is significant and negative, showing that the additional change in the response variable due to both a unit increase in age and changing to the positive group is slightly negative, which is consistent with <a href="#fig-EMM" class="quarto-xref">Figure&nbsp;8</a>.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-label="1"></a>ages <span class="ot">=</span> <span class="fu">seq</span>(<span class="fu">min</span>(dat<span class="sc">$</span>age), <span class="fu">max</span>(dat<span class="sc">$</span>age), <span class="at">length.out =</span> <span class="dv">20</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-label="2"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-label="3"></a>emmeans<span class="sc">::</span><span class="fu">emmip</span>(mod3, treatment3 <span class="sc">~</span> age,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-label="4"></a>      <span class="at">at =</span> <span class="fu">list</span>(<span class="at">age =</span> ages),</span>
+<span id="cb18-5"><a href="#cb18-5" aria-label="5"></a>      <span class="at">CIs =</span> <span class="cn">TRUE</span>, <span class="at">weights =</span> <span class="st">"proportional"</span>) <span class="sc">+</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-label="6"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Age (years since 18)"</span>, <span class="at">y =</span> <span class="st">"Response"</span>, <span class="at">color =</span> <span class="st">"Treatment"</span>) <span class="sc">+</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-label="7"></a>  <span class="fu">scale_color_discrete</span>(<span class="at">labels=</span><span class="fu">c</span>(<span class="st">"Negative Framing"</span>, <span class="st">"Positive Framing"</span>)) <span class="sc">+</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-label="8"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-EMM" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-EMM-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: Risky Choice: Estimated Marginal Means
+</figcaption>
+<div aria-describedby="fig-EMM-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW4_files/figure-html/fig-EMM-1.png" class="img-fluid figure-img" width="672">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>The estimated marginal means analysis shows that the gap between the response variable in each treatment condition is larger for older participants and the difference is significant roughly after age 30. This result is consistent with age increasing the susceptibiliy to framing valence, and that the change is primarily driven by negative framings.</p>
+</section>
+</section>
+</section>
+<section id="discussion" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Discussion</h1>
+<p>Our analysis of the framing valence study performed by Xu provide moderate support for the hypothesis that age increases people’s susceptibility to frame valence in certain forms of trade-off decision making contexts. In particular, although we do not find significant evidence for an effect in the attribute framing scenario tested in the paper, we find borderline significant results for goal attributes and significant results for risky-choice attributes. We proceed with post-hoc analysis for risky-choice framing and show that although the model and treatment have a small effect size, the interaction has an insignificant effect, yet the coefficient of the interaction effect is significantly non-zero. Our estimated marginal means analysis shows that that after age 30, the change in difference in frame valence has a significant effect on the response variable and that this is primarily due to an increase of the value of the response variable within the negative treatment as patients age.</p>
+
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-Xu24" class="csl-entry" role="listitem">
+Xu, Lance. 2024. <span>“Advanced Age Predicts Increased Susceptibility to Attribute, Goal, and Risky-Choice Framing in Negative Frame Valences.”</span> <em>Humanities and Social Sciences Communications</em> 11 (1): 217.
+</div>
+</div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Colgate University Student Portfolio</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p><a href="https://github.com/JudahRobBer">GitHub Source</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
