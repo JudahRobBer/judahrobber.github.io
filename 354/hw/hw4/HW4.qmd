@@ -365,4 +365,10 @@ The estimated marginal means analysis shows that the gap between the response va
 
 Our analysis of the framing valence study performed by Xu provide moderate support for the hypothesis that age increases people's susceptibility to frame valence in certain forms of trade-off decision making contexts. In particular, although we do not find significant evidence for an effect in the attribute framing scenario tested in the paper, we find borderline significant results for goal attributes and significant results for risky-choice attributes. We proceed with post-hoc analysis for risky-choice framing and show that although the model and treatment have a small effect size, the interaction has an insignificant effect, yet the coefficient of the interaction effect is significantly non-zero. Our estimated marginal means analysis shows that that after age 30, the change in difference in frame valence has a significant effect on the response variable and that this is primarily due to an increase of the value of the response variable within the negative treatment as patients age.
 
+# AI Use Appendix
+
+* I refactored some individual tables into single tables using claude
+* I used claude for some of the syling details of the ggpairs plots
+* I discussed the use of JN vs EMM plots given the type of interaction effect. I thought EMM was the most appropriate for Categorical x Continuous, so I was surprised that the paper used JN. After a short chat about the differences, I decided to stick with EMM, though after talking with Le I recognize this might not communicate the point at which the difference becomes significant as crisply as the JN plot.
+
 
