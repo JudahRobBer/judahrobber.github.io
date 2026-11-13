@@ -343,7 +343,7 @@ coefs = summary(mod3)$coefficients
 coefs[c("age", "treatment3pos3", "treatment3pos3:age"), ] |> knitr::kable(digits = 2)
 ```
 
-The analysis of coefficients of interest in @tbl-coefficients show that the increase in response variable due to a unit increase in age after adjusting for simulatenous linear changes in the other predictors is positive. The coefficient results for the change due to being assigned the positive treatment condition are insignificant, but this is due to the fact that it is measured at age 18, where there is no significant difference between the two framings as shown in @fig-EMM. The interaction effect is significant and negative, showing that the additional change in the response variable due to both a unit increase in age and changing to the positive group is slightly negative, which is consistent with @fig-EMM.
+The analysis of coefficients of interest in @tbl-coefficients show that the increase in response variable due to a unit increase in age after adjusting for simulatenous linear changes in the other predictors is positive. The coefficient results for the change due to being assigned the positive treatment condition are insignificant, but this is due to the fact that it is measured at the average age, where there might be no significant difference between the two framings as shown in @fig-EMM. The interaction effect is significant and negative, showing that the additional change in the response variable due to both a unit increase in age and changing to the positive group is slightly negative, which is consistent with @fig-EMM.
 
 ```{r}
 #| label: fig-EMM
@@ -361,6 +361,32 @@ emmeans::emmip(mod3, treatment3 ~ age,
 
 The estimated marginal means analysis shows that the gap between the response variable in each treatment condition is larger for older participants and the difference is significant roughly after age 30. This result is consistent with age increasing the susceptibiliy to framing valence, and that the change is primarily driven by negative framings.
 
+```{r}
+#| label: fig-JN
+#| fig-cap: "Johnson-Neyman Risky Choice"
+
+#requires interpretation of categories as numeric, not appropriate if more than two treatment conditions
+dat$pos3 = as.numeric(dat$treatment3 == "pos3")
+mod3_jn = lm(pick3 ~ gender + politics + ethnicity + education_ord + pos3*age, data = dat)
+
+jn = interactions::johnson_neyman(mod3_jn, pred = pos3, modx = age,
+                                  mod.range = range(dat$age), alpha = 0.05)
+jn$plot +
+  labs(x = "Age", y = "Framing Effect",
+       color = "Significance", fill = "Significance") +
+  theme_bw()
+```
+
+```{r}
+#| label: tbl-JN
+#| tbl-cap: "JN Risky Choice Bounds"
+jn$bounds |> knitr::kable(digits = 2, col.names = "Age")
+```
+
+Consistent with the EMM analysis, the Johnson-Neyman plot and table indicate that the the effect the difference increases with age and is significant after age 26, which is slightly earlier than indicated by the non-overlapping confidence interval interpretation of the EMM plot.
+
+
+
 # Discussion
 
 Our analysis of the framing valence study performed by Xu provide moderate support for the hypothesis that age increases people's susceptibility to frame valence in certain forms of trade-off decision making contexts. In particular, although we do not find significant evidence for an effect in the attribute framing scenario tested in the paper, we find borderline significant results for goal attributes and significant results for risky-choice attributes. We proceed with post-hoc analysis for risky-choice framing and show that although the model and treatment have a small effect size, the interaction has an insignificant effect, yet the coefficient of the interaction effect is significantly non-zero. Our estimated marginal means analysis shows that that after age 30, the change in difference in frame valence has a significant effect on the response variable and that this is primarily due to an increase of the value of the response variable within the negative treatment as patients age.
@@ -369,6 +395,6 @@ Our analysis of the framing valence study performed by Xu provide moderate suppo
 
 * I refactored some individual tables into single tables using claude
 * I used claude for some of the syling details of the ggpairs plots
-* I discussed the use of JN vs EMM plots given the type of interaction effect. I thought EMM was the most appropriate for Categorical x Continuous, so I was surprised that the paper used JN. After a short chat about the differences, I decided to stick with EMM, though after talking with Le I recognize this might not communicate the point at which the difference becomes significant as crisply as the JN plot.
+* I discussed the use of JN vs EMM plots given the type of interaction effect. I thought EMM was the most appropriate for Categorical x Continuous, so I was surprised that the paper used JN. After a short chat with claude and then Le about the differences, Le convinced me that the Johnson Neyman plot was appropriate, particularly with respect to identifying the age at which the difference is significant. JN plot was created with claude.
 
 

@@ -1273,7 +1273,7 @@ Table&nbsp;7: Risky Choice: Model Coefficients
 </div>
 </div>
 <p></p>
-<p>The analysis of coefficients of interest in <a href="#tbl-coefficients" class="quarto-xref">Table&nbsp;7</a> show that the increase in response variable due to a unit increase in age after adjusting for simulatenous linear changes in the other predictors is positive. The coefficient results for the change due to being assigned the positive treatment condition are insignificant, but this is due to the fact that it is measured at age 18, where there is no significant difference between the two framings as shown in <a href="#fig-EMM" class="quarto-xref">Figure&nbsp;8</a>. The interaction effect is significant and negative, showing that the additional change in the response variable due to both a unit increase in age and changing to the positive group is slightly negative, which is consistent with <a href="#fig-EMM" class="quarto-xref">Figure&nbsp;8</a>.</p>
+<p>The analysis of coefficients of interest in <a href="#tbl-coefficients" class="quarto-xref">Table&nbsp;7</a> show that the increase in response variable due to a unit increase in age after adjusting for simulatenous linear changes in the other predictors is positive. The coefficient results for the change due to being assigned the positive treatment condition are insignificant, but this is due to the fact that it is measured at the average age, where there might be no significant difference between the two framings as shown in <a href="#fig-EMM" class="quarto-xref">Figure&nbsp;8</a>. The interaction effect is significant and negative, showing that the additional change in the response variable due to both a unit increase in age and changing to the positive group is slightly negative, which is consistent with <a href="#fig-EMM" class="quarto-xref">Figure&nbsp;8</a>.</p>
 <p></p>
 <div class="cell">
 <details class="code-fold">
@@ -1302,6 +1302,73 @@ Figure&nbsp;8: Risky Choice: Estimated Marginal Means
 </div>
 <p></p>
 <p>The estimated marginal means analysis shows that the gap between the response variable in each treatment condition is larger for older participants and the difference is significant roughly after age 30. This result is consistent with age increasing the susceptibiliy to framing valence, and that the change is primarily driven by negative framings.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-label="1"></a><span class="co">#requires interpretation of categories as numeric, not appropriate if more than two treatment conditions</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-label="2"></a>dat<span class="sc">$</span>pos3 <span class="ot">=</span> <span class="fu">as.numeric</span>(dat<span class="sc">$</span>treatment3 <span class="sc">==</span> <span class="st">"pos3"</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-label="3"></a>mod3_jn <span class="ot">=</span> <span class="fu">lm</span>(pick3 <span class="sc">~</span> gender <span class="sc">+</span> politics <span class="sc">+</span> ethnicity <span class="sc">+</span> education_ord <span class="sc">+</span> pos3<span class="sc">*</span>age, <span class="at">data =</span> dat)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-label="4"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-label="5"></a>jn <span class="ot">=</span> interactions<span class="sc">::</span><span class="fu">johnson_neyman</span>(mod3_jn, <span class="at">pred =</span> pos3, <span class="at">modx =</span> age,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-label="6"></a>                                  <span class="at">mod.range =</span> <span class="fu">range</span>(dat<span class="sc">$</span>age), <span class="at">alpha =</span> <span class="fl">0.05</span>)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-label="7"></a>jn<span class="sc">$</span>plot <span class="sc">+</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-label="8"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Age"</span>, <span class="at">y =</span> <span class="st">"Framing Effect"</span>,</span>
+<span id="cb19-9"><a href="#cb19-9" aria-label="9"></a>       <span class="at">color =</span> <span class="st">"Significance"</span>, <span class="at">fill =</span> <span class="st">"Significance"</span>) <span class="sc">+</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-label="10"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-JN" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-JN-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9: Johnson-Neyman Risky Choice
+</figcaption>
+<div aria-describedby="fig-JN-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW4_files/figure-html/fig-JN-1.png" class="img-fluid figure-img" width="672">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-label="1"></a>jn<span class="sc">$</span>bounds <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>, <span class="at">col.names =</span> <span class="st">"Age"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-JN" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-JN-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;8: JN Risky Choice Bounds
+</figcaption>
+<div aria-describedby="tbl-JN-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Age</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Lower</td>
+<td style="text-align: right;">-688.92</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Higher</td>
+<td style="text-align: right;">26.24</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>Consistent with the EMM analysis, the Johnson-Neyman plot and table indicate that the the effect the difference increases with age and is significant after age 26, which is slightly earlier than indicated by the non-overlapping confidence interval interpretation of the EMM plot.</p>
 </section>
 </section>
 </section>
@@ -1314,7 +1381,7 @@ Figure&nbsp;8: Risky Choice: Estimated Marginal Means
 <ul>
 <li>I refactored some individual tables into single tables using claude</li>
 <li>I used claude for some of the syling details of the ggpairs plots</li>
-<li>I discussed the use of JN vs EMM plots given the type of interaction effect. I thought EMM was the most appropriate for Categorical x Continuous, so I was surprised that the paper used JN. After a short chat about the differences, I decided to stick with EMM, though after talking with Le I recognize this might not communicate the point at which the difference becomes significant as crisply as the JN plot.</li>
+<li>I discussed the use of JN vs EMM plots given the type of interaction effect. I thought EMM was the most appropriate for Categorical x Continuous, so I was surprised that the paper used JN. After a short chat with claude and then Le about the differences, Le convinced me that the Johnson Neyman plot was appropriate, particularly with respect to identifying the age at which the difference is significant. JN plot was created with claude.</li>
 </ul>
 
 
