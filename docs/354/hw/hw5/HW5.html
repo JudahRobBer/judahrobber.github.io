@@ -310,7 +310,13 @@ window.Quarto = {
   <li><a href="#visualization-of-predicted-trajectories" id="toc-visualization-of-predicted-trajectories" class="nav-link" data-scroll-target="#visualization-of-predicted-trajectories"><span class="header-section-number">1.6</span> Visualization of Predicted Trajectories</a></li>
   <li><a href="#summary-of-empirical-findings-from-hw4data.csv" id="toc-summary-of-empirical-findings-from-hw4data.csv" class="nav-link" data-scroll-target="#summary-of-empirical-findings-from-hw4data.csv"><span class="header-section-number">1.7</span> Summary of Empirical Findings from <code>HW4Data.csv</code></a></li>
   </ul></li>
-  <li><a href="#question-2-quiz-3" id="toc-question-2-quiz-3" class="nav-link" data-scroll-target="#question-2-quiz-3"><span class="header-section-number">2</span> Question 2 (Quiz 3)</a></li>
+  <li><a href="#question-2-quiz-3" id="toc-question-2-quiz-3" class="nav-link" data-scroll-target="#question-2-quiz-3"><span class="header-section-number">2</span> Question 2 (Quiz 3)</a>
+  <ul class="collapse">
+  <li><a href="#eda" id="toc-eda" class="nav-link" data-scroll-target="#eda"><span class="header-section-number">2.1</span> EDA</a></li>
+  <li><a href="#regression-model-and-fit-analysis" id="toc-regression-model-and-fit-analysis" class="nav-link" data-scroll-target="#regression-model-and-fit-analysis"><span class="header-section-number">2.2</span> Regression Model and Fit Analysis</a></li>
+  <li><a href="#inference-and-interpretation" id="toc-inference-and-interpretation" class="nav-link" data-scroll-target="#inference-and-interpretation"><span class="header-section-number">2.3</span> Inference and Interpretation</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">2.4</span> Summary</a></li>
+  </ul></li>
   <li><a href="#question-3" id="toc-question-3" class="nav-link" data-scroll-target="#question-3"><span class="header-section-number">3</span> Question 3</a>
   <ul class="collapse">
   <li><a href="#part-a" id="toc-part-a" class="nav-link" data-scroll-target="#part-a"><span class="header-section-number">3.1</span> Part a</a></li>
@@ -380,41 +386,47 @@ window.Quarto = {
 <span id="cb1-3"><a href="#cb1-3" aria-label="3"></a><span class="fu">library</span>(emmeans)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-label="4"></a><span class="fu">library</span>(interactions)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-label="5"></a><span class="fu">library</span>(knitr)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-label="6"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-label="7"></a><span class="co"># Read raw file</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-label="8"></a>raw_df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"HW4Data.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-label="9"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-label="10"></a><span class="co"># Prof had to remove empty columns to fix an issue with filter() later</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-label="11"></a><span class="co"># currently column names are in the first row. Remove empty columns.</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-label="12"></a>raw_df_sub <span class="ot">&lt;-</span> raw_df[, <span class="fu">c</span>(<span class="sc">!</span><span class="fu">is.na</span>(raw_df[<span class="dv">1</span>,]))] </span>
-<span id="cb1-13"><a href="#cb1-13" aria-label="13"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-label="14"></a><span class="co"># Extract clean variable names and assign to data frame</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-label="15"></a>clean_names <span class="ot">&lt;-</span> <span class="fu">as.character</span>(<span class="fu">unlist</span>(raw_df_sub[<span class="dv">1</span>, ])) <span class="sc">|&gt;</span> <span class="fu">str_trim</span>()</span>
-<span id="cb1-16"><a href="#cb1-16" aria-label="16"></a></span>
-<span id="cb1-17"><a href="#cb1-17" aria-label="17"></a>df <span class="ot">&lt;-</span> raw_df_sub[<span class="sc">-</span><span class="dv">1</span>, ]</span>
-<span id="cb1-18"><a href="#cb1-18" aria-label="18"></a><span class="fu">names</span>(df) <span class="ot">&lt;-</span> <span class="fu">make.unique</span>(clean_names)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-label="6"></a><span class="fu">library</span>(GGally)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-label="7"></a><span class="fu">library</span>(MASS)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-label="8"></a><span class="fu">library</span>(car)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-label="9"></a><span class="fu">library</span>(effectsize)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-label="10"></a><span class="fu">source</span>(<span class="st">"plotResiduals.R"</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-label="11"></a><span class="fu">source</span>(<span class="st">"plotInfluence.R"</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-label="12"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-label="13"></a><span class="co"># Read raw file</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-label="14"></a>raw_df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"HW4Data.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-label="15"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-label="16"></a><span class="co"># Prof had to remove empty columns to fix an issue with filter() later</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-label="17"></a><span class="co"># currently column names are in the first row. Remove empty columns.</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-label="18"></a>raw_df_sub <span class="ot">&lt;-</span> raw_df[, <span class="fu">c</span>(<span class="sc">!</span><span class="fu">is.na</span>(raw_df[<span class="dv">1</span>,]))] </span>
 <span id="cb1-19"><a href="#cb1-19" aria-label="19"></a></span>
-<span id="cb1-20"><a href="#cb1-20" aria-label="20"></a>df_clean <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-label="21"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(responseID), responseID <span class="sc">!=</span> <span class="st">""</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-label="22"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb1-23"><a href="#cb1-23" aria-label="23"></a>    <span class="at">age =</span> <span class="fu">as.numeric</span>(age),</span>
-<span id="cb1-24"><a href="#cb1-24" aria-label="24"></a>    <span class="at">pick1 =</span> <span class="fu">as.numeric</span>(pick1),</span>
-<span id="cb1-25"><a href="#cb1-25" aria-label="25"></a>    <span class="at">pick2 =</span> <span class="fu">as.numeric</span>(pick2),</span>
-<span id="cb1-26"><a href="#cb1-26" aria-label="26"></a>    <span class="at">pick3 =</span> <span class="fu">as.numeric</span>(pick3),</span>
-<span id="cb1-27"><a href="#cb1-27" aria-label="27"></a>    <span class="co"># Standardize frame labels with Negative as reference level</span></span>
-<span id="cb1-28"><a href="#cb1-28" aria-label="28"></a>    <span class="at">frame1 =</span> <span class="fu">factor</span>(<span class="fu">if_else</span>(<span class="fu">str_starts</span>(treatment1, <span class="st">"pos"</span>), <span class="st">"Positive"</span>, <span class="st">"Negative"</span>),</span>
-<span id="cb1-29"><a href="#cb1-29" aria-label="29"></a>                    <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Negative"</span>, <span class="st">"Positive"</span>)),</span>
-<span id="cb1-30"><a href="#cb1-30" aria-label="30"></a>    <span class="at">frame2 =</span> <span class="fu">factor</span>(<span class="fu">if_else</span>(<span class="fu">str_starts</span>(treatment2, <span class="st">"pos"</span>), <span class="st">"Positive"</span>, <span class="st">"Negative"</span>),</span>
-<span id="cb1-31"><a href="#cb1-31" aria-label="31"></a>                    <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Negative"</span>, <span class="st">"Positive"</span>)),</span>
-<span id="cb1-32"><a href="#cb1-32" aria-label="32"></a>    <span class="at">frame3 =</span> <span class="fu">factor</span>(<span class="fu">if_else</span>(<span class="fu">str_starts</span>(treatment3, <span class="st">"pos"</span>), <span class="st">"Positive"</span>, <span class="st">"Negative"</span>),</span>
-<span id="cb1-33"><a href="#cb1-33" aria-label="33"></a>                    <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Negative"</span>, <span class="st">"Positive"</span>)),</span>
-<span id="cb1-34"><a href="#cb1-34" aria-label="34"></a>    <span class="at">gender =</span> <span class="fu">factor</span>(gender),</span>
-<span id="cb1-35"><a href="#cb1-35" aria-label="35"></a>    <span class="at">ethnicity =</span> <span class="fu">factor</span>(ethnicity),</span>
-<span id="cb1-36"><a href="#cb1-36" aria-label="36"></a>    <span class="at">education =</span> <span class="fu">factor</span>(education),</span>
-<span id="cb1-37"><a href="#cb1-37" aria-label="37"></a>    <span class="at">politics =</span> <span class="fu">factor</span>(politics)</span>
-<span id="cb1-38"><a href="#cb1-38" aria-label="38"></a>  )</span>
-<span id="cb1-39"><a href="#cb1-39" aria-label="39"></a></span>
-<span id="cb1-40"><a href="#cb1-40" aria-label="40"></a><span class="fu">cat</span>(<span class="st">"Total valid respondents:"</span>, <span class="fu">nrow</span>(df_clean), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-20"><a href="#cb1-20" aria-label="20"></a><span class="co"># Extract clean variable names and assign to data frame</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-label="21"></a>clean_names <span class="ot">&lt;-</span> <span class="fu">as.character</span>(<span class="fu">unlist</span>(raw_df_sub[<span class="dv">1</span>, ])) <span class="sc">|&gt;</span> <span class="fu">str_trim</span>()</span>
+<span id="cb1-22"><a href="#cb1-22" aria-label="22"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-label="23"></a>df <span class="ot">&lt;-</span> raw_df_sub[<span class="sc">-</span><span class="dv">1</span>, ]</span>
+<span id="cb1-24"><a href="#cb1-24" aria-label="24"></a><span class="fu">names</span>(df) <span class="ot">&lt;-</span> <span class="fu">make.unique</span>(clean_names)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-label="25"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-label="26"></a>df_clean <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-label="27"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(responseID), responseID <span class="sc">!=</span> <span class="st">""</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-label="28"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-29"><a href="#cb1-29" aria-label="29"></a>    <span class="at">age =</span> <span class="fu">as.numeric</span>(age),</span>
+<span id="cb1-30"><a href="#cb1-30" aria-label="30"></a>    <span class="at">pick1 =</span> <span class="fu">as.numeric</span>(pick1),</span>
+<span id="cb1-31"><a href="#cb1-31" aria-label="31"></a>    <span class="at">pick2 =</span> <span class="fu">as.numeric</span>(pick2),</span>
+<span id="cb1-32"><a href="#cb1-32" aria-label="32"></a>    <span class="at">pick3 =</span> <span class="fu">as.numeric</span>(pick3),</span>
+<span id="cb1-33"><a href="#cb1-33" aria-label="33"></a>    <span class="co"># Standardize frame labels with Negative as reference level</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-label="34"></a>    <span class="at">frame1 =</span> <span class="fu">factor</span>(<span class="fu">if_else</span>(<span class="fu">str_starts</span>(treatment1, <span class="st">"pos"</span>), <span class="st">"Positive"</span>, <span class="st">"Negative"</span>),</span>
+<span id="cb1-35"><a href="#cb1-35" aria-label="35"></a>                    <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Negative"</span>, <span class="st">"Positive"</span>)),</span>
+<span id="cb1-36"><a href="#cb1-36" aria-label="36"></a>    <span class="at">frame2 =</span> <span class="fu">factor</span>(<span class="fu">if_else</span>(<span class="fu">str_starts</span>(treatment2, <span class="st">"pos"</span>), <span class="st">"Positive"</span>, <span class="st">"Negative"</span>),</span>
+<span id="cb1-37"><a href="#cb1-37" aria-label="37"></a>                    <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Negative"</span>, <span class="st">"Positive"</span>)),</span>
+<span id="cb1-38"><a href="#cb1-38" aria-label="38"></a>    <span class="at">frame3 =</span> <span class="fu">factor</span>(<span class="fu">if_else</span>(<span class="fu">str_starts</span>(treatment3, <span class="st">"pos"</span>), <span class="st">"Positive"</span>, <span class="st">"Negative"</span>),</span>
+<span id="cb1-39"><a href="#cb1-39" aria-label="39"></a>                    <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Negative"</span>, <span class="st">"Positive"</span>)),</span>
+<span id="cb1-40"><a href="#cb1-40" aria-label="40"></a>    <span class="at">gender =</span> <span class="fu">factor</span>(gender),</span>
+<span id="cb1-41"><a href="#cb1-41" aria-label="41"></a>    <span class="at">ethnicity =</span> <span class="fu">factor</span>(ethnicity),</span>
+<span id="cb1-42"><a href="#cb1-42" aria-label="42"></a>    <span class="at">education =</span> <span class="fu">factor</span>(education),</span>
+<span id="cb1-43"><a href="#cb1-43" aria-label="43"></a>    <span class="at">politics =</span> <span class="fu">factor</span>(politics)</span>
+<span id="cb1-44"><a href="#cb1-44" aria-label="44"></a>  )</span>
+<span id="cb1-45"><a href="#cb1-45" aria-label="45"></a></span>
+<span id="cb1-46"><a href="#cb1-46" aria-label="46"></a><span class="fu">cat</span>(<span class="st">"Total valid respondents:"</span>, <span class="fu">nrow</span>(df_clean), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Total valid respondents: 696 </code></pre>
@@ -450,7 +462,7 @@ window.Quarto = {
 <span id="cb5-12"><a href="#cb5-12" aria-label="12"></a>  <span class="fu">tidy</span>(model, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
 <span id="cb5-13"><a href="#cb5-13" aria-label="13"></a>    <span class="fu">filter</span>(<span class="fu">str_detect</span>(term, <span class="st">"^(Intercept|age|frame)"</span>)) <span class="sc">|&gt;</span></span>
 <span id="cb5-14"><a href="#cb5-14" aria-label="14"></a>    <span class="fu">mutate</span>(<span class="at">Scenario =</span> scenario_label) <span class="sc">|&gt;</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-label="15"></a>    <span class="fu">select</span>(Scenario, term, estimate, std.error, statistic, p.value, conf.low, conf.high)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-label="15"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(Scenario, term, estimate, std.error, statistic, p.value, conf.low, conf.high)</span>
 <span id="cb5-16"><a href="#cb5-16" aria-label="16"></a>}</span>
 <span id="cb5-17"><a href="#cb5-17" aria-label="17"></a></span>
 <span id="cb5-18"><a href="#cb5-18" aria-label="18"></a><span class="fu">bind_rows</span>(</span>
@@ -596,7 +608,7 @@ window.Quarto = {
 <span id="cb6-3"><a href="#cb6-3" aria-label="3"></a>slopes_s3 <span class="ot">&lt;-</span> <span class="fu">emtrends</span>(m3, <span class="sc">~</span> frame3, <span class="at">var =</span> <span class="st">"age"</span>) <span class="sc">|&gt;</span> <span class="fu">summary</span>(<span class="at">infer =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">Scenario =</span> <span class="st">"Scenario 3: Chance Choice"</span>) <span class="sc">|&gt;</span> <span class="fu">rename</span>(<span class="at">Frame =</span> frame3)</span>
 <span id="cb6-4"><a href="#cb6-4" aria-label="4"></a></span>
 <span id="cb6-5"><a href="#cb6-5" aria-label="5"></a><span class="fu">bind_rows</span>(slopes_s1, slopes_s2, slopes_s3) <span class="sc">|&gt;</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-label="6"></a>  <span class="fu">select</span>(Scenario, Frame, age.trend, SE, df, lower.CL, upper.CL, t.ratio, p.value) <span class="sc">|&gt;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-label="6"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Scenario, Frame, age.trend, SE, df, lower.CL, upper.CL, t.ratio, p.value) <span class="sc">|&gt;</span></span>
 <span id="cb6-7"><a href="#cb6-7" aria-label="7"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">4</span>, <span class="at">caption =</span> <span class="st">"Age Slopes Within Positive and Negative Frames"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
@@ -916,14 +928,490 @@ Note: The range of observed values of frame3 is [0.00, 1.00]</code></pre>
 <p>Root biomass is highly relevant to research into plant responses to climate change. For example, changes in temperature, precipitation, CO2 levels, and soil properties can lead to changes in root biomass, which affects the roots that provide support for the plants above, help prevent erosion, and provide habitats for various plants and animals. Unfortunately, to observe the root biomass directly, researchers would need to sacrifice and excavate the entire plant, including the whole root system. Because of this, finding ways to estimate or predict root biomass is important.</p>
 <p><span class="citation" data-cites="Lai13">Lai et al. (<a href="#ref-Lai13" role="doc-biblioref">2013</a>)</span> explored using different models to assess the association between the diameter of a plant at breast height (cm) and the root biomass (kg).</p>
 <p><strong>Research Question:</strong> Can we predict root biomass using the tree diameters at breast height for <em>Castanopsis eyrei</em>, <em>Pinus massoniana</em>, and <em>Schima superba</em> trees? Ensure to identify whether there are unique relationships by species.</p>
+<p><strong>Solution</strong></p>
+<section id="eda" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="eda"><span class="header-section-number">2.1</span> EDA</h2>
 <p></p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-label="1"></a>dat.trees <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"LaiTreeData.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-label="1"></a>dat.trees <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"LaiTreeData.csv"</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-label="2"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-label="3"></a><span class="fu">ggpairs</span>(dat.trees,<span class="at">columns=</span><span class="fu">c</span>(<span class="st">"sp"</span>,<span class="st">"dbh"</span>,<span class="st">"rootbiomass"</span>)) <span class="sc">+</span> </span>
+<span id="cb17-4"><a href="#cb17-4" aria-label="4"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-label="5"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">55</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-output-display">
+<div id="fig-pairplot-lin" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-pairplot-lin-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Pairwise Plot: Species, Biomass, Diameter
+</figcaption>
+<div aria-describedby="fig-pairplot-lin-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW5_files/figure-html/fig-pairplot-lin-1.png" class="img-fluid figure-img" width="528">
+</div>
+</figure>
+</div>
+</div>
 </div>
 <p></p>
+<p>The pairwise plot reveals several concerning features of the data. There are several unusually high observations for rootbiomass and tree diameter in 2 of the three species and differences in variation of diameter across all species. The relationship between tree diameter and rootbiomass also appears to be slightly convex, suggesting the relationship may be non-linear. The presence of high outliers and evidence of a non-linear relationship suggest the utility of a log transform,</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-label="1"></a><span class="fu">ggpairs</span>(dat.trees,<span class="at">columns=</span><span class="fu">c</span>(<span class="st">"sp"</span>,<span class="st">"dbh"</span>,<span class="st">"logrootbiomass"</span>)) <span class="sc">+</span> </span>
+<span id="cb18-2"><a href="#cb18-2" aria-label="2"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb18-3"><a href="#cb18-3" aria-label="3"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">55</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-pairplot-log-lin" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-pairplot-log-lin-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Pairwise Plot: Species, Log Biomass, Diameter
+</figcaption>
+<div aria-describedby="fig-pairplot-log-lin-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW5_files/figure-html/fig-pairplot-log-lin-1.png" class="img-fluid figure-img" width="528">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>Now, the relationship between tree diamter and log root biomass is clearly concave</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-label="1"></a><span class="fu">ggpairs</span>(dat.trees,<span class="at">columns=</span><span class="fu">c</span>(<span class="st">"sp"</span>,<span class="st">"logdbh"</span>,<span class="st">"logrootbiomass"</span>)) <span class="sc">+</span> </span>
+<span id="cb19-2"><a href="#cb19-2" aria-label="2"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-label="3"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">55</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-pairplot-log-log" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-pairplot-log-log-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Pairwise Plot: Species, Log Biomass, Log Diameter
+</figcaption>
+<div aria-describedby="fig-pairplot-log-log-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW5_files/figure-html/fig-pairplot-log-log-1.png" class="img-fluid figure-img" width="528">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>Now, the relationship between log diameter and log root biomass appears linear. Although there is evidence of lest skew across both variables, a linear model of these transformed variables is more appropriate.</p>
+</section>
+<section id="regression-model-and-fit-analysis" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="regression-model-and-fit-analysis"><span class="header-section-number">2.2</span> Regression Model and Fit Analysis</h2>
+<p>As observed in our EDA, we now fit the model <span class="math display">\[\begin{align*}
+\log(Y_i) &amp;= \beta_0 + \beta_1 I(x_{1i}=\text{Pinus}) + \beta_2 I(x_{1i}=\text{Schima}) + \beta_3 \log(x_{2i}) \\
+&amp;+ \beta_5 I(x_{1i}=\text{Pinus}) \log(x_{2i}) + \beta_6 I(x_{1i}=\text{Schima}) \log(x_{2i})
+\end{align*}\]</span></p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-label="1"></a>mod <span class="ot">=</span> <span class="fu">lm</span>(logrootbiomass <span class="sc">~</span> sp <span class="sc">*</span> logdbh, <span class="at">data =</span> dat.trees)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-label="2"></a><span class="fu">plotResiduals</span>(mod)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-residuals-plot" class="quarto-float quarto-figure quarto-figure-center anchored" width="672">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-residuals-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4
+</figcaption>
+<div aria-describedby="fig-residuals-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW5_files/figure-html/fig-residuals-plot-1.png" id="fig-residuals-plot" class="img-fluid figure-img" width="672">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>The residual analysis is benign, although there are a couple outlying residuals, there is not an obvious trend to indicate concerning violations of normality.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-label="1"></a><span class="fu">plotInfluence</span>(mod)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-influence-plot" class="quarto-float quarto-figure quarto-figure-center anchored" width="672">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-influence-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5
+</figcaption>
+<div aria-describedby="fig-influence-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW5_files/figure-html/fig-influence-plot-1.png" id="fig-influence-plot" class="img-fluid figure-img" width="672">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>The influence analysis is more nuanced, since the leverage plot shows a somewhat regular peaking pattern. Looking into the dataset, we observe that the observations are blocked by species and that within species they are sorted by breast height. This explains the peaks near the start and end of each species blocks, since these correspond to maximas and minimas within species. Otherwise, there are a few points that are concerning with respect influence as shown by the DFFITs. As such, we decide to perform an iteratively re-weighted least squares.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-label="1"></a>mod.irwls <span class="ot">=</span> MASS<span class="sc">::</span><span class="fu">rlm</span>(</span>
+<span id="cb22-2"><a href="#cb22-2" aria-label="2"></a>  logrootbiomass <span class="sc">~</span> sp <span class="sc">*</span> logdbh,</span>
+<span id="cb22-3"><a href="#cb22-3" aria-label="3"></a>  <span class="at">data =</span> dat.trees,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-label="4"></a>  <span class="at">psi =</span> MASS<span class="sc">::</span>psi.huber</span>
+<span id="cb22-5"><a href="#cb22-5" aria-label="5"></a>)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-label="6"></a><span class="fu">plotResiduals</span>(mod.irwls)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-irwls-residuals" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-irwls-residuals-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Residual Analysis for IRWLS Model
+</figcaption>
+<div aria-describedby="fig-irwls-residuals-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW5_files/figure-html/fig-irwls-residuals-1.png" class="img-fluid figure-img" width="672">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-label="1"></a><span class="fu">plotInfluence</span>(mod.irwls)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-irwls-influence" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-irwls-influence-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: Influence Analysis for IRWLS Model
+</figcaption>
+<div aria-describedby="fig-irwls-influence-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW5_files/figure-html/fig-irwls-influence-1.png" class="img-fluid figure-img" width="672">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p>Both the residual analysis and influence analysis are improved by the application of re-weighted least squares. Although there are still influential points among the smallest of the Castanopsis observations.As such, we will perform the remainder of our analysis on this model.</p>
+</section>
+<section id="inference-and-interpretation" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="inference-and-interpretation"><span class="header-section-number">2.3</span> Inference and Interpretation</h2>
+<p><strong>Solution</strong> We report the Overall Significance via ANOVA analysis, overall effect size via omega2, and coefficient values, significance, and effect size. For post-hoc testing, we perform an emtrends analysis to evaluate the modulating effect of species on the relationship between diameter and root biomass.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-label="1"></a>car<span class="sc">::</span><span class="fu">Anova</span>(mod.irwls) <span class="sc">|&gt;</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-label="2"></a>  <span class="fu">data.frame</span>() <span class="sc">|&gt;</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-label="3"></a>  <span class="fu">rename</span>(<span class="st">"p"</span> <span class="ot">=</span> <span class="st">"Pr..F."</span>) <span class="sc">|&gt;</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-label="4"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">ifelse</span>(p <span class="sc">&lt;</span> .<span class="dv">001</span>, <span class="st">"&lt;.001"</span>, <span class="fu">round</span>(p,<span class="dv">3</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-label="5"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits=</span><span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-irwls-anova" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-irwls-anova-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Overall ANOVA Analysis
+</figcaption>
+<div aria-describedby="tbl-irwls-anova-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Df</th>
+<th style="text-align: right;">F</th>
+<th style="text-align: left;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">sp</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">53.852</td>
+<td style="text-align: left;">&lt;.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">logdbh</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">5714.374</td>
+<td style="text-align: left;">&lt;.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">sp:logdbh</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">20.005</td>
+<td style="text-align: left;">&lt;.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Residuals</td>
+<td style="text-align: right;">153</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-label="1"></a>predictors <span class="ot">=</span> <span class="fu">names</span>(<span class="fu">coef</span>(mod.irwls))[<span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb25-2"><a href="#cb25-2" aria-label="2"></a>overall_f <span class="ot">=</span> car<span class="sc">::</span><span class="fu">linearHypothesis</span>(mod.irwls,<span class="at">hypothesis.matrix =</span> predictors)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-label="3"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-label="4"></a>effectsize<span class="sc">::</span><span class="fu">F_to_omega2</span>(</span>
+<span id="cb25-5"><a href="#cb25-5" aria-label="5"></a>  <span class="at">f =</span> overall_f<span class="sc">$</span>F[<span class="dv">2</span>],</span>
+<span id="cb25-6"><a href="#cb25-6" aria-label="6"></a>  <span class="at">df =</span> overall_f<span class="sc">$</span>Df[<span class="dv">2</span>],</span>
+<span id="cb25-7"><a href="#cb25-7" aria-label="7"></a>  <span class="at">df_error =</span> overall_f<span class="sc">$</span>Res.Df[<span class="dv">2</span>]    </span>
+<span id="cb25-8"><a href="#cb25-8" aria-label="8"></a>) <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits=</span><span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-irwls-overall-effect-size" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-irwls-overall-effect-size-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: Overall Effect Size
+</figcaption>
+<div aria-describedby="tbl-irwls-overall-effect-size-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Omega2_partial</th>
+<th style="text-align: right;">CI</th>
+<th style="text-align: right;">CI_low</th>
+<th style="text-align: right;">CI_high</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.97</td>
+<td style="text-align: right;">0.95</td>
+<td style="text-align: right;">0.97</td>
+<td style="text-align: right;">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>Thus, some coefficient differs from <span class="math inline">\(0\)</span>, and the overall effect size is large.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-label="1"></a><span class="co"># Claude used for refactoring table to combine effect size and p-value calculation presented in slides.</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-label="2"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-label="3"></a>coefs  <span class="ot">=</span> <span class="fu">summary</span>(mod.irwls)<span class="sc">$</span>coefficients</span>
+<span id="cb26-4"><a href="#cb26-4" aria-label="4"></a>df_res <span class="ot">=</span> <span class="fu">summary</span>(mod.irwls)<span class="sc">$</span>df[<span class="dv">2</span>] <span class="co"># n - p</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-label="5"></a></span>
+<span id="cb26-6"><a href="#cb26-6" aria-label="6"></a></span>
+<span id="cb26-7"><a href="#cb26-7" aria-label="7"></a>t_val    <span class="ot">=</span> coefs[<span class="sc">-</span><span class="dv">1</span>, <span class="st">"t value"</span>]</span>
+<span id="cb26-8"><a href="#cb26-8" aria-label="8"></a>es_omega <span class="ot">=</span> effectsize<span class="sc">::</span><span class="fu">t_to_omega2</span>(<span class="at">t =</span> t_val, <span class="at">df_error =</span> df_res,</span>
+<span id="cb26-9"><a href="#cb26-9" aria-label="9"></a>                                   <span class="at">alternative =</span> <span class="st">"two.sided"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-label="10"></a>  <span class="fu">data.frame</span>() <span class="sc">|&gt;</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-label="11"></a>  <span class="fu">mutate</span>(<span class="at">term =</span> <span class="fu">names</span>(t_val)) <span class="sc">|&gt;</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-label="12"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(term, <span class="at">Omega2 =</span> Omega2_partial)</span>
+<span id="cb26-13"><a href="#cb26-13" aria-label="13"></a></span>
+<span id="cb26-14"><a href="#cb26-14" aria-label="14"></a><span class="fu">data.frame</span>(coefs) <span class="sc">|&gt;</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-label="15"></a>  <span class="fu">rename</span>(<span class="st">"SE"</span> <span class="ot">=</span> <span class="st">"Std..Error"</span>,</span>
+<span id="cb26-16"><a href="#cb26-16" aria-label="16"></a>         <span class="st">"t"</span> <span class="ot">=</span> <span class="st">"t.value"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb26-17"><a href="#cb26-17" aria-label="17"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">pt</span>(<span class="sc">-</span><span class="fu">abs</span>(t), <span class="at">df =</span> df_res)) <span class="sc">|&gt;</span></span>
+<span id="cb26-18"><a href="#cb26-18" aria-label="18"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"term"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb26-19"><a href="#cb26-19" aria-label="19"></a>  <span class="fu">left_join</span>(es_omega, <span class="at">by =</span> <span class="st">"term"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb26-20"><a href="#cb26-20" aria-label="20"></a>  <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">ifelse</span>(p <span class="sc">&lt;</span> .<span class="dv">001</span>, <span class="st">"&lt;.001"</span>, <span class="fu">round</span>(p, <span class="dv">3</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb26-21"><a href="#cb26-21" aria-label="21"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-coefficients-analysis" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-coefficients-analysis-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3: Coefficient Analysis
+</figcaption>
+<div aria-describedby="tbl-coefficients-analysis-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: right;">Value</th>
+<th style="text-align: right;">SE</th>
+<th style="text-align: right;">t</th>
+<th style="text-align: left;">p</th>
+<th style="text-align: right;">Omega2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">-2.898</td>
+<td style="text-align: right;">0.179</td>
+<td style="text-align: right;">-16.160</td>
+<td style="text-align: left;">&lt;.001</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">spPinus massoniana</td>
+<td style="text-align: right;">-1.817</td>
+<td style="text-align: right;">0.236</td>
+<td style="text-align: right;">-7.714</td>
+<td style="text-align: left;">&lt;.001</td>
+<td style="text-align: right;">0.274</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">spSchima superba</td>
+<td style="text-align: right;">-0.252</td>
+<td style="text-align: right;">0.229</td>
+<td style="text-align: right;">-1.101</td>
+<td style="text-align: left;">0.273</td>
+<td style="text-align: right;">0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">logdbh</td>
+<td style="text-align: right;">2.199</td>
+<td style="text-align: right;">0.063</td>
+<td style="text-align: right;">35.130</td>
+<td style="text-align: left;">&lt;.001</td>
+<td style="text-align: right;">0.888</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">spPinus massoniana:logdbh</td>
+<td style="text-align: right;">0.501</td>
+<td style="text-align: right;">0.082</td>
+<td style="text-align: right;">6.078</td>
+<td style="text-align: left;">&lt;.001</td>
+<td style="text-align: right;">0.188</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">spSchima superba:logdbh</td>
+<td style="text-align: right;">0.171</td>
+<td style="text-align: right;">0.082</td>
+<td style="text-align: right;">2.089</td>
+<td style="text-align: left;">0.038</td>
+<td style="text-align: right;">0.021</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>With respect to coefficient interpretation, it is complicated by the log transformation of both the continuous response variable and predictor. Given the explanation provided by this set of <a href="https://cscu.cornell.edu/wp-content/uploads/logv.pdf">Cornell Notes</a>, the coefficient is interprated such that a <span class="math inline">\(1%\)</span> increase in predictor <span class="math inline">\(i\)</span> is associated with a <span class="math inline">\(\beta_i%\)</span> increase in the response variable. The interpretation for the categorical variable is unchanged from a traditional log transformed response variable. Thus, an increase in <span class="math inline">\(1%\)</span> of log diameter is associated with a <span class="math inline">\(2.199%\)</span> increase in the rootbiomass. Also, since the interaction terms are significant, we proceed with our post-hoc analysis.</p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-label="1"></a><span class="co"># Predicted lines across the observed range of log diameter</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-label="2"></a>dbh_grid <span class="ot">=</span> <span class="fu">seq</span>(<span class="fu">min</span>(dat.trees<span class="sc">$</span>logdbh), <span class="fu">max</span>(dat.trees<span class="sc">$</span>logdbh), <span class="at">length.out =</span> <span class="dv">20</span>)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-label="3"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-label="4"></a>emm <span class="ot">=</span> emmeans<span class="sc">::</span><span class="fu">emmeans</span>(mod.irwls, <span class="sc">~</span> sp <span class="sc">|</span> logdbh,</span>
+<span id="cb27-5"><a href="#cb27-5" aria-label="5"></a>                       <span class="at">at =</span> <span class="fu">list</span>(<span class="at">logdbh =</span> dbh_grid), <span class="at">df =</span> df_res)</span>
+<span id="cb27-6"><a href="#cb27-6" aria-label="6"></a></span>
+<span id="cb27-7"><a href="#cb27-7" aria-label="7"></a><span class="fu">data.frame</span>(emm) <span class="sc">|&gt;</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-label="8"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> logdbh, <span class="at">y =</span> emmean, <span class="at">color =</span> sp, <span class="at">fill =</span> sp)) <span class="sc">+</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-label="9"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> lower.CL, <span class="at">ymax =</span> upper.CL), <span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">color =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-label="10"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-label="11"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Log Diameter at Breast Height"</span>, <span class="at">y =</span> <span class="st">"Estimated Log Root Biomass"</span>,</span>
+<span id="cb27-12"><a href="#cb27-12" aria-label="12"></a>       <span class="at">color =</span> <span class="st">"Species"</span>, <span class="at">fill =</span> <span class="st">"Species"</span>) <span class="sc">+</span></span>
+<span id="cb27-13"><a href="#cb27-13" aria-label="13"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-emtrends" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-emtrends-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: Estimated Marginal Means of Log Root Biomass by Species
+</figcaption>
+<div aria-describedby="fig-emtrends-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HW5_files/figure-html/fig-emtrends-1.png" class="img-fluid figure-img" width="576">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p></p>
+<p></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-label="1"></a>trends <span class="ot">=</span> emmeans<span class="sc">::</span><span class="fu">emtrends</span>(mod.irwls, <span class="sc">~</span> sp, <span class="at">var =</span> <span class="st">"logdbh"</span>, <span class="at">df =</span> df_res)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-label="2"></a><span class="fu">pairs</span>(trends) <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-emtrends-pairs" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-emtrends-pairs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;4: Pairwise Comparisons of Species Slopes
+</figcaption>
+<div aria-describedby="tbl-emtrends-pairs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 51%">
+<col style="width: 12%">
+<col style="width: 8%">
+<col style="width: 5%">
+<col style="width: 11%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">contrast</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">SE</th>
+<th style="text-align: right;">df</th>
+<th style="text-align: right;">t.ratio</th>
+<th style="text-align: right;">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Castanopsis eyrei - Pinus massoniana</td>
+<td style="text-align: right;">-0.501</td>
+<td style="text-align: right;">0.082</td>
+<td style="text-align: right;">153</td>
+<td style="text-align: right;">-6.078</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Castanopsis eyrei - Schima superba</td>
+<td style="text-align: right;">-0.171</td>
+<td style="text-align: right;">0.082</td>
+<td style="text-align: right;">153</td>
+<td style="text-align: right;">-2.089</td>
+<td style="text-align: right;">0.096</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Pinus massoniana - Schima superba</td>
+<td style="text-align: right;">0.330</td>
+<td style="text-align: right;">0.076</td>
+<td style="text-align: right;">153</td>
+<td style="text-align: right;">4.368</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p></p>
+<p>The post-hoc estimated marginal means analysis show that only the slope of the Pinus species is discernibly different from the slopes of the other species and that the estimated marginal mean is discernibly different for smaller observed log diameter.</p>
+</section>
+<section id="summary" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="summary"><span class="header-section-number">2.4</span> Summary</h2>
+<p>Our analysis showed that the appropriate linear model for the relationship between root biomass and diameter at breast height is a log transformation of both continuous variables. The relationship is well predicted by a model fit with iteratively re-weighted least squares to handle influential points within the dataset. Further analysis of the fitted model with breast height diameter modulated by species show that the relationship between diameter and biomass differs by species, but only in so far as the slope of the Pinus species is discernibly different from the Castonopsis and Schima, while the Schima and Castanopsis are not pairwise discernible.</p>
+</section>
 </section>
 <section id="question-3" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span> Question 3</h1>
@@ -952,17 +1440,17 @@ Note: The range of observed values of frame3 is [0.00, 1.00]</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-label="1"></a><span class="fu">library</span>(pwr)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-label="2"></a></span>
-<span id="cb18-3"><a href="#cb18-3" aria-label="3"></a>p <span class="ot">&lt;-</span> <span class="dv">3</span>   <span class="co"># Total number of coefficients in the model (p-1 predictors)</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-label="4"></a>f2.small <span class="ot">&lt;-</span> <span class="fl">0.02</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-label="5"></a></span>
-<span id="cb18-6"><a href="#cb18-6" aria-label="6"></a>res.small <span class="ot">&lt;-</span> <span class="fu">pwr.f2.test</span>(<span class="at">u =</span> <span class="dv">1</span>,              <span class="co"># Suppose our research was interested in 1 coefficient</span></span>
-<span id="cb18-7"><a href="#cb18-7" aria-label="7"></a>                         <span class="at">f2 =</span> f2.small,      <span class="co"># Cohen's f^2</span></span>
-<span id="cb18-8"><a href="#cb18-8" aria-label="8"></a>                         <span class="at">sig.level =</span> <span class="fl">0.05</span>,   <span class="co"># alpha = 0.05 (two-sided via F = T^2)</span></span>
-<span id="cb18-9"><a href="#cb18-9" aria-label="9"></a>                         <span class="at">power =</span> <span class="fl">0.80</span>)       <span class="co"># Desired power</span></span>
-<span id="cb18-10"><a href="#cb18-10" aria-label="10"></a></span>
-<span id="cb18-11"><a href="#cb18-11" aria-label="11"></a>(n.small <span class="ot">&lt;-</span> <span class="fu">ceiling</span>(res.small<span class="sc">$</span>v <span class="sc">+</span> p)) <span class="co"># we add p for prediction "debt" (p betas)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-label="1"></a><span class="fu">library</span>(pwr)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-label="2"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-label="3"></a>p <span class="ot">&lt;-</span> <span class="dv">3</span>   <span class="co"># Total number of coefficients in the model (p-1 predictors)</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-label="4"></a>f2.small <span class="ot">&lt;-</span> <span class="fl">0.02</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-label="5"></a></span>
+<span id="cb29-6"><a href="#cb29-6" aria-label="6"></a>res.small <span class="ot">&lt;-</span> <span class="fu">pwr.f2.test</span>(<span class="at">u =</span> <span class="dv">1</span>,              <span class="co"># Suppose our research was interested in 1 coefficient</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-label="7"></a>                         <span class="at">f2 =</span> f2.small,      <span class="co"># Cohen's f^2</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-label="8"></a>                         <span class="at">sig.level =</span> <span class="fl">0.05</span>,   <span class="co"># alpha = 0.05 (two-sided via F = T^2)</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-label="9"></a>                         <span class="at">power =</span> <span class="fl">0.80</span>)       <span class="co"># Desired power</span></span>
+<span id="cb29-10"><a href="#cb29-10" aria-label="10"></a></span>
+<span id="cb29-11"><a href="#cb29-11" aria-label="11"></a>(n.small <span class="ot">&lt;-</span> <span class="fu">ceiling</span>(res.small<span class="sc">$</span>v <span class="sc">+</span> p)) <span class="co"># we add p for prediction "debt" (p betas)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 396</code></pre>
@@ -977,46 +1465,46 @@ Note: The range of observed values of frame3 is [0.00, 1.00]</code></pre>
 <div class="cell" data-fig-label="Power Analysis with 1 Coefficient">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-label="1"></a>power_plot <span class="ot">=</span> <span class="cf">function</span>(n, p, f2, alpha) {</span>
-<span id="cb20-2"><a href="#cb20-2" aria-label="2"></a>  v    <span class="ot">=</span> n <span class="sc">-</span> p</span>
-<span id="cb20-3"><a href="#cb20-3" aria-label="3"></a>  ncp  <span class="ot">=</span> <span class="fu">sqrt</span>(f2 <span class="sc">*</span> n)                 </span>
-<span id="cb20-4"><a href="#cb20-4" aria-label="4"></a>  crit <span class="ot">=</span> <span class="fu">qt</span>(<span class="dv">1</span> <span class="sc">-</span> alpha<span class="sc">/</span><span class="dv">2</span>, v)           <span class="co"># two-sided critical value</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-label="5"></a></span>
-<span id="cb20-6"><a href="#cb20-6" aria-label="6"></a>  x <span class="ot">=</span> <span class="fu">sort</span>(<span class="fu">c</span>(<span class="fu">seq</span>(<span class="sc">-</span><span class="dv">5</span>, ncp <span class="sc">+</span> <span class="dv">5</span>, <span class="at">length.out =</span> <span class="dv">1000</span>), <span class="sc">-</span>crit, crit))  <span class="co"># include crits so shading meets exactly</span></span>
-<span id="cb20-7"><a href="#cb20-7" aria-label="7"></a>  d <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">x =</span> x, <span class="at">null =</span> <span class="fu">dt</span>(x, v), <span class="at">alt =</span> <span class="fu">dt</span>(x, v, <span class="at">ncp =</span> ncp))</span>
-<span id="cb20-8"><a href="#cb20-8" aria-label="8"></a></span>
-<span id="cb20-9"><a href="#cb20-9" aria-label="9"></a>  lo  <span class="ot">=</span> <span class="fu">subset</span>(d, x <span class="sc">&lt;=</span> <span class="sc">-</span>crit)</span>
-<span id="cb20-10"><a href="#cb20-10" aria-label="10"></a>  mid <span class="ot">=</span> <span class="fu">subset</span>(d, x <span class="sc">&gt;=</span> <span class="sc">-</span>crit <span class="sc">&amp;</span> x <span class="sc">&lt;=</span> crit)</span>
-<span id="cb20-11"><a href="#cb20-11" aria-label="11"></a>  hi  <span class="ot">=</span> <span class="fu">subset</span>(d, x <span class="sc">&gt;=</span> crit)</span>
-<span id="cb20-12"><a href="#cb20-12" aria-label="12"></a>  pow <span class="ot">=</span> <span class="fu">pt</span>(<span class="sc">-</span>crit, v, ncp) <span class="sc">+</span> <span class="fu">pt</span>(crit, v, ncp, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb20-13"><a href="#cb20-13" aria-label="13"></a></span>
-<span id="cb20-14"><a href="#cb20-14" aria-label="14"></a>  <span class="fu">ggplot</span>(d, <span class="fu">aes</span>(x)) <span class="sc">+</span></span>
-<span id="cb20-15"><a href="#cb20-15" aria-label="15"></a>    <span class="fu">geom_ribbon</span>(<span class="at">data =</span> mid, <span class="fu">aes</span>(<span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> alt,  <span class="at">fill =</span> <span class="st">"Type II Error"</span>), <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
-<span id="cb20-16"><a href="#cb20-16" aria-label="16"></a>    <span class="fu">geom_ribbon</span>(<span class="at">data =</span> hi,  <span class="fu">aes</span>(<span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> alt,  <span class="at">fill =</span> <span class="st">"Power"</span>),         <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
-<span id="cb20-17"><a href="#cb20-17" aria-label="17"></a>    <span class="fu">geom_ribbon</span>(<span class="at">data =</span> lo,  <span class="fu">aes</span>(<span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> alt,  <span class="at">fill =</span> <span class="st">"Power"</span>),         <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
-<span id="cb20-18"><a href="#cb20-18" aria-label="18"></a>    <span class="fu">geom_ribbon</span>(<span class="at">data =</span> hi,  <span class="fu">aes</span>(<span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> null, <span class="at">fill =</span> <span class="st">"Type I Error"</span>),  <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
-<span id="cb20-19"><a href="#cb20-19" aria-label="19"></a>    <span class="fu">geom_ribbon</span>(<span class="at">data =</span> lo,  <span class="fu">aes</span>(<span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> null, <span class="at">fill =</span> <span class="st">"Type I Error"</span>),  <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
-<span id="cb20-20"><a href="#cb20-20" aria-label="20"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> alt,  <span class="at">color =</span> <span class="st">"Alternative"</span>)) <span class="sc">+</span></span>
-<span id="cb20-21"><a href="#cb20-21" aria-label="21"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> null, <span class="at">color =</span> <span class="st">"Null"</span>)) <span class="sc">+</span></span>
-<span id="cb20-22"><a href="#cb20-22" aria-label="22"></a>    <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
-<span id="cb20-23"><a href="#cb20-23" aria-label="23"></a>    <span class="fu">scale_color_manual</span>(<span class="at">name =</span> <span class="cn">NULL</span>, <span class="at">values =</span> <span class="fu">c</span>(<span class="at">Alternative =</span> <span class="st">"#FF0000"</span>, <span class="at">Null =</span> <span class="st">"#000000"</span>)) <span class="sc">+</span></span>
-<span id="cb20-24"><a href="#cb20-24" aria-label="24"></a>    <span class="fu">scale_fill_manual</span>(<span class="at">name =</span> <span class="cn">NULL</span>,</span>
-<span id="cb20-25"><a href="#cb20-25" aria-label="25"></a>                      <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Power"</span> <span class="ot">=</span> <span class="st">"#4747bb"</span>, <span class="st">"Type I Error"</span> <span class="ot">=</span> <span class="st">"#cd3737"</span>,</span>
-<span id="cb20-26"><a href="#cb20-26" aria-label="26"></a>                                 <span class="st">"Type II Error"</span> <span class="ot">=</span> <span class="st">"#D3D3D3"</span>)) <span class="sc">+</span></span>
-<span id="cb20-27"><a href="#cb20-27" aria-label="27"></a>    <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">order =</span> <span class="dv">1</span>), <span class="at">fill =</span> <span class="fu">guide_legend</span>(<span class="at">order =</span> <span class="dv">2</span>)) <span class="sc">+</span></span>
-<span id="cb20-28"><a href="#cb20-28" aria-label="28"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">sprintf</span>(<span class="st">"f^2 = %.2f; p = %d; n = %d; df = %d; power = %.3f"</span>,</span>
-<span id="cb20-29"><a href="#cb20-29" aria-label="29"></a>                         f2, p, n, v, pow),</span>
-<span id="cb20-30"><a href="#cb20-30" aria-label="30"></a>         <span class="at">x =</span> <span class="st">"T"</span>, <span class="at">y =</span> <span class="st">"Density"</span>) <span class="sc">+</span></span>
-<span id="cb20-31"><a href="#cb20-31" aria-label="31"></a>    <span class="fu">theme_bw</span>()</span>
-<span id="cb20-32"><a href="#cb20-32" aria-label="32"></a>}</span>
-<span id="cb20-33"><a href="#cb20-33" aria-label="33"></a></span>
-<span id="cb20-34"><a href="#cb20-34" aria-label="34"></a><span class="fu">power_plot</span>(<span class="at">n =</span> n.small, <span class="at">p =</span> p, <span class="at">f2 =</span> f2.small, <span class="at">alpha =</span> <span class="fl">0.05</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-label="1"></a>power_plot <span class="ot">=</span> <span class="cf">function</span>(n, p, f2, alpha) {</span>
+<span id="cb31-2"><a href="#cb31-2" aria-label="2"></a>  v    <span class="ot">=</span> n <span class="sc">-</span> p</span>
+<span id="cb31-3"><a href="#cb31-3" aria-label="3"></a>  ncp  <span class="ot">=</span> <span class="fu">sqrt</span>(f2 <span class="sc">*</span> n)                 </span>
+<span id="cb31-4"><a href="#cb31-4" aria-label="4"></a>  crit <span class="ot">=</span> <span class="fu">qt</span>(<span class="dv">1</span> <span class="sc">-</span> alpha<span class="sc">/</span><span class="dv">2</span>, v)           <span class="co"># two-sided critical value</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-label="5"></a></span>
+<span id="cb31-6"><a href="#cb31-6" aria-label="6"></a>  x <span class="ot">=</span> <span class="fu">sort</span>(<span class="fu">c</span>(<span class="fu">seq</span>(<span class="sc">-</span><span class="dv">5</span>, ncp <span class="sc">+</span> <span class="dv">5</span>, <span class="at">length.out =</span> <span class="dv">1000</span>), <span class="sc">-</span>crit, crit))  <span class="co"># include crits so shading meets exactly</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-label="7"></a>  d <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">x =</span> x, <span class="at">null =</span> <span class="fu">dt</span>(x, v), <span class="at">alt =</span> <span class="fu">dt</span>(x, v, <span class="at">ncp =</span> ncp))</span>
+<span id="cb31-8"><a href="#cb31-8" aria-label="8"></a></span>
+<span id="cb31-9"><a href="#cb31-9" aria-label="9"></a>  lo  <span class="ot">=</span> <span class="fu">subset</span>(d, x <span class="sc">&lt;=</span> <span class="sc">-</span>crit)</span>
+<span id="cb31-10"><a href="#cb31-10" aria-label="10"></a>  mid <span class="ot">=</span> <span class="fu">subset</span>(d, x <span class="sc">&gt;=</span> <span class="sc">-</span>crit <span class="sc">&amp;</span> x <span class="sc">&lt;=</span> crit)</span>
+<span id="cb31-11"><a href="#cb31-11" aria-label="11"></a>  hi  <span class="ot">=</span> <span class="fu">subset</span>(d, x <span class="sc">&gt;=</span> crit)</span>
+<span id="cb31-12"><a href="#cb31-12" aria-label="12"></a>  pow <span class="ot">=</span> <span class="fu">pt</span>(<span class="sc">-</span>crit, v, ncp) <span class="sc">+</span> <span class="fu">pt</span>(crit, v, ncp, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb31-13"><a href="#cb31-13" aria-label="13"></a></span>
+<span id="cb31-14"><a href="#cb31-14" aria-label="14"></a>  <span class="fu">ggplot</span>(d, <span class="fu">aes</span>(x)) <span class="sc">+</span></span>
+<span id="cb31-15"><a href="#cb31-15" aria-label="15"></a>    <span class="fu">geom_ribbon</span>(<span class="at">data =</span> mid, <span class="fu">aes</span>(<span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> alt,  <span class="at">fill =</span> <span class="st">"Type II Error"</span>), <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb31-16"><a href="#cb31-16" aria-label="16"></a>    <span class="fu">geom_ribbon</span>(<span class="at">data =</span> hi,  <span class="fu">aes</span>(<span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> alt,  <span class="at">fill =</span> <span class="st">"Power"</span>),         <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb31-17"><a href="#cb31-17" aria-label="17"></a>    <span class="fu">geom_ribbon</span>(<span class="at">data =</span> lo,  <span class="fu">aes</span>(<span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> alt,  <span class="at">fill =</span> <span class="st">"Power"</span>),         <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb31-18"><a href="#cb31-18" aria-label="18"></a>    <span class="fu">geom_ribbon</span>(<span class="at">data =</span> hi,  <span class="fu">aes</span>(<span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> null, <span class="at">fill =</span> <span class="st">"Type I Error"</span>),  <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb31-19"><a href="#cb31-19" aria-label="19"></a>    <span class="fu">geom_ribbon</span>(<span class="at">data =</span> lo,  <span class="fu">aes</span>(<span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> null, <span class="at">fill =</span> <span class="st">"Type I Error"</span>),  <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb31-20"><a href="#cb31-20" aria-label="20"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> alt,  <span class="at">color =</span> <span class="st">"Alternative"</span>)) <span class="sc">+</span></span>
+<span id="cb31-21"><a href="#cb31-21" aria-label="21"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> null, <span class="at">color =</span> <span class="st">"Null"</span>)) <span class="sc">+</span></span>
+<span id="cb31-22"><a href="#cb31-22" aria-label="22"></a>    <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb31-23"><a href="#cb31-23" aria-label="23"></a>    <span class="fu">scale_color_manual</span>(<span class="at">name =</span> <span class="cn">NULL</span>, <span class="at">values =</span> <span class="fu">c</span>(<span class="at">Alternative =</span> <span class="st">"#FF0000"</span>, <span class="at">Null =</span> <span class="st">"#000000"</span>)) <span class="sc">+</span></span>
+<span id="cb31-24"><a href="#cb31-24" aria-label="24"></a>    <span class="fu">scale_fill_manual</span>(<span class="at">name =</span> <span class="cn">NULL</span>,</span>
+<span id="cb31-25"><a href="#cb31-25" aria-label="25"></a>                      <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Power"</span> <span class="ot">=</span> <span class="st">"#4747bb"</span>, <span class="st">"Type I Error"</span> <span class="ot">=</span> <span class="st">"#cd3737"</span>,</span>
+<span id="cb31-26"><a href="#cb31-26" aria-label="26"></a>                                 <span class="st">"Type II Error"</span> <span class="ot">=</span> <span class="st">"#D3D3D3"</span>)) <span class="sc">+</span></span>
+<span id="cb31-27"><a href="#cb31-27" aria-label="27"></a>    <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">order =</span> <span class="dv">1</span>), <span class="at">fill =</span> <span class="fu">guide_legend</span>(<span class="at">order =</span> <span class="dv">2</span>)) <span class="sc">+</span></span>
+<span id="cb31-28"><a href="#cb31-28" aria-label="28"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">sprintf</span>(<span class="st">"f^2 = %.2f; p = %d; n = %d; df = %d; power = %.3f"</span>,</span>
+<span id="cb31-29"><a href="#cb31-29" aria-label="29"></a>                         f2, p, n, v, pow),</span>
+<span id="cb31-30"><a href="#cb31-30" aria-label="30"></a>         <span class="at">x =</span> <span class="st">"T"</span>, <span class="at">y =</span> <span class="st">"Density"</span>) <span class="sc">+</span></span>
+<span id="cb31-31"><a href="#cb31-31" aria-label="31"></a>    <span class="fu">theme_bw</span>()</span>
+<span id="cb31-32"><a href="#cb31-32" aria-label="32"></a>}</span>
+<span id="cb31-33"><a href="#cb31-33" aria-label="33"></a></span>
+<span id="cb31-34"><a href="#cb31-34" aria-label="34"></a><span class="fu">power_plot</span>(<span class="at">n =</span> n.small, <span class="at">p =</span> p, <span class="at">f2 =</span> f2.small, <span class="at">alpha =</span> <span class="fl">0.05</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-power-plot-a" class="quarto-float quarto-figure quarto-figure-center anchored" width="672">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-power-plot-a-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1
+Figure&nbsp;9
 </figcaption>
 <div aria-describedby="fig-power-plot-a-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="HW5_files/figure-html/fig-power-plot-a-1.png" id="fig-power-plot-a" class="img-fluid figure-img" width="672">
@@ -1045,26 +1533,26 @@ f^2 &amp;= \frac{\beta_j^2 \sigma_{X_j}^2(1 - R_1^2)}{\sigma^2} \\
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-label="1"></a>calc_sample_size <span class="ot">=</span> <span class="cf">function</span>(beta,var.pred,var,vif) {</span>
-<span id="cb21-2"><a href="#cb21-2" aria-label="2"></a>  p <span class="ot">=</span> <span class="dv">3</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-label="3"></a>  f2 <span class="ot">=</span> (beta <span class="sc">^</span> <span class="dv">2</span>) <span class="sc">*</span> var.pred <span class="sc">/</span> (vif <span class="sc">*</span> var)</span>
-<span id="cb21-4"><a href="#cb21-4" aria-label="4"></a>  res <span class="ot">=</span> <span class="fu">pwr.f2.test</span>(<span class="at">u =</span> <span class="dv">1</span>,             </span>
-<span id="cb21-5"><a href="#cb21-5" aria-label="5"></a>    <span class="at">f2 =</span> f2,</span>
-<span id="cb21-6"><a href="#cb21-6" aria-label="6"></a>    <span class="at">sig.level =</span> .<span class="dv">05</span>,</span>
-<span id="cb21-7"><a href="#cb21-7" aria-label="7"></a>    <span class="at">power =</span> .<span class="dv">8</span></span>
-<span id="cb21-8"><a href="#cb21-8" aria-label="8"></a>  )</span>
-<span id="cb21-9"><a href="#cb21-9" aria-label="9"></a>  <span class="fu">ceiling</span>(res<span class="sc">$</span>v <span class="sc">+</span> p)</span>
-<span id="cb21-10"><a href="#cb21-10" aria-label="10"></a>}</span>
-<span id="cb21-11"><a href="#cb21-11" aria-label="11"></a></span>
-<span id="cb21-12"><a href="#cb21-12" aria-label="12"></a><span class="fu">tibble</span>(</span>
-<span id="cb21-13"><a href="#cb21-13" aria-label="13"></a>  <span class="at">VIF =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">1.5</span>, <span class="dv">2</span>, <span class="dv">5</span>, <span class="dv">10</span>),</span>
-<span id="cb21-14"><a href="#cb21-14" aria-label="14"></a>  <span class="at">N =</span> <span class="fu">sapply</span>(VIF, \(v) <span class="fu">calc_sample_size</span>(.<span class="dv">25</span>, <span class="dv">1</span>, <span class="dv">1</span>, v))  </span>
-<span id="cb21-15"><a href="#cb21-15" aria-label="15"></a>) <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-label="1"></a>calc_sample_size <span class="ot">=</span> <span class="cf">function</span>(beta,var.pred,var,vif) {</span>
+<span id="cb32-2"><a href="#cb32-2" aria-label="2"></a>  p <span class="ot">=</span> <span class="dv">3</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-label="3"></a>  f2 <span class="ot">=</span> (beta <span class="sc">^</span> <span class="dv">2</span>) <span class="sc">*</span> var.pred <span class="sc">/</span> (vif <span class="sc">*</span> var)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-label="4"></a>  res <span class="ot">=</span> <span class="fu">pwr.f2.test</span>(<span class="at">u =</span> <span class="dv">1</span>,             </span>
+<span id="cb32-5"><a href="#cb32-5" aria-label="5"></a>    <span class="at">f2 =</span> f2,</span>
+<span id="cb32-6"><a href="#cb32-6" aria-label="6"></a>    <span class="at">sig.level =</span> .<span class="dv">05</span>,</span>
+<span id="cb32-7"><a href="#cb32-7" aria-label="7"></a>    <span class="at">power =</span> .<span class="dv">8</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-label="8"></a>  )</span>
+<span id="cb32-9"><a href="#cb32-9" aria-label="9"></a>  <span class="fu">ceiling</span>(res<span class="sc">$</span>v <span class="sc">+</span> p)</span>
+<span id="cb32-10"><a href="#cb32-10" aria-label="10"></a>}</span>
+<span id="cb32-11"><a href="#cb32-11" aria-label="11"></a></span>
+<span id="cb32-12"><a href="#cb32-12" aria-label="12"></a><span class="fu">tibble</span>(</span>
+<span id="cb32-13"><a href="#cb32-13" aria-label="13"></a>  <span class="at">VIF =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">1.5</span>, <span class="dv">2</span>, <span class="dv">5</span>, <span class="dv">10</span>),</span>
+<span id="cb32-14"><a href="#cb32-14" aria-label="14"></a>  <span class="at">N =</span> <span class="fu">sapply</span>(VIF, \(v) <span class="fu">calc_sample_size</span>(.<span class="dv">25</span>, <span class="dv">1</span>, <span class="dv">1</span>, v))  </span>
+<span id="cb32-15"><a href="#cb32-15" aria-label="15"></a>) <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div id="tbl-vif-power-b" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-vif-power-b-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;1: Minimum Sample Size for 80% Power for Beta 1
+Table&nbsp;5: Minimum Sample Size for 80% Power for Beta 1
 </figcaption>
 <div aria-describedby="tbl-vif-power-b-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -1119,16 +1607,16 @@ X_{2i} \sim&amp; \text{Bernoulli}(0.50)\\
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-label="1"></a>p <span class="ot">=</span> <span class="dv">2</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-label="2"></a>beta <span class="ot">=</span> .<span class="dv">5</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-label="3"></a>var.x1 <span class="ot">=</span> .<span class="dv">5</span><span class="sc">^</span><span class="dv">2</span> <span class="co">#Var(Bernoulli) = p(1-p)</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-label="4"></a>f2 <span class="ot">=</span> (beta<span class="sc">^</span><span class="dv">2</span>) <span class="sc">*</span> var.x1</span>
-<span id="cb22-5"><a href="#cb22-5" aria-label="5"></a>res <span class="ot">=</span> <span class="fu">pwr.f2.test</span>(<span class="at">u =</span> <span class="dv">1</span>,             </span>
-<span id="cb22-6"><a href="#cb22-6" aria-label="6"></a>  <span class="at">f2 =</span> f2,</span>
-<span id="cb22-7"><a href="#cb22-7" aria-label="7"></a>  <span class="at">sig.level =</span> .<span class="dv">05</span>,</span>
-<span id="cb22-8"><a href="#cb22-8" aria-label="8"></a>  <span class="at">power =</span> .<span class="dv">8</span></span>
-<span id="cb22-9"><a href="#cb22-9" aria-label="9"></a>)</span>
-<span id="cb22-10"><a href="#cb22-10" aria-label="10"></a>(<span class="fu">ceiling</span>(res<span class="sc">$</span>v <span class="sc">+</span> p))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-label="1"></a>p <span class="ot">=</span> <span class="dv">2</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-label="2"></a>beta <span class="ot">=</span> .<span class="dv">5</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-label="3"></a>var.x1 <span class="ot">=</span> .<span class="dv">5</span><span class="sc">^</span><span class="dv">2</span> <span class="co">#Var(Bernoulli) = p(1-p)</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-label="4"></a>f2 <span class="ot">=</span> (beta<span class="sc">^</span><span class="dv">2</span>) <span class="sc">*</span> var.x1</span>
+<span id="cb33-5"><a href="#cb33-5" aria-label="5"></a>res <span class="ot">=</span> <span class="fu">pwr.f2.test</span>(<span class="at">u =</span> <span class="dv">1</span>,             </span>
+<span id="cb33-6"><a href="#cb33-6" aria-label="6"></a>  <span class="at">f2 =</span> f2,</span>
+<span id="cb33-7"><a href="#cb33-7" aria-label="7"></a>  <span class="at">sig.level =</span> .<span class="dv">05</span>,</span>
+<span id="cb33-8"><a href="#cb33-8" aria-label="8"></a>  <span class="at">power =</span> .<span class="dv">8</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-label="9"></a>)</span>
+<span id="cb33-10"><a href="#cb33-10" aria-label="10"></a>(<span class="fu">ceiling</span>(res<span class="sc">$</span>v <span class="sc">+</span> p))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 128</code></pre>
@@ -1140,16 +1628,16 @@ X_{2i} \sim&amp; \text{Bernoulli}(0.50)\\
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-label="1"></a>p <span class="ot">=</span> <span class="dv">4</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-label="2"></a>beta <span class="ot">=</span> .<span class="dv">5</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-label="3"></a>var.x1 <span class="ot">=</span> .<span class="dv">5</span><span class="sc">^</span><span class="dv">2</span> <span class="co">#Var(Bernoulli) = p(1-p)</span></span>
-<span id="cb24-4"><a href="#cb24-4" aria-label="4"></a>f2 <span class="ot">=</span> (beta<span class="sc">^</span><span class="dv">2</span>) <span class="sc">*</span> var.x1</span>
-<span id="cb24-5"><a href="#cb24-5" aria-label="5"></a>res <span class="ot">=</span> <span class="fu">pwr.f2.test</span>(<span class="at">u =</span> <span class="dv">1</span>,             </span>
-<span id="cb24-6"><a href="#cb24-6" aria-label="6"></a>  <span class="at">f2 =</span> f2,</span>
-<span id="cb24-7"><a href="#cb24-7" aria-label="7"></a>  <span class="at">sig.level =</span> .<span class="dv">05</span>,</span>
-<span id="cb24-8"><a href="#cb24-8" aria-label="8"></a>  <span class="at">power =</span> .<span class="dv">8</span></span>
-<span id="cb24-9"><a href="#cb24-9" aria-label="9"></a>)</span>
-<span id="cb24-10"><a href="#cb24-10" aria-label="10"></a>(<span class="fu">ceiling</span>(res<span class="sc">$</span>v <span class="sc">+</span> p))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-label="1"></a>p <span class="ot">=</span> <span class="dv">4</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-label="2"></a>beta <span class="ot">=</span> .<span class="dv">5</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-label="3"></a>var.x1 <span class="ot">=</span> .<span class="dv">5</span><span class="sc">^</span><span class="dv">2</span> <span class="co">#Var(Bernoulli) = p(1-p)</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-label="4"></a>f2 <span class="ot">=</span> (beta<span class="sc">^</span><span class="dv">2</span>) <span class="sc">*</span> var.x1</span>
+<span id="cb35-5"><a href="#cb35-5" aria-label="5"></a>res <span class="ot">=</span> <span class="fu">pwr.f2.test</span>(<span class="at">u =</span> <span class="dv">1</span>,             </span>
+<span id="cb35-6"><a href="#cb35-6" aria-label="6"></a>  <span class="at">f2 =</span> f2,</span>
+<span id="cb35-7"><a href="#cb35-7" aria-label="7"></a>  <span class="at">sig.level =</span> .<span class="dv">05</span>,</span>
+<span id="cb35-8"><a href="#cb35-8" aria-label="8"></a>  <span class="at">power =</span> .<span class="dv">8</span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-label="9"></a>)</span>
+<span id="cb35-10"><a href="#cb35-10" aria-label="10"></a>(<span class="fu">ceiling</span>(res<span class="sc">$</span>v <span class="sc">+</span> p))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 130</code></pre>
@@ -1162,25 +1650,25 @@ X_{2i} \sim&amp; \text{Bernoulli}(0.50)\\
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-label="1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb26-2"><a href="#cb26-2" aria-label="2"></a>n <span class="ot">=</span> <span class="dv">130</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-label="3"></a>count <span class="ot">=</span> <span class="dv">0</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-label="4"></a>nsims <span class="ot">=</span> <span class="dv">1000</span></span>
-<span id="cb26-5"><a href="#cb26-5" aria-label="5"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(nsims)) {</span>
-<span id="cb26-6"><a href="#cb26-6" aria-label="6"></a>  sim <span class="ot">=</span> <span class="fu">tibble</span>(</span>
-<span id="cb26-7"><a href="#cb26-7" aria-label="7"></a>    <span class="at">x1 =</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> .<span class="dv">5</span>),</span>
-<span id="cb26-8"><a href="#cb26-8" aria-label="8"></a>    <span class="at">x2 =</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> .<span class="dv">5</span>),</span>
-<span id="cb26-9"><a href="#cb26-9" aria-label="9"></a>    <span class="at">epsilon =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n),</span>
-<span id="cb26-10"><a href="#cb26-10" aria-label="10"></a>    <span class="at">y =</span> <span class="fl">0.5</span> <span class="sc">*</span> x1 <span class="sc">*</span> x2 <span class="sc">+</span> epsilon  </span>
-<span id="cb26-11"><a href="#cb26-11" aria-label="11"></a>  )</span>
-<span id="cb26-12"><a href="#cb26-12" aria-label="12"></a></span>
-<span id="cb26-13"><a href="#cb26-13" aria-label="13"></a>  mod <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">*</span> x2, <span class="at">data =</span> sim)</span>
-<span id="cb26-14"><a href="#cb26-14" aria-label="14"></a>  <span class="cf">if</span> (<span class="fu">summary</span>(mod)<span class="sc">$</span>coefficients[<span class="st">"x1:x2"</span>, <span class="st">"Pr(&gt;|t|)"</span>] <span class="sc">&lt;</span> .<span class="dv">05</span>) {</span>
-<span id="cb26-15"><a href="#cb26-15" aria-label="15"></a>    count <span class="ot">=</span> count <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb26-16"><a href="#cb26-16" aria-label="16"></a>  }</span>
-<span id="cb26-17"><a href="#cb26-17" aria-label="17"></a>}</span>
-<span id="cb26-18"><a href="#cb26-18" aria-label="18"></a></span>
-<span id="cb26-19"><a href="#cb26-19" aria-label="19"></a>(count <span class="sc">/</span> nsims)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-label="1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-label="2"></a>n <span class="ot">=</span> <span class="dv">130</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-label="3"></a>count <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-label="4"></a>nsims <span class="ot">=</span> <span class="dv">1000</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-label="5"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(nsims)) {</span>
+<span id="cb37-6"><a href="#cb37-6" aria-label="6"></a>  sim <span class="ot">=</span> <span class="fu">tibble</span>(</span>
+<span id="cb37-7"><a href="#cb37-7" aria-label="7"></a>    <span class="at">x1 =</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> .<span class="dv">5</span>),</span>
+<span id="cb37-8"><a href="#cb37-8" aria-label="8"></a>    <span class="at">x2 =</span> <span class="fu">rbinom</span>(<span class="at">n =</span> n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> .<span class="dv">5</span>),</span>
+<span id="cb37-9"><a href="#cb37-9" aria-label="9"></a>    <span class="at">epsilon =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n),</span>
+<span id="cb37-10"><a href="#cb37-10" aria-label="10"></a>    <span class="at">y =</span> <span class="fl">0.5</span> <span class="sc">*</span> x1 <span class="sc">*</span> x2 <span class="sc">+</span> epsilon  </span>
+<span id="cb37-11"><a href="#cb37-11" aria-label="11"></a>  )</span>
+<span id="cb37-12"><a href="#cb37-12" aria-label="12"></a></span>
+<span id="cb37-13"><a href="#cb37-13" aria-label="13"></a>  mod <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">*</span> x2, <span class="at">data =</span> sim)</span>
+<span id="cb37-14"><a href="#cb37-14" aria-label="14"></a>  <span class="cf">if</span> (<span class="fu">summary</span>(mod)<span class="sc">$</span>coefficients[<span class="st">"x1:x2"</span>, <span class="st">"Pr(&gt;|t|)"</span>] <span class="sc">&lt;</span> .<span class="dv">05</span>) {</span>
+<span id="cb37-15"><a href="#cb37-15" aria-label="15"></a>    count <span class="ot">=</span> count <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb37-16"><a href="#cb37-16" aria-label="16"></a>  }</span>
+<span id="cb37-17"><a href="#cb37-17" aria-label="17"></a>}</span>
+<span id="cb37-18"><a href="#cb37-18" aria-label="18"></a></span>
+<span id="cb37-19"><a href="#cb37-19" aria-label="19"></a>(count <span class="sc">/</span> nsims)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.269</code></pre>
@@ -1200,14 +1688,14 @@ X_{2i} \sim&amp; \text{Bernoulli}(0.50)\\
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-label="1"></a>dat <span class="ot">=</span> <span class="fu">tibble</span>(</span>
-<span id="cb28-2"><a href="#cb28-2" aria-label="2"></a>  <span class="at">x1 =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>),</span>
-<span id="cb28-3"><a href="#cb28-3" aria-label="3"></a>  <span class="at">x2 =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>),</span>
-<span id="cb28-4"><a href="#cb28-4" aria-label="4"></a>  <span class="at">x3 =</span> x1 <span class="sc">*</span> x2,</span>
-<span id="cb28-5"><a href="#cb28-5" aria-label="5"></a>)</span>
-<span id="cb28-6"><a href="#cb28-6" aria-label="6"></a>mod <span class="ot">=</span> <span class="fu">lm</span>(x3 <span class="sc">~</span> x1 <span class="sc">+</span> x2, <span class="at">dat =</span> dat)</span>
-<span id="cb28-7"><a href="#cb28-7" aria-label="7"></a>R2 <span class="ot">=</span> <span class="fu">summary</span>(mod)<span class="sc">$</span>r.squared</span>
-<span id="cb28-8"><a href="#cb28-8" aria-label="8"></a>(R2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-label="1"></a>dat <span class="ot">=</span> <span class="fu">tibble</span>(</span>
+<span id="cb39-2"><a href="#cb39-2" aria-label="2"></a>  <span class="at">x1 =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>),</span>
+<span id="cb39-3"><a href="#cb39-3" aria-label="3"></a>  <span class="at">x2 =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>),</span>
+<span id="cb39-4"><a href="#cb39-4" aria-label="4"></a>  <span class="at">x3 =</span> x1 <span class="sc">*</span> x2,</span>
+<span id="cb39-5"><a href="#cb39-5" aria-label="5"></a>)</span>
+<span id="cb39-6"><a href="#cb39-6" aria-label="6"></a>mod <span class="ot">=</span> <span class="fu">lm</span>(x3 <span class="sc">~</span> x1 <span class="sc">+</span> x2, <span class="at">dat =</span> dat)</span>
+<span id="cb39-7"><a href="#cb39-7" aria-label="7"></a>R2 <span class="ot">=</span> <span class="fu">summary</span>(mod)<span class="sc">$</span>r.squared</span>
+<span id="cb39-8"><a href="#cb39-8" aria-label="8"></a>(R2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.6666667</code></pre>
@@ -1219,15 +1707,15 @@ X_{2i} \sim&amp; \text{Bernoulli}(0.50)\\
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-label="1"></a>p <span class="ot">=</span> <span class="dv">4</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-label="2"></a>var.pred <span class="ot">=</span> .<span class="dv">1875</span></span>
-<span id="cb30-3"><a href="#cb30-3" aria-label="3"></a>f2 <span class="ot">=</span> .<span class="dv">5</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> var.pred <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> R2)</span>
-<span id="cb30-4"><a href="#cb30-4" aria-label="4"></a>res <span class="ot">=</span> <span class="fu">pwr.f2.test</span>(<span class="at">u =</span> <span class="dv">1</span>,             </span>
-<span id="cb30-5"><a href="#cb30-5" aria-label="5"></a>  <span class="at">f2 =</span> f2,</span>
-<span id="cb30-6"><a href="#cb30-6" aria-label="6"></a>  <span class="at">sig.level =</span> .<span class="dv">05</span>,</span>
-<span id="cb30-7"><a href="#cb30-7" aria-label="7"></a>  <span class="at">power =</span> .<span class="dv">8</span></span>
-<span id="cb30-8"><a href="#cb30-8" aria-label="8"></a>)</span>
-<span id="cb30-9"><a href="#cb30-9" aria-label="9"></a>(<span class="fu">ceiling</span>(res<span class="sc">$</span>v <span class="sc">+</span> p))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-label="1"></a>p <span class="ot">=</span> <span class="dv">4</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-label="2"></a>var.pred <span class="ot">=</span> .<span class="dv">1875</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-label="3"></a>f2 <span class="ot">=</span> .<span class="dv">5</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> var.pred <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> R2)</span>
+<span id="cb41-4"><a href="#cb41-4" aria-label="4"></a>res <span class="ot">=</span> <span class="fu">pwr.f2.test</span>(<span class="at">u =</span> <span class="dv">1</span>,             </span>
+<span id="cb41-5"><a href="#cb41-5" aria-label="5"></a>  <span class="at">f2 =</span> f2,</span>
+<span id="cb41-6"><a href="#cb41-6" aria-label="6"></a>  <span class="at">sig.level =</span> .<span class="dv">05</span>,</span>
+<span id="cb41-7"><a href="#cb41-7" aria-label="7"></a>  <span class="at">power =</span> .<span class="dv">8</span></span>
+<span id="cb41-8"><a href="#cb41-8" aria-label="8"></a>)</span>
+<span id="cb41-9"><a href="#cb41-9" aria-label="9"></a>(<span class="fu">ceiling</span>(res<span class="sc">$</span>v <span class="sc">+</span> p))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 507</code></pre>
@@ -1241,15 +1729,15 @@ X_{2i} \sim&amp; \text{Bernoulli}(0.50)\\
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-label="1"></a>p <span class="ot">=</span> <span class="dv">4</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-label="2"></a>var.pred <span class="ot">=</span> .<span class="dv">0384</span></span>
-<span id="cb32-3"><a href="#cb32-3" aria-label="3"></a>f2 <span class="ot">=</span> .<span class="dv">5</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> var.pred <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> R2)</span>
-<span id="cb32-4"><a href="#cb32-4" aria-label="4"></a>res <span class="ot">=</span> <span class="fu">pwr.f2.test</span>(<span class="at">u =</span> <span class="dv">1</span>,             </span>
-<span id="cb32-5"><a href="#cb32-5" aria-label="5"></a>  <span class="at">f2 =</span> f2,</span>
-<span id="cb32-6"><a href="#cb32-6" aria-label="6"></a>  <span class="at">sig.level =</span> .<span class="dv">05</span>,</span>
-<span id="cb32-7"><a href="#cb32-7" aria-label="7"></a>  <span class="at">power =</span> .<span class="dv">8</span></span>
-<span id="cb32-8"><a href="#cb32-8" aria-label="8"></a>)</span>
-<span id="cb32-9"><a href="#cb32-9" aria-label="9"></a>(<span class="fu">ceiling</span>(res<span class="sc">$</span>v <span class="sc">+</span> p))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-label="1"></a>p <span class="ot">=</span> <span class="dv">4</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-label="2"></a>var.pred <span class="ot">=</span> .<span class="dv">0384</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-label="3"></a>f2 <span class="ot">=</span> .<span class="dv">5</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> var.pred <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> R2)</span>
+<span id="cb43-4"><a href="#cb43-4" aria-label="4"></a>res <span class="ot">=</span> <span class="fu">pwr.f2.test</span>(<span class="at">u =</span> <span class="dv">1</span>,             </span>
+<span id="cb43-5"><a href="#cb43-5" aria-label="5"></a>  <span class="at">f2 =</span> f2,</span>
+<span id="cb43-6"><a href="#cb43-6" aria-label="6"></a>  <span class="at">sig.level =</span> .<span class="dv">05</span>,</span>
+<span id="cb43-7"><a href="#cb43-7" aria-label="7"></a>  <span class="at">power =</span> .<span class="dv">8</span></span>
+<span id="cb43-8"><a href="#cb43-8" aria-label="8"></a>)</span>
+<span id="cb43-9"><a href="#cb43-9" aria-label="9"></a>(<span class="fu">ceiling</span>(res<span class="sc">$</span>v <span class="sc">+</span> p))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 2457</code></pre>
@@ -1268,15 +1756,15 @@ X_{2i} \sim&amp; \text{Bernoulli}(0.50)\\
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-label="1"></a>p <span class="ot">=</span> <span class="dv">4</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-label="2"></a>var.pred <span class="ot">=</span> <span class="dv">1</span></span>
-<span id="cb34-3"><a href="#cb34-3" aria-label="3"></a>f2 <span class="ot">=</span> .<span class="dv">5</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> var.pred <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> R2)</span>
-<span id="cb34-4"><a href="#cb34-4" aria-label="4"></a>res <span class="ot">=</span> <span class="fu">pwr.f2.test</span>(<span class="at">u =</span> <span class="dv">1</span>,             </span>
-<span id="cb34-5"><a href="#cb34-5" aria-label="5"></a>  <span class="at">f2 =</span> f2,</span>
-<span id="cb34-6"><a href="#cb34-6" aria-label="6"></a>  <span class="at">sig.level =</span> .<span class="dv">05</span>,</span>
-<span id="cb34-7"><a href="#cb34-7" aria-label="7"></a>  <span class="at">power =</span> .<span class="dv">8</span></span>
-<span id="cb34-8"><a href="#cb34-8" aria-label="8"></a>)</span>
-<span id="cb34-9"><a href="#cb34-9" aria-label="9"></a>(<span class="fu">ceiling</span>(res<span class="sc">$</span>v <span class="sc">+</span> p))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-label="1"></a>p <span class="ot">=</span> <span class="dv">4</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-label="2"></a>var.pred <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-label="3"></a>f2 <span class="ot">=</span> .<span class="dv">5</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> var.pred <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> R2)</span>
+<span id="cb45-4"><a href="#cb45-4" aria-label="4"></a>res <span class="ot">=</span> <span class="fu">pwr.f2.test</span>(<span class="at">u =</span> <span class="dv">1</span>,             </span>
+<span id="cb45-5"><a href="#cb45-5" aria-label="5"></a>  <span class="at">f2 =</span> f2,</span>
+<span id="cb45-6"><a href="#cb45-6" aria-label="6"></a>  <span class="at">sig.level =</span> .<span class="dv">05</span>,</span>
+<span id="cb45-7"><a href="#cb45-7" aria-label="7"></a>  <span class="at">power =</span> .<span class="dv">8</span></span>
+<span id="cb45-8"><a href="#cb45-8" aria-label="8"></a>)</span>
+<span id="cb45-9"><a href="#cb45-9" aria-label="9"></a>(<span class="fu">ceiling</span>(res<span class="sc">$</span>v <span class="sc">+</span> p))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 99</code></pre>

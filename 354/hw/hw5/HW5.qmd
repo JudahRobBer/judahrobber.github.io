@@ -101,6 +101,12 @@ library(broom)
 library(emmeans)
 library(interactions)
 library(knitr)
+library(GGally)
+library(MASS)
+library(car)
+library(effectsize)
+source("plotResiduals.R")
+source("plotInfluence.R")
 
 # Read raw file
 raw_df <- read_csv("HW4Data.csv", show_col_types = FALSE)
@@ -159,7 +165,7 @@ extract_focal <- function(model, scenario_label) {
   tidy(model, conf.int = TRUE) |>
     filter(str_detect(term, "^(Intercept|age|frame)")) |>
     mutate(Scenario = scenario_label) |>
-    select(Scenario, term, estimate, std.error, statistic, p.value, conf.low, conf.high)
+    dplyr::select(Scenario, term, estimate, std.error, statistic, p.value, conf.low, conf.high)
 }
 
 bind_rows(
@@ -187,7 +193,7 @@ slopes_s2 <- emtrends(m2, ~ frame2, var = "age") |> summary(infer = TRUE) |> mut
 slopes_s3 <- emtrends(m3, ~ frame3, var = "age") |> summary(infer = TRUE) |> mutate(Scenario = "Scenario 3: Chance Choice") |> rename(Frame = frame3)
 
 bind_rows(slopes_s1, slopes_s2, slopes_s3) |>
-  select(Scenario, Frame, age.trend, SE, df, lower.CL, upper.CL, t.ratio, p.value) |>
+  dplyr::select(Scenario, Frame, age.trend, SE, df, lower.CL, upper.CL, t.ratio, p.value) |>
   kable(digits = 4, caption = "Age Slopes Within Positive and Negative Frames")
 ```
 
@@ -229,7 +235,7 @@ jn2$plot + labs(title = "Scenario 2: Hot Cocoa (Framing Effect Across Age)", x =
 jn3$plot + labs(title = "Scenario 3: Chance Choice (Framing Effect Across Age)", x = "Age (Years)")
 ```
 
-\textcolor{red}{This is not a well interpretable application of JN analysis. If instead age directly were used as the x-axis and the change in framing effect were on the y-axis, we would be able to directly identify at what age the interaction is significant. The current framing expresses the point of significance as a function of the framing effect, or of age in years with an x-axis that is not clearly explained, as it could be standardized or just a relic of the x-axis used for the framing.}
+\textcolor{red}{Firstly, frame is a discrete variable, so treating it as continuous on the x-axis is immediately non-sensical. They additionally report JN analysis with age on the x-axis, but it also doesn't make sense to report the age modulating when the slope of age is significant, since it does not consider the framing. Also, standardizing age isn't useful for the research question of interest, since it makes it harder to read off at what age the interaction is significant.}
 
 ## Visualization of Predicted Trajectories
 
@@ -298,10 +304,191 @@ Root biomass is highly relevant to research into plant responses to climate chan
 
 **Research Question:** Can we predict root biomass using the tree diameters at breast height for *Castanopsis eyrei*, *Pinus massoniana*, and *Schima superba* trees? Ensure to identify whether there are unique relationships by species.
 
+**Solution**
+
+## EDA
 ```{r}
 #| size: "scriptsize"
+#| label: fig-pairplot-lin
+#| fig-cap: "Pairwise Plot: Species, Biomass, Diameter"
+#| fig-width: 5.5
+#| fig-height: 3
 dat.trees <- read_csv("LaiTreeData.csv")
+
+ggpairs(dat.trees,columns=c("sp","dbh","rootbiomass")) + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 55, hjust = 1))
 ```
+
+The pairwise plot reveals several concerning features of the data. There are several unusually high observations for rootbiomass and tree diameter in 2 of the three species and differences in variation of diameter across all species. The relationship between tree diameter and rootbiomass also appears to be slightly convex, suggesting the relationship may be non-linear. The presence of high outliers and evidence of a non-linear relationship suggest the utility of a log transform,
+
+```{r}
+#| size: "scriptsize"
+#| label: fig-pairplot-log-lin
+#| fig-cap: "Pairwise Plot: Species, Log Biomass, Diameter"
+#| fig-width: 5.5
+#| fig-height: 3
+
+ggpairs(dat.trees,columns=c("sp","dbh","logrootbiomass")) + 
+  theme_bw() + 
+  theme(axis.text.x = element_text(angle = 55, hjust = 1))
+```
+
+Now, the relationship between tree diamter and log root biomass is clearly concave
+
+```{r}
+#| size: "scriptsize"
+#| label: fig-pairplot-log-log
+#| fig-cap: "Pairwise Plot: Species, Log Biomass, Log Diameter"
+#| fig-width: 5.5
+#| fig-height: 3
+ggpairs(dat.trees,columns=c("sp","logdbh","logrootbiomass")) + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 55, hjust = 1))
+```
+
+Now, the relationship between log diameter and log root biomass appears linear. Although there is evidence of lest skew across both variables, a linear model of these transformed variables is more appropriate.
+
+## Regression Model and Fit Analysis
+As observed in our EDA, we now fit the model 
+\begin{align*}
+\log(Y_i) &= \beta_0 + \beta_1 I(x_{1i}=\text{Pinus}) + \beta_2 I(x_{1i}=\text{Schima}) + \beta_3 \log(x_{2i}) \\
+&+ \beta_5 I(x_{1i}=\text{Pinus}) \log(x_{2i}) + \beta_6 I(x_{1i}=\text{Schima}) \log(x_{2i})
+\end{align*}
+
+```{r}
+#| label: fig-residuals-plot
+mod = lm(logrootbiomass ~ sp * logdbh, data = dat.trees)
+plotResiduals(mod)
+```
+
+The residual analysis is benign, although there are a couple outlying residuals, there is not an obvious trend to indicate concerning violations of normality.
+
+```{r}
+#| label: fig-influence-plot
+plotInfluence(mod)
+```
+
+The influence analysis is more nuanced, since the leverage plot shows a somewhat regular peaking pattern. Looking into the dataset, we observe that the observations are blocked by species and that within species they are sorted by breast height. This explains the peaks near the start and end of each species blocks, since these correspond to maximas and minimas within species. Otherwise, there are a few points that are concerning with respect influence as shown by the DFFITs. As such, we decide to perform an iteratively re-weighted least squares.
+
+```{r}
+#| label: fig-irwls-residuals
+#| fig-cap: "Residual Analysis for IRWLS Model"
+mod.irwls = MASS::rlm(
+  logrootbiomass ~ sp * logdbh,
+  data = dat.trees,
+  psi = MASS::psi.huber
+)
+plotResiduals(mod.irwls)
+```
+
+```{r}
+#| label: fig-irwls-influence
+#| fig-cap: "Influence Analysis for IRWLS Model"
+
+plotInfluence(mod.irwls)
+```
+
+Both the residual analysis and influence analysis are improved by the application of re-weighted least squares. Although there are still influential points among the smallest of the Castanopsis observations.As such, we will perform the remainder of our analysis on this model.
+
+## Inference and Interpretation
+
+**Solution**
+We report the Overall Significance via ANOVA analysis, overall effect size via omega2, and coefficient values, significance, and effect size. For post-hoc testing, we perform an emtrends analysis to evaluate the modulating effect of species on the relationship between diameter and root biomass.
+
+```{r}
+#| label: tbl-irwls-anova
+#| tbl-cap: "Overall ANOVA Analysis"
+car::Anova(mod.irwls) |>
+  data.frame() |>
+  rename("p" = "Pr..F.") |>
+  mutate(p = ifelse(p < .001, "<.001", round(p,3))) |>
+  knitr::kable(digits=3)
+```
+
+```{r}
+#| label: tbl-irwls-overall-effect-size
+#| tbl-cap: "Overall Effect Size"
+predictors = names(coef(mod.irwls))[-1]
+overall_f = car::linearHypothesis(mod.irwls,hypothesis.matrix = predictors)
+
+effectsize::F_to_omega2(
+  f = overall_f$F[2],
+  df = overall_f$Df[2],
+  df_error = overall_f$Res.Df[2]    
+) |> knitr::kable(digits=2)
+```
+
+Thus, some coefficient differs from $0$, and the overall effect size is large.
+
+```{r}
+#| label: tbl-coefficients-analysis
+#| tbl-cap: "Coefficient Analysis"
+
+# Claude used for refactoring table to combine effect size and p-value calculation presented in slides.
+
+coefs  = summary(mod.irwls)$coefficients
+df_res = summary(mod.irwls)$df[2] # n - p
+
+
+t_val    = coefs[-1, "t value"]
+es_omega = effectsize::t_to_omega2(t = t_val, df_error = df_res,
+                                   alternative = "two.sided") |>
+  data.frame() |>
+  mutate(term = names(t_val)) |>
+  dplyr::select(term, Omega2 = Omega2_partial)
+
+data.frame(coefs) |>
+  rename("SE" = "Std..Error",
+         "t" = "t.value") |>
+  mutate(p = 2*pt(-abs(t), df = df_res)) |>
+  rownames_to_column("term") |>
+  left_join(es_omega, by = "term") |>
+  mutate(p = ifelse(p < .001, "<.001", round(p, 3))) |>
+  knitr::kable(digits = 3)
+```
+
+With respect to coefficient interpretation, it is complicated by the log transformation of both the continuous response variable and predictor. Given the explanation provided by this set of [Cornell Notes](https://cscu.cornell.edu/wp-content/uploads/logv.pdf), the coefficient is interprated such that a $1%$ increase in predictor $i$ is associated with a $\beta_i%$ increase in the response variable. The interpretation for the categorical variable is unchanged from a traditional log transformed response variable. Thus, an increase in $1%$ of log diameter is associated with a $2.199%$ increase in the rootbiomass. Also, since the interaction terms are significant, we proceed with our post-hoc analysis.
+
+
+```{r}
+#| label: fig-emtrends
+#| fig-cap: "Estimated Marginal Means of Log Root Biomass by Species"
+#| fig-width: 6
+#| fig-height: 3.5
+
+
+
+# Predicted lines across the observed range of log diameter
+dbh_grid = seq(min(dat.trees$logdbh), max(dat.trees$logdbh), length.out = 20)
+
+emm = emmeans::emmeans(mod.irwls, ~ sp | logdbh,
+                       at = list(logdbh = dbh_grid), df = df_res)
+
+data.frame(emm) |>
+  ggplot(aes(x = logdbh, y = emmean, color = sp, fill = sp)) +
+  geom_ribbon(aes(ymin = lower.CL, ymax = upper.CL), alpha = 0.2, color = NA) +
+  geom_line() +
+  labs(x = "Log Diameter at Breast Height", y = "Estimated Log Root Biomass",
+       color = "Species", fill = "Species") +
+  theme_bw()
+```
+
+```{r}
+#| label: tbl-emtrends-pairs
+#| tbl-cap: "Pairwise Comparisons of Species Slopes"
+
+
+trends = emmeans::emtrends(mod.irwls, ~ sp, var = "logdbh", df = df_res)
+pairs(trends) |> knitr::kable(digits = 3)
+```
+
+The post-hoc estimated marginal means analysis show that only the slope of the Pinus species is discernibly different from the slopes of the other species and that the estimated marginal mean is discernibly different for smaller observed log diameter.
+
+
+## Summary
+
+Our analysis showed that the appropriate linear model for the relationship between root biomass and diameter at breast height is a log transformation of both continuous variables. The relationship is well predicted by a model fit with iteratively re-weighted least squares to handle influential points within the dataset. Further analysis of the fitted model with breast height diameter modulated by species show that the relationship between diameter and biomass differs by species, but only in so far as the slope of the Pinus species is discernibly different from the Castonopsis and Schima, while the Schima and Castanopsis are not pairwise discernible. 
 
 
 # Question 3
