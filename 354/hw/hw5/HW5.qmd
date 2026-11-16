@@ -85,6 +85,8 @@ where $\mathbf{X}_i$ adjusts for simultaneous linear differences across **gender
 - **Simple Slopes:** Evaluates the age slope separately within the Positive frame and the Negative frame to determine which framing drives the change.
 - **Johnson-Neyman (J-N) Analysis:** Identifies the exact age threshold ("onset") at which the conditional difference between Positive and Negative frames becomes statistically significant ($p < .05$).
 
+\textcolor{blue}{The statement of the model is clear and the layout of the subsequent analysis is useful from a readers perspective}
+
 ---
 
 ## Data Import and Cleaning
@@ -137,7 +139,7 @@ cat("Total valid respondents:", nrow(df_clean), "\n")
 cat("Age range:", min(df_clean$age, na.rm = TRUE), "to", max(df_clean$age, na.rm = TRUE), "\n")
 ```
 
-\textcolor{red}{NO EDA! Social Science data is messy, just showing regression estimates obfuscates the noise in the data that is important to acknowledge.}
+\textcolor{red}{NO EDA! Social Science data is messy, just showing regression estimates obfuscates the noise in the data that is important to acknowledge}
 
 ## Covariate-Adjusted Regression Models
 ```{r}
@@ -168,7 +170,9 @@ bind_rows(
   kable(digits = 4, caption = "Focal Regression Estimates (Adjusting for Demographics)")
 ```
 
-\textcolor{red}{This skips the ANOVA test, jumping right into post-hoc. Also, even if the other demographic coefficients aren't directly addressed in the research question, they should still be reported in the writeup.}
+\textcolor{red}{This skips residual analysis, influence analysis, and an ANOVA test, jumping right into post-hoc. Also, even if the other demographic coefficients aren't directly addressed in the research question, they should still be reported in the writeup.}
+
+\textcolor{blue}{That being said, I think the format of the table is well organized and fairly readable.}
 
 ## Simple Slopes: Positive vs. Negative Framing Drivers
 
@@ -225,7 +229,7 @@ jn2$plot + labs(title = "Scenario 2: Hot Cocoa (Framing Effect Across Age)", x =
 jn3$plot + labs(title = "Scenario 3: Chance Choice (Framing Effect Across Age)", x = "Age (Years)")
 ```
 
-\textcolor{red}{This is not a well interpretable application of JN analysis. If instead age directly were used as the x-axis}
+\textcolor{red}{This is not a well interpretable application of JN analysis. If instead age directly were used as the x-axis and the change in framing effect were on the y-axis, we would be able to directly identify at what age the interaction is significant. The current framing expresses the point of significance as a function of the framing effect, or of age in years with an x-axis that is not clearly explained, as it could be standardized or just a relic of the x-axis used for the framing.}
 
 ## Visualization of Predicted Trajectories
 
@@ -262,6 +266,8 @@ bind_rows(p1, p2, p3) |>
   theme(legend.position = "bottom")
 ```
 
+\textcolor{blue}{This is a well made estimated marginal means plot, though it's unclear why they don't refer to it as such.}
+
 ## Summary of Empirical Findings from `HW4Data.csv`
 
 When rendered on `HW4Data.csv`, the code produces the following results across the three scenarios:
@@ -272,9 +278,15 @@ When rendered on `HW4Data.csv`, the code produces the following results across t
 | **2. Hot Cocoa** ($n = 696$) | $b = +0.0126, p = 0.111$ | **$b = -0.0128, p = 0.022$** | $b = -0.0003, p = 0.962$ | **Age 25.9 years** (significant for ages $\ge 25.9$) |
 | **3. Chance Choice** ($n = 695$) | **$b = -0.0194, p = 0.032$** | **$b = +0.0170, p = 0.007$** | $b = -0.0025, p = 0.708$ | **Age 26.9 years** (significant for ages $\ge 26.9$) |
 
+\textcolor{red}{This table is crowded, particularly the last column.}
+\textcolor{blue}{I think the direct comparison of the age slope for the negative frame and positive frame for each scenario is well-presented here.}
+
 - **Does framing influence grow with age?** Yes—the framing gap widens with age in all three scenarios, reaching statistical significance in **Scenario 3 (Chance Choice)** ($p = 0.032$) and showing a marginal trend in the same direction in **Scenario 1** ($p = 0.087$) and **Scenario 2** ($p = 0.111$).
 - **Positive vs. Negative driver:** Across every scenario, **changes are driven entirely by the negative framing**. Ratings in the positive frame remain flat across age ($p > 0.50$ in all three models), whereas older adults respond significantly more strongly to negative framings (becoming more likely to stop drinking cocoa when warned of increased cancer risk, $p = 0.022$, and more risk-seeking when outcomes are framed as lives lost, $p = 0.007$).
 - **Age of onset:** In **Scenario 1**, the framing effect is already significant at the youngest observed age ($18$). In **Scenarios 2 and 3**, younger adults (ages $18\text{–}25$) show no statistically significant framing bias, with the framing effect emerging at **age 25.9** (Scenario 2) and **age 26.9** (Scenario 3).
+
+\textcolor{blue}{I thin this is a succinct summary and interpretation of the findings.}
+\textcolor{red}{It's not clear where the conclusions made in the summary are drawn from in the analysis, analyzing the figures and tables throughout the writeup would help address this, or otherwise directly referenecing the relevant figures}
 
 # Question 2 (Quiz 3)
 
@@ -350,6 +362,49 @@ res.small <- pwr.f2.test(u = 1,              # Suppose our research was interest
 ## Part a
 **Plot the power analysis I conducted above. Ensure to highlight Type I error, Type II error region, and Power. Note this should be similar to the one sample $t$-test.**
 
+**Solution:**
+
+```{r}
+#| label: fig-power-plot-a
+#| fig-label: Power Analysis with 1 Coefficient
+
+power_plot = function(n, p, f2, alpha) {
+  v    = n - p
+  ncp  = sqrt(f2 * n)                 
+  crit = qt(1 - alpha/2, v)           # two-sided critical value
+
+  x = sort(c(seq(-5, ncp + 5, length.out = 1000), -crit, crit))  # include crits so shading meets exactly
+  d = data.frame(x = x, null = dt(x, v), alt = dt(x, v, ncp = ncp))
+
+  lo  = subset(d, x <= -crit)
+  mid = subset(d, x >= -crit & x <= crit)
+  hi  = subset(d, x >= crit)
+  pow = pt(-crit, v, ncp) + pt(crit, v, ncp, lower.tail = FALSE)
+
+  ggplot(d, aes(x)) +
+    geom_ribbon(data = mid, aes(ymin = 0, ymax = alt,  fill = "Type II Error"), alpha = 0.7) +
+    geom_ribbon(data = hi,  aes(ymin = 0, ymax = alt,  fill = "Power"),         alpha = 0.7) +
+    geom_ribbon(data = lo,  aes(ymin = 0, ymax = alt,  fill = "Power"),         alpha = 0.7) +
+    geom_ribbon(data = hi,  aes(ymin = 0, ymax = null, fill = "Type I Error"),  alpha = 0.7) +
+    geom_ribbon(data = lo,  aes(ymin = 0, ymax = null, fill = "Type I Error"),  alpha = 0.7) +
+    geom_line(aes(y = alt,  color = "Alternative")) +
+    geom_line(aes(y = null, color = "Null")) +
+    geom_hline(yintercept = 0) +
+    scale_color_manual(name = NULL, values = c(Alternative = "#FF0000", Null = "#000000")) +
+    scale_fill_manual(name = NULL,
+                      values = c("Power" = "#4747bb", "Type I Error" = "#cd3737",
+                                 "Type II Error" = "#D3D3D3")) +
+    guides(color = guide_legend(order = 1), fill = guide_legend(order = 2)) +
+    labs(title = sprintf("f^2 = %.2f; p = %d; n = %d; df = %d; power = %.3f",
+                         f2, p, n, v, pow),
+         x = "T", y = "Density") +
+    theme_bw()
+}
+
+power_plot(n = n.small, p = p, f2 = f2.small, alpha = 0.05)
+
+```
+
 ## Part b
 
 To see the multicollinearity penalty directly, hold every parameter of a multiple regression model constant except the correlation between predictors.
@@ -360,7 +415,41 @@ where $\epsilon \sim \mathcal{N}(0, 1)$, $\beta_1 = 0.25$ is the target effect, 
 
 **Write $f^2$ out in terms of $VIF$. What happens to $f^2$ as we alter the $VIF$ through  $\rho$?**
 
+**Solution:**
+
+\begin{align*}
+f^2 &= \frac{\beta_j^2 \sigma_{X_j}^2(1 - R_1^2)}{\sigma^2} \\
+&= \frac{\beta_j^2 \sigma_{X_j}^2(1 - (1 - \frac{1}{VIF_1}))}{\sigma^2} \\
+&= \frac{\beta_j^2 \sigma_{X_j}^2}{VIF_1 \sigma^2} 
+\end{align*}
+
+As the correlation between the variables increases, the VIF does as well. Thus, the $f^2$ falls.
+
 **Conduct a power analysis to determine the required sample size $n$ to achieve $80\%$ power for inference on $\beta_1$ for $\text{VIF}$ values of 1.0, 1.5, 2.0, 5.0, and 10. What happens as $\text{VIF}$ increases?**
+
+**Solution:**
+
+```{r}
+#| label: tbl-vif-power-b
+#| tbl-cap: "Minimum Sample Size for 80% Power for Beta 1"
+calc_sample_size = function(beta,var.pred,var,vif) {
+  p = 3
+  f2 = (beta ^ 2) * var.pred / (vif * var)
+  res = pwr.f2.test(u = 1,             
+    f2 = f2,
+    sig.level = .05,
+    power = .8
+  )
+  ceiling(res$v + p)
+}
+
+tibble(
+  VIF = c(1, 1.5, 2, 5, 10),
+  N = sapply(VIF, \(v) calc_sample_size(.25, 1, 1, v))  
+) |> knitr::kable(digits = 2)
+```
+
+For the given choices for $beta_1, $\sigma^2_{X_j},$ and $\sigma^2$, a unit increase in VIF increases $f^2$ by approximately 125.
 
 ## Part c
 Now, suppose we're doing something fun like an interaction model.
@@ -384,20 +473,143 @@ and $\beta_0=\beta_1=\beta_2=0$, $\beta_3=0.50$, and $\sigma=1$.
 
 **As a basis for comparison, conduct a simple power analysis that ignores the interaction (e.g., $Y = \beta_0 + \beta_1 X_1$), where $\beta_1=0.50$.**
 
+**Solution**
+
+```{r}
+p = 2
+beta = .5
+var.x1 = .5^2 #Var(Bernoulli) = p(1-p)
+f2 = (beta^2) * var.x1
+res = pwr.f2.test(u = 1,             
+  f2 = f2,
+  sig.level = .05,
+  power = .8
+)
+(ceiling(res$v + p))
+```
+
 **Next, conduct a power analysis that ignores the third term is an interaction (e.g., $Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_3$), where $\beta_3=0.50$.**
 
+```{r}
+p = 4
+beta = .5
+var.x1 = .5^2 #Var(Bernoulli) = p(1-p)
+f2 = (beta^2) * var.x1
+res = pwr.f2.test(u = 1,             
+  f2 = f2,
+  sig.level = .05,
+  power = .8
+)
+(ceiling(res$v + p))
+```
+
 **Assess whether what we did in the previous step worked. Conduct a simulation for the proposed interaction model where $\beta_3=0.50$. At each iteration, generate data of the size recommended in part (c) and test the interaction coefficient. What is the empirical power?**
+
+**Solution**
+
+```{r}
+set.seed(123)
+n = 130
+count = 0
+nsims = 1000
+for (i in seq_len(nsims)) {
+  sim = tibble(
+    x1 = rbinom(n = n, size = 1, prob = .5),
+    x2 = rbinom(n = n, size = 1, prob = .5),
+    epsilon = rnorm(n = n),
+    y = 0.5 * x1 * x2 + epsilon  
+  )
+
+  mod = lm(y ~ x1 * x2, data = sim)
+  if (summary(mod)$coefficients["x1:x2", "Pr(>|t|)"] < .05) {
+    count = count + 1
+  }
+}
+
+(count / nsims)
+```
+
+The empirical power is far below what was suggested by our simplification. This is consistent with the idea that collinearity is problematic for inference about coefficients since it both blows up standard errors and shrinks power.
 
 ## Part d
 
 **Compute the variance of the product, noting here that $(X_1 X_2) \sim \text{Bernoulli}(0.25)$.**
 
+**Solution**
+
+$\operatorname{Var}(X) = p(1-p), X \sim \text{Bernoulli}(p)$. Thus, 
+$\operatorname{Var}(X_1X_2) = .1875$
+
 **Create a dataset of $n=4$ containing all possible combinations of $X_1$ and $X_2$ with $(X_1X_2)$, then fit the regression model predicting the interaction with the unique terms. Report the $R^2$.**
+
+**Solution**
+```{r}
+dat = tibble(
+  x1 = c(1,1,0,0),
+  x2 = c(1,0,1,0),
+  x3 = x1 * x2,
+)
+mod = lm(x3 ~ x1 + x2, dat = dat)
+R2 = summary(mod)$r.squared
+(R2)
+```
 
 **Next, conduct a power analysis that does not ignore that the third term is an interaction (e.g., $Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_3$), where $\beta_3=0.50$. You can do this using `pwr.f2.test()` and specifying the effect size using the anticipated coefficient and the values we just calculated:** 
 $$\beta_3^2 \sigma^2_{X_1 X_2}(1 - R^2_{X_1 X_2})$$
+**Solution**
+
+```{r}
+p = 4
+var.pred = .1875
+f2 = .5^2 * var.pred * (1 - R2)
+res = pwr.f2.test(u = 1,             
+  f2 = f2,
+  sig.level = .05,
+  power = .8
+)
+(ceiling(res$v + p))
+
+```
 
 **How would this change if we specified $X_1$ and $X_2$ as being independently drawn from a Bernoulli($0.2$) distribution? A Normal(0,1)?**
+
+**Solution**
+
+If $X_1,X_2 \sim \text{Bernoulli}(.2)$, $X_1X_2 \sim \text{Bernoulli}(.04)$, and therefore $\operatorname{Var}(X_1X_2) = .0384$
+```{r}
+p = 4
+var.pred = .0384
+f2 = .5^2 * var.pred * (1 - R2)
+res = pwr.f2.test(u = 1,             
+  f2 = f2,
+  sig.level = .05,
+  power = .8
+)
+(ceiling(res$v + p))
+```
+
+For if $X_1,X_2 \sim \text{Normal}(0,1)$ and $X_1,X_2$ independent, then 
+
+\begin{align*}
+\operatorname{Var}(X_1X_2) &= E[X_1^2X_2^2] - E[X_1X_2]^2 \\
+&\text{Since for independent } X,Y, E[XY] = E[X]E[Y] \\
+&= E[X_1^2]E[X_2^2] - (E[X_1]E[X_2])^2 \\
+&\text{Since } E[X_1^2] = \operatorname{Var}(X_1) - E[X_1]^2 \\
+&= (1)(1) - [(0)(0)]^2 = 1
+\end{align*}
+
+```{r}
+p = 4
+var.pred = 1
+f2 = .5^2 * var.pred * (1 - R2)
+res = pwr.f2.test(u = 1,             
+  f2 = f2,
+  sig.level = .05,
+  power = .8
+)
+(ceiling(res$v + p))
+```
+
 
 # Extra Practice
 * I initially had an IRWLS/Quantile regression question that I replaced with Question 1 (which is better practice for y'all). 
