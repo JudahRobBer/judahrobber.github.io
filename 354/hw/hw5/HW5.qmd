@@ -235,7 +235,7 @@ jn2$plot + labs(title = "Scenario 2: Hot Cocoa (Framing Effect Across Age)", x =
 jn3$plot + labs(title = "Scenario 3: Chance Choice (Framing Effect Across Age)", x = "Age (Years)")
 ```
 
-\textcolor{red}{Firstly, frame is a discrete variable, so treating it as continuous on the x-axis is immediately non-sensical. They additionally report JN analysis with age on the x-axis, but it also doesn't make sense to report the age modulating when the slope of age is significant, since it does not consider the framing. Also, standardizing age isn't useful for the research question of interest, since it makes it harder to read off at what age the interaction is significant.}
+\textcolor{red}{Firstly, frame is a discrete variable, so treating it as continuous on the x-axis is immediately non-sensical. They additionally report JN analysis with age on the x-axis and slope of age on the y-axis, but it isn't relevant to the research question mto report the age modulating when the slope of age is significant, since it does not report the framing effec. Also, standardizing age isn't useful for the research question of interest, since it makes it harder to read off at what age the interaction is significant.}
 
 ## Visualization of Predicted Trajectories
 
@@ -291,8 +291,7 @@ When rendered on `HW4Data.csv`, the code produces the following results across t
 - **Positive vs. Negative driver:** Across every scenario, **changes are driven entirely by the negative framing**. Ratings in the positive frame remain flat across age ($p > 0.50$ in all three models), whereas older adults respond significantly more strongly to negative framings (becoming more likely to stop drinking cocoa when warned of increased cancer risk, $p = 0.022$, and more risk-seeking when outcomes are framed as lives lost, $p = 0.007$).
 - **Age of onset:** In **Scenario 1**, the framing effect is already significant at the youngest observed age ($18$). In **Scenarios 2 and 3**, younger adults (ages $18\text{–}25$) show no statistically significant framing bias, with the framing effect emerging at **age 25.9** (Scenario 2) and **age 26.9** (Scenario 3).
 
-\textcolor{blue}{I thin this is a succinct summary and interpretation of the findings.}
-\textcolor{red}{It's not clear where the conclusions made in the summary are drawn from in the analysis, analyzing the figures and tables throughout the writeup would help address this, or otherwise directly referenecing the relevant figures}
+\textcolor{red}{It's not clear that the framing affect is significant for all ages in scenario 1, since the entire JN plot is not significant. Also, in general it would help if it were clear where the conclusions made in the summary are drawn from in the analysis, analyzing the figures and tables throughout the writeup would help address this, or otherwise directly referenecing the relevant figures}
 
 # Question 2 (Quiz 3)
 
@@ -389,7 +388,7 @@ plotResiduals(mod.irwls)
 plotInfluence(mod.irwls)
 ```
 
-Both the residual analysis and influence analysis are improved by the application of re-weighted least squares. Although there are still influential points among the smallest of the Castanopsis observations.As such, we will perform the remainder of our analysis on this model.
+Both the residual analysis and influence analysis are improved by the application of iteratively re-weighted least squares. Although there are still influential points among the smallest of the Castanopsis observations. As such, we will perform the remainder of our analysis on this model.
 
 ## Inference and Interpretation
 
@@ -448,7 +447,7 @@ data.frame(coefs) |>
   knitr::kable(digits = 3)
 ```
 
-With respect to coefficient interpretation, it is complicated by the log transformation of both the continuous response variable and predictor. Given the explanation provided by this set of [Cornell Notes](https://cscu.cornell.edu/wp-content/uploads/logv.pdf), the coefficient is interprated such that a $1%$ increase in predictor $i$ is associated with a $\beta_i%$ increase in the response variable. The interpretation for the categorical variable is unchanged from a traditional log transformed response variable. Thus, an increase in $1%$ of log diameter is associated with a $2.199%$ increase in the rootbiomass. Also, since the interaction terms are significant, we proceed with our post-hoc analysis.
+With respect to coefficient interpretation, it is complicated by the log transformation of both the continuous response variable and predictor. Given the explanation provided by this set of [Cornell Notes](https://cscu.cornell.edu/wp-content/uploads/logv.pdf), the coefficient is interprated such that a $1\%$ increase in predictor $i$ is associated with a $\beta_i \%$ increase in the response variable. The interpretation for the categorical variable is unchanged from a traditional log transformed response variable. Thus, an increase in $1\%$ of log diameter is associated with a $2.199\%$ increase in the rootbiomass. Also, since the interaction terms are significant, we proceed with our post-hoc analysis.
 
 
 ```{r}
@@ -636,7 +635,7 @@ tibble(
 ) |> knitr::kable(digits = 2)
 ```
 
-For the given choices for $beta_1, $\sigma^2_{X_j},$ and $\sigma^2$, a unit increase in VIF increases $f^2$ by approximately 125.
+For the given choices for $\beta_1, $\sigma^2_{X_j},$ and $\sigma^2$, a unit increase in VIF increases $f^2$ by approximately 125.
 
 ## Part c
 Now, suppose we're doing something fun like an interaction model.

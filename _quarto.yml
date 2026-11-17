@@ -41,7 +41,7 @@ website:
             href: 354/hw/hw3/HW3.qmd
           - text: "354 Homework 4: Regression Case Study"
             href: 354/hw/hw4/HW4.qmd
-          - text: "354 Homework 5: Collinearity"
+          - text: "354 Homework 5: Regression: Violations of Conditions for Use"
             href: 354/hw/hw5/HW5.qmd
   page-footer:  
     left: "© 2026 Colgate University Student Portfolio"
